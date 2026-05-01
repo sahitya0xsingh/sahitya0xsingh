@@ -1,10 +1,3 @@
-Viewed sahitya0xsingh_README.md:1-65
-
-Here is the completely updated code with the correct gradient waves, large Tech Arsenal grid, and all the original brand colors. 
-
-Just click the **"Copy"** button at the top right of this block and paste it directly into your GitHub `README.md`:
-
-```html
 <div align="center">
   <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=2&height=250&section=header&text=sahitya0xsingh&fontSize=70&fontColor=ffffff&animation=twinkling&desc=The%20Matrix%20Has%20You...&descAlignY=70&descAlign=50" width="100%" alt="Header" />
 </div>
@@ -69,4 +62,4 @@ Just click the **"Copy"** button at the top right of this block and paste it dir
 <div align="center">
   <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=2&height=100&section=footer" width="100%" alt="Footer" />
 </div>
-```
+
