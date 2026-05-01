@@ -62,7 +62,7 @@
 
 ### 🐍 GitHub Contribution Snake
 <div align="center">
-  <img src="https://raw.githubusercontent.com/sahitya0xsingh/sahitya0xsingh/output/github-contribution-grid-snake-dark.svg" alt="GitHub Snake" width="100%" />
+  <img src="https://raw.githubusercontent.com/sahitya0xsingh/sahitya0xsingh/output/dist/github-contribution-grid-snake-dark.svg" alt="GitHub Snake" width="100%" />
 </div>
 
 ---
