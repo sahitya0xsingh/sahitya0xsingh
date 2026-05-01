@@ -14,7 +14,7 @@
 ---
 
 <div align="center">
-  <a href="https://www.linkedin.com/in/sahityasingh/" target="_blank">
+  <a href="https://www.linkedin.com/in/sahitya-singh-7012b137b/" target="_blank">
     <img src="https://skillicons.dev/icons?i=linkedin" alt="LinkedIn" />
   </a>
   <a href="https://github.com/sahitya0xsingh" target="_blank">
