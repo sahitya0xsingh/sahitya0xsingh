@@ -1,9 +1,9 @@
 <div align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=2&height=250&section=header&text=sahitya0xsingh&fontSize=70&fontColor=ffffff&animation=twinkling&desc=The%20Matrix%20Has%20You...&descAlignY=70&descAlign=50" width="100%" alt="Header" />
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12&height=250&section=header&text=sahitya0xsingh&fontSize=70&fontColor=ffffff&animation=twinkling&desc=The%20Matrix%20Has%20You...&descAlignY=70&descAlign=50" width="100%" alt="Header" />
 </div>
 
 <div align="center">
-  <img src="https://komarev.com/ghpvc/?username=sahitya0xsingh&color=58A6FF&style=for-the-badge&label=HACKER+VIEWS" alt="Profile Views" />
+  <img src="https://komarev.com/ghpvc/?username=sahitya0xsingh&color=58A6FF&style=for-the-badge&label=HACKER+VIEWS" height="60" alt="Profile Views" />
   <br><br>
 
   <h1>Hi there, I'm Sahitya! 👾</h1>
@@ -15,10 +15,10 @@
 
 <div align="center">
   <a href="https://www.linkedin.com/in/sahityasingh/" target="_blank">
-    <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn" />
+    <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" height="60" alt="LinkedIn" />
   </a>
   <a href="https://github.com/sahitya0xsingh" target="_blank">
-    <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub" />
+    <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" height="60" alt="GitHub" />
   </a>
 </div>
 
@@ -37,9 +37,9 @@
 
 ### 🛠️ Tech Arsenal
 <div align="center">
-  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" height="45" alt="JavaScript" /> <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" height="45" alt="HTML" /> <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" height="45" alt="CSS" /> <img src="https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white" height="45" alt="Git" />
+  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" height="60" alt="JavaScript" /> <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" height="60" alt="HTML" /> <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" height="60" alt="CSS" /> <img src="https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white" height="60" alt="Git" />
   <br><br>
-  <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" height="45" alt="GitHub" /> <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" height="45" alt="Docker" /> <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" height="45" alt="Python" /> <img src="https://img.shields.io/badge/Java-007396?style=for-the-badge&logo=java&logoColor=white" height="45" alt="Java" />
+  <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" height="60" alt="GitHub" /> <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" height="60" alt="Docker" /> <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" height="60" alt="Python" /> <img src="https://img.shields.io/badge/Java-007396?style=for-the-badge&logo=java&logoColor=white" height="60" alt="Java" />
 </div>
 
 ### 📈 Hacker Stats & Activity
@@ -60,6 +60,5 @@
 </div>
 
 <div align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=2&height=100&section=footer" width="100%" alt="Footer" />
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12&height=100&section=footer" width="100%" alt="Footer" />
 </div>
-
