@@ -38,7 +38,7 @@
 ### 🛠️ Tech Arsenal
 <div align="center">
   <a href="https://skillicons.dev">
-    <img src="https://skillicons.dev/icons?i=js,html,css,git,docker,python,java&perline=4" alt="My Skills" />
+    <img src="https://skillicons.dev/icons?i=js,html,css,git,docker,python,java,react&perline=4" alt="My Skills" />
   </a>
 </div>
 
