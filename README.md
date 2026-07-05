@@ -44,14 +44,14 @@
 ### ⚙️ TECH ARSENAL
 <div align="center">
   <a href="https://skillicons.dev">
-    <img src="https://skillicons.dev/icons?i=js,html,css,git,docker,python,java,react,bash,linux,vim,vscode&perline=6" alt="My Skills" />
+    <img src="https://skillicons.dev/icons?i=js,html,css,git,docker,python,java,react&perline=4" alt="My Skills" />
   </a>
 </div>
 
 ### 📊 HACKER TELEMETRY
 <div align="center">
-  <img height="180" src="https://github-readme-stats.vercel.app/api?username=sahitya0xsingh&show_icons=true&bg_color=000000&title_color=58A6FF&text_color=ffffff&icon_color=58A6FF&border_color=58A6FF&hide_border=true" alt="Sahitya's GitHub Stats" />
-  <img height="180" src="https://github-readme-stats.vercel.app/api/top-langs/?username=sahitya0xsingh&layout=compact&bg_color=000000&title_color=58A6FF&text_color=ffffff&hide_border=true" alt="Top Languages" />
+  <img height="180" src="https://github-readme-stats-eight-theta.vercel.app/api?username=sahitya0xsingh&show_icons=true&bg_color=000000&title_color=58A6FF&text_color=ffffff&icon_color=58A6FF&border_color=58A6FF&hide_border=true" alt="Sahitya's GitHub Stats" />
+  <img height="180" src="https://github-readme-stats-eight-theta.vercel.app/api/top-langs/?username=sahitya0xsingh&layout=compact&bg_color=000000&title_color=58A6FF&text_color=ffffff&hide_border=true" alt="Top Languages" />
 </div>
 
 <br>
