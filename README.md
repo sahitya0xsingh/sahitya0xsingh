@@ -24,12 +24,7 @@
 
 <br>
 
-<div align="center">
-  <!-- Fixed GitHub Trophies -->
-  <img src="https://github-profile-trophy.vercel.app/?username=sahitya0xsingh&theme=radical&no-bg=true&no-frame=true&margin-w=15" alt="Sahitya's GitHub Trophies" />
-</div>
 
-<br>
 
 ### 🖥️ COMMAND TERMINAL
 ```bash
@@ -51,7 +46,6 @@
 ### 📊 HACKER TELEMETRY
 <div align="center">
   <img height="180" src="https://github-readme-stats-eight-theta.vercel.app/api?username=sahitya0xsingh&show_icons=true&bg_color=000000&title_color=58A6FF&text_color=ffffff&icon_color=58A6FF&border_color=58A6FF&hide_border=true" alt="Sahitya's GitHub Stats" />
-  <img height="180" src="https://github-readme-stats-eight-theta.vercel.app/api/top-langs/?username=sahitya0xsingh&layout=compact&bg_color=000000&title_color=58A6FF&text_color=ffffff&hide_border=true" alt="Top Languages" />
 </div>
 
 <br>
