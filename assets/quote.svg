@@ -1,6 +1,6 @@
-<svg width="100%" height="140" viewBox="0 0 1000 140" xmlns="http://www.w3.org/2000/svg">
+<svg width="100%" height="160" viewBox="0 0 1200 160" xmlns="http://www.w3.org/2000/svg">
   <style>
-    .quote { font: bold 26px sans-serif; text-anchor: middle; }
+    .quote { font: bold 28px sans-serif; text-anchor: middle; }
   </style>
   <defs>
     <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
@@ -13,13 +13,13 @@
   </defs>
 
   <g filter="url(#glow)">
-    <text class="quote" x="50%" y="60">
-      "First, solve the problem.
+    <text class="quote" x="50%" y="70">
+      "The best way to predict the future is to invent it...
       <animate attributeName="fill" values="#58A6FF;#ffffff;#58A6FF" dur="3s" repeatCount="indefinite" />
       <animate attributeName="opacity" values="1;0;1" dur="3s" repeatCount="indefinite" />
     </text>
-    <text class="quote" x="50%" y="100">
-      Then, write the code." — John Johnson
+    <text class="quote" x="50%" y="120">
+      preferably in the terminal." — Adapted from Alan Kay
       <animate attributeName="fill" values="#ffffff;#58A6FF;#ffffff" dur="3s" repeatCount="indefinite" />
       <animate attributeName="opacity" values="0;1;0" dur="3s" repeatCount="indefinite" />
     </text>
