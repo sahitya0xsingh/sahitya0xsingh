@@ -11,7 +11,9 @@
   <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=900&size=26&pause=1000&color=58A6FF&center=true&vCenter=true&width=600&lines=System+Architect;Open+Source+Hacker;Cyber+Ninja;Decrypting+The+Matrix..." alt="Typing SVG" />
 </div>
 
----
+<div align="center">
+  <img src="https://raw.githubusercontent.com/sahitya0xsingh/sahitya0xsingh/main/assets/neon-divider.svg" alt="Neon Divider" />
+</div>
 
 <div align="center">
   <a href="https://www.linkedin.com/in/sahitya-singh-7012b137b/" target="_blank">
@@ -43,14 +45,7 @@
   </a>
 </div>
 
-### 🏆 GITHUB TROPHIES
-<div align="center">
-  <a href="https://github.com/ryo-ma/github-profile-trophy">
-    <img src="https://github-profile-trophy.vercel.app/?username=sahitya0xsingh&theme=radical&no-bg=true&no-frame=true&margin-w=15" alt="Trophies" />
-  </a>
-</div>
 
-<br>
 
 ### 📊 HACKER TELEMETRY
 <div align="center">
@@ -58,11 +53,7 @@
   <img height="180" src="https://streak-stats.demolab.com?user=sahitya0xsingh&theme=radical&background=000000&ring=58A6FF&fire=58A6FF&currStreakLabel=58A6FF&border=000000&stroke=ffffff" alt="GitHub Streak" />
 </div>
 
-<br>
 
-<div align="center">
-  <img height="180" src="https://github-readme-stats-eight-theta.vercel.app/api/top-langs/?username=sahitya0xsingh&layout=compact&theme=radical&bg_color=000000&title_color=58A6FF&text_color=ffffff&border_color=58A6FF&hide_border=true" alt="Top Languages" />
-</div>
 
 <br>
 
@@ -81,10 +72,16 @@
   </picture>
 </div>
 
----
+<div align="center">
+  <img src="https://raw.githubusercontent.com/sahitya0xsingh/sahitya0xsingh/main/assets/neon-divider.svg" alt="Neon Divider" />
+</div>
 
 <div align="center">
   <h2 style="color: #58A6FF;">"Programs must be written for people to read, and only incidentally for machines to execute." — Harold Abelson</h2>
+</div>
+
+<div align="center">
+  <img src="https://raw.githubusercontent.com/sahitya0xsingh/sahitya0xsingh/main/assets/neon-divider.svg" alt="Neon Divider" />
 </div>
 
 <div align="center">
