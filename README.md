@@ -29,14 +29,9 @@
 
 
 ### 🖥️ COMMAND TERMINAL
-```bash
-> sahitya0xsingh.status()
-"Currently executing secretive disruptive tech..."
-> sahitya0xsingh.interests()
-["Open Source", "System Architecture", "Deciphering Complex Systems"]
-> sahitya0xsingh.collaborate()
-"Awaiting incoming connections for open-source hacking."
-```
+<div align="center">
+  <img src="https://raw.githubusercontent.com/sahitya0xsingh/sahitya0xsingh/main/assets/terminal.svg" width="100%" alt="Command Terminal" />
+</div>
 
 ### ⚙️ TECH ARSENAL
 <div align="center">
@@ -77,7 +72,7 @@
 </div>
 
 <div align="center">
-  <h2 style="color: #58A6FF;">"Programs must be written for people to read, and only incidentally for machines to execute." — Harold Abelson</h2>
+  <img src="https://raw.githubusercontent.com/sahitya0xsingh/sahitya0xsingh/main/assets/quote.svg" width="100%" alt="Quote" />
 </div>
 
 <div align="center">
