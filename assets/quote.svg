@@ -1,0 +1,23 @@
+<svg width="100%" height="80" viewBox="0 0 800 80" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .quote { font: bold 16px sans-serif; fill: #ffffff; text-anchor: middle; }
+    .neon { fill: #58A6FF; }
+  </style>
+  <defs>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="2" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+  <text class="quote neon" x="400" y="45" filter="url(#glow)">
+    "Programs must be written for people to read, and only incidentally for machines to execute." — Harold Abelson
+    <animate attributeName="opacity" values="1;0.4;1" dur="2s" repeatCount="indefinite" />
+  </text>
+  <text class="quote" x="400" y="45">
+    "Programs must be written for people to read, and only incidentally for machines to execute." — Harold Abelson
+    <animate attributeName="opacity" values="1;0.7;1" dur="2s" repeatCount="indefinite" />
+  </text>
+</svg>
