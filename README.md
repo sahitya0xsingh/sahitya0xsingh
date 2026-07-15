@@ -46,7 +46,7 @@
 ### 🏆 GITHUB TROPHIES
 <div align="center">
   <a href="https://github.com/ryo-ma/github-profile-trophy">
-    <img src="https://github-profile-trophy.vercel.app/?username=sahitya0xsingh&theme=radical&no-bg=true&no-frame=true&margin-w=15&title-color=58A6FF&text-color=ffffff" alt="Trophies" />
+    <img src="https://github-profile-trophy.vercel.app/?username=sahitya0xsingh&theme=radical&no-bg=true&no-frame=true&margin-w=15" alt="Trophies" />
   </a>
 </div>
 
@@ -54,14 +54,14 @@
 
 ### 📊 HACKER TELEMETRY
 <div align="center">
-  <img height="180" src="https://github-readme-stats.vercel.app/api?username=sahitya0xsingh&show_icons=true&bg_color=000000&title_color=58A6FF&text_color=ffffff&icon_color=58A6FF&border_color=58A6FF&hide_border=true" alt="Sahitya's GitHub Stats" />
+  <img height="180" src="https://github-readme-stats-eight-theta.vercel.app/api?username=sahitya0xsingh&show_icons=true&bg_color=000000&title_color=58A6FF&text_color=ffffff&icon_color=58A6FF&border_color=58A6FF&hide_border=true" alt="Sahitya's GitHub Stats" />
   <img height="180" src="https://streak-stats.demolab.com?user=sahitya0xsingh&theme=radical&background=000000&ring=58A6FF&fire=58A6FF&currStreakLabel=58A6FF&border=000000&stroke=ffffff" alt="GitHub Streak" />
 </div>
 
 <br>
 
 <div align="center">
-  <img height="180" src="https://github-readme-stats.vercel.app/api/top-langs/?username=sahitya0xsingh&layout=compact&theme=radical&bg_color=000000&title_color=58A6FF&text_color=ffffff&border_color=58A6FF&hide_border=true" alt="Top Languages" />
+  <img height="180" src="https://github-readme-stats-eight-theta.vercel.app/api/top-langs/?username=sahitya0xsingh&layout=compact&theme=radical&bg_color=000000&title_color=58A6FF&text_color=ffffff&border_color=58A6FF&hide_border=true" alt="Top Languages" />
 </div>
 
 <br>
@@ -72,19 +72,19 @@
 
 <br>
 
-### 🐍 CONTRIBUTION MATRIX
+### 👾 PACMAN CONTRIBUTION MATRIX
 <div align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/sahitya0xsingh/sahitya0xsingh/output/github-contribution-grid-snake-dark.svg">
-    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/sahitya0xsingh/sahitya0xsingh/output/github-contribution-grid-snake.svg">
-    <img alt="github contribution grid snake animation" src="https://raw.githubusercontent.com/sahitya0xsingh/sahitya0xsingh/output/github-contribution-grid-snake.svg">
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/sahitya0xsingh/sahitya0xsingh/output/pacman-contribution-graph-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/sahitya0xsingh/sahitya0xsingh/output/pacman-contribution-graph.svg">
+    <img alt="github contribution grid pacman animation" src="https://raw.githubusercontent.com/sahitya0xsingh/sahitya0xsingh/output/pacman-contribution-graph.svg">
   </picture>
 </div>
 
 ---
 
 <div align="center">
-  <code style="color: #58A6FF;">"Programs must be written for people to read, and only incidentally for machines to execute." — Harold Abelson</code>
+  <h2 style="color: #58A6FF;">"Programs must be written for people to read, and only incidentally for machines to execute." — Harold Abelson</h2>
 </div>
 
 <div align="center">
