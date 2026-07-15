@@ -12,7 +12,7 @@
 </div>
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/sahitya0xsingh/sahitya0xsingh/main/assets/neon-divider.svg" alt="Neon Divider" />
+  <img src="assets/neon-divider.svg" alt="Neon Divider" />
 </div>
 
 <div align="center">
@@ -30,7 +30,7 @@
 
 ### 🖥️ COMMAND TERMINAL
 <div align="center">
-  <img src="https://raw.githubusercontent.com/sahitya0xsingh/sahitya0xsingh/main/assets/terminal.svg" width="100%" alt="Command Terminal" />
+  <img src="assets/terminal.svg" width="100%" alt="Command Terminal" />
 </div>
 
 ### ⚙️ TECH ARSENAL
@@ -68,15 +68,15 @@
 </div>
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/sahitya0xsingh/sahitya0xsingh/main/assets/neon-divider.svg" alt="Neon Divider" />
+  <img src="assets/neon-divider.svg" alt="Neon Divider" />
 </div>
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/sahitya0xsingh/sahitya0xsingh/main/assets/quote.svg" width="100%" alt="Quote" />
+  <img src="assets/quote.svg" width="100%" alt="Quote" />
 </div>
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/sahitya0xsingh/sahitya0xsingh/main/assets/neon-divider.svg" alt="Neon Divider" />
+  <img src="assets/neon-divider.svg" alt="Neon Divider" />
 </div>
 
 <div align="center">
