@@ -50,7 +50,7 @@
 ### 📊 HACKER TELEMETRY
 <div align="center">
   <img height="180" src="https://github-readme-stats-eight-theta.vercel.app/api?username=sahitya0xsingh&show_icons=true&bg_color=000000&title_color=58A6FF&text_color=ffffff&icon_color=58A6FF&border_color=58A6FF&hide_border=true" alt="Sahitya's GitHub Stats" />
-  <img height="180" src="https://streak-stats.demolab.com?user=sahitya0xsingh&theme=radical&background=000000&ring=58A6FF&fire=58A6FF&currStreakLabel=58A6FF&border=000000&stroke=ffffff" alt="GitHub Streak" />
+  <img height="180" src="https://streak-stats.demolab.com?user=sahitya0xsingh&theme=radical&background=000000&ring=58A6FF&fire=58A6FF&currStreakLabel=58A6FF&border=000000&stroke=ffffff&sideNums=00FFFF&sideLabels=00FFFF&labels=00FFFF" alt="GitHub Streak" />
 </div>
 
 
