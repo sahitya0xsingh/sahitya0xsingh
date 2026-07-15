@@ -30,7 +30,7 @@
 
 ### 🖥️ COMMAND TERMINAL
 <div align="center">
-  <img src="assets/terminal.svg" width="100%" alt="Command Terminal" />
+  <img src="assets/terminal-animated.svg" width="100%" alt="Command Terminal" />
 </div>
 
 ### ⚙️ TECH ARSENAL
@@ -72,7 +72,7 @@
 </div>
 
 <div align="center">
-  <img src="assets/quote.svg" width="100%" alt="Quote" />
+  <img src="assets/quote-animated.svg" width="100%" alt="Quote" />
 </div>
 
 <div align="center">
