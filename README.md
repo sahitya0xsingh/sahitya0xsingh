@@ -30,9 +30,37 @@
 
 ### 🖥️ COMMAND TERMINAL
 
-<div align="center">
-  <img src="assets/terminal.svg" alt="Command Terminal" width="900" />
-</div>
+```zsh
+sahitya@macbook-pro ~ % ./fetch_profile.sh
+
+        /\                            /\          sahitya0xsingh
+       /  \__________________________/  \         ─────────────────────────────────────────────
+      / / . \       _______        / . \ \        OS ............. macOS, Linux
+     / /     _     /  ____/       _     \ \       Uptime ......... Always Learning
+    / /  .  /     /  /___          \  .  \ \      Host ........... Developer Machine
+   | |     /      \____  \          \     | |     Kernel ......... Open Source
+   | | .  /       ____/  /           \  . | |     IDE ............ VS Code
+   | |   _       /______/             _   | |
+    \ \/ _ \                        / _ \/ /      Langs(Code) .... Python, Java, JavaScript
+     \ |(o)|                        |(o)| /       Langs(Web) ..... HTML, CSS, Markdown
+      \ \_/                          \_/ /        Langs(Real) .... English, Hindi
+       \ \  .                      .  / /
+        \ \        \ \___/ /         / /          Hobbies ........ Web Development, Open Source
+         \ \__     - \_|_/ -      __/ /           Hardware ....... Tech Exploring
+          \   \__    \___/     __/   /
+           \______\___________/_____/             ────────────────── Contact ──────────────────
+            \         \___/          /
+             \______________________/             GitHub ......... @sahitya0xsingh
+                                                  Role ........... Student
+
+                                                  ──────────────── GitHub Stats ───────────────
+
+                                                  Repositories ... 8+
+                                                  Contributions .. 235+
+                                                  Lines of Code .. 25K+
+
+sahitya@macbook-pro ~ % _
+```
 
 ### ⚙️ TECH ARSENAL
 <div align="center">
