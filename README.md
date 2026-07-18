@@ -1,9 +1,30 @@
-```text
-──────────────────────────────────────
-          sahitya0xsingh
-         SYSTEM_ONLINE...
-──────────────────────────────────────
-```
+<div align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=000000&customColorList=0,58A6FF,ffffff&height=250&section=header&text=sahitya0xsingh&fontSize=70&fontColor=58A6FF&animation=twinkling&desc=SYSTEM_ONLINE...&descAlignY=70&descAlign=50" width="100%" alt="Header" />
+</div>
+
+<div align="center">
+  <img src="https://komarev.com/ghpvc/?username=sahitya0xsingh&color=58A6FF&style=for-the-badge&label=SYSTEM+ACCESS+COUNT" height="30" alt="Profile Views" />
+  <br><br>
+
+  <h1 style="color: #ffffff;">INITIATING HANDSHAKE... 👾</h1>
+  
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=900&size=26&pause=1000&color=58A6FF&center=true&vCenter=true&width=600&lines=System+Architect;Open+Source+Hacker;Cyber+Ninja;Decrypting+The+Matrix..." alt="Typing SVG" />
+</div>
+
+<div align="center">
+  <img src="assets/neon-divider.svg" alt="Neon Divider" />
+</div>
+
+<div align="center">
+  <a href="https://www.linkedin.com/in/sahitya-singh-7012b137b/" target="_blank">
+    <img src="https://skillicons.dev/icons?i=linkedin" alt="LinkedIn" />
+  </a>
+  <a href="https://github.com/sahitya0xsingh" target="_blank">
+    <img src="https://skillicons.dev/icons?i=github" alt="GitHub" />
+  </a>
+</div>
+
+<br>
 
 
 
