@@ -31,33 +31,29 @@
 ### 🖥️ COMMAND TERMINAL
 
 ```text
-           /\                       /\           sahitya@0xsingh
-          /  \                     /  \          ------------------------------------
-         / /\ \                   / /\ \         . OS: .......... macOS, Linux
-        / /  \ \                 / /  \ \        . Uptime: ...... Always Learning
-       / /    \ \_______________/ /    \ \       . Host: ........ Developer Machine
-      / /     /                   \     \ \      . Kernel: ...... Open Source
-     | |     /       ███████       \     | |     . IDE: ......... VSCode
-     | |    |      ████   ████      |    | |     
-    / /     |     ████     ████     |     \ \    . Langs(Code): . Python, Java, JS
-   / /      |     ████              |      \ \   . Langs(Web): .. HTML, CSS, MD
-  / /       |     ██████████        |       \ \  . Langs(Real): . English, Hindi
- | |      _ \       ██████████      / _      | | 
- | |     / \ \              ████   / / \     | | . Hobbies: ..... Web Dev, OS
- | |     \o/ /              ████   \ \o/     | | . Hardware: .... Tech Exploring
-  \ \    / _/      ████     ████    \_ \    / /  
-   \ \  | |        ████   ████        | |  / /   - Contact --------------------------
-    \ \ | |         █████████         | | / /    . GitHub: ...... @sahitya0xsingh
-     \ \| |           █████           | |/ /     . Role: ........ Student
-      \ \  \           ███           /  / /      
-       \ \  \           █           /  / /       - GitHub Stats ---------------------
-        \ \  \       \ \_/ /       /  / /        . Repos: ....... 8+ {Contrib: 24}
-         \ \  \__   - \_|_/ -   __/  / /         . Contributions: 235+
-          \ \    \__   \_/   __/    / /          . Lines of Code: 25k (30k+, 5k-)
-           \ \______\_______/______/ /           
-            \ \       \___/       / /            
-             \ \_________________/ /             
-              \___________________/              
+       _____                         _____       sahitya@0xsingh
+     /  _  \                       /  _  \       ------------------------------------
+   /  /  \   \___________________/   /  \  \     . OS: .......... macOS, Linux
+  /  /  .  \       ███████████       /  .  \  \  . Uptime: ...... Always Learning
+ |  |       _      ████   ████      _       |  | . Host: ........ Developer Machine
+ \  \   .  /       ████               \  .  /  / . Kernel: ...... Open Source
+  |  |    /        ██████████          \    |  | . IDE: ......... VSCode
+  |  |  .  \         ██████████       /  .  |  | 
+  |  |       \             ████     /       |  | . Langs(Code): . Python, Java, JS
+  |  |  ____       ████    ████       ____  |  | . Langs(Web): .. HTML, CSS, MD
+   \  \/ _  \       ████  ██████      /  _ \/  / . Langs(Real): . English, Hindi
+    \ | (o)  |       ██████████      |  (o) | /  
+     \ \____/         ██████        \____/ /     . Hobbies: ..... Web Dev, OS
+      \ \  .           ████            .  /      . Hardware: .... Tech Exploring
+       \ \              ██               /       
+        \ \  .          █          .    /        - Contact --------------------------
+         \ \        \ \___/ /          /         . GitHub: ...... @sahitya0xsingh
+          \ \___   -  \_|_/  -   ___/ /          . Role: ........ Student
+           \    \___  \___/  ___/    /           
+            \_______\_______/_______/            - GitHub Stats ---------------------
+              \       \___/       /              . Repos: ....... 8+ {Contrib: 24}
+               \_________________/               . Contributions: 235+
+                                                 . Lines of Code: 25k (30k+, 5k-)
 ```
 
 ### ⚙️ TECH ARSENAL
