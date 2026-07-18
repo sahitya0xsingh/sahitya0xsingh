@@ -31,32 +31,29 @@
 ### 🖥️ COMMAND TERMINAL
 
 ```text
-           /\                       /\           sahitya@0xsingh
-          /  \                     /  \          ---------------------------------------------------
-         / /\ \                   / /\ \         . OS: ...................... macOS, Linux
-        / /  \ \                 / /  \ \        . Uptime: .................. Always Learning
-       / /    \ \_______________/ /    \ \       . Host: .................... Developer Machine
-      / /     /                   \     \ \      . Kernel: .................. Open Source Enthusiast
-     | |     /       _______       \     | |     . IDE: ..................... VSCode
-     | |    |       / _____ \       |    | |     
-    / /     |      / /     \ \      |     \ \    . Languages.Programming: ... Python, Java, JavaScript
-   / /      |     / /       \ \     |      \ \   . Languages.Computer: ...... HTML, CSS, Markdown
-  / /       |     \ \______  | |    |       \ \  . Languages.Real: .......... English, Hindi
- | |      _ \      \______ \ | |    / _      | | 
- | |     / \ \            \ \| |   / / \     | | . Hobbies.Software: ........ Web Development, Open Source
- | |     \o/ /             \ \ /   \ \o/     | | . Hobbies.Hardware: ........ Tech Exploring
-  \ \    / _/       _______/  /     \_ \    / /  
-   \ \  | |        / ______  /        | |  / /   - Contact -----------------------------------------
-    \ \ | |       / /      \ \        | | / /    . GitHub: .................. @sahitya0xsingh
-     \ \| |      / /        \ \       | |/ /     . Role: .................... Student
-      \ \  \     \ \________/ /      /  / /      
-       \ \  \     \__________/      /  / /       - GitHub Stats ------------------------------------
-        \ \  \                     /  / /        . Repos: .... 8+ {Contributed: 24} | Stars: ........... 15
-         \ \  \                   /  / /         . Contributions: .......... 235+ | Followers: ........ 10
-          \ \  \_________________/  / /          . Lines of Code on GitHub: . 25,000 ( 30,000++, 5,000-- )
-           \ \                     / /
-            \ \___________________/ /
-             \_____________________/
+         _,-._  .---.  _,-._         sahitya@0xsingh
+        /   / |/ .-. \| \   \        ---------------------------------------------------
+       /   / // /   \ \\ \   \       . OS: ...................... macOS, Linux
+      /   / /| |     \ |\ \   \      . Uptime: .................. Always Learning
+     /   / / | |____  \ \\ \   \     . Host: .................... Developer Machine
+    /   / /  |  ____|  | |\ \   \    . Kernel: .................. Open Source Enthusiast
+   |   | /  _/ /       | |_  \ |   | . IDE: ..................... VSCode
+   |   | | /_\\/____   | |/_\| |   | 
+    \   \ \|o| ____ \  / /|o|/ /   / . Languages.Programming: ... Python, Java, JavaScript
+     \   \ \_// /  \ \/ / \_/ /   /  . Languages.Computer: ...... HTML, CSS, Markdown
+      \   \ \ \ \   \  /     /   /   . Languages.Real: .......... English, Hindi
+       \   \ \ \ \   \/     /   /    
+        \   \ \ \ \__/ /   /   /     . Hobbies.Software: ........ Web Development, Open Source
+         \   \ \ \____/   /   /      . Hobbies.Hardware: ........ Tech Exploring
+          \   \ \  ___   /   /       
+           \   \ \/ _ \//   /        - Contact -----------------------------------------
+            \   \ \___//   /         . GitHub: .................. @sahitya0xsingh
+             \   \____/   /          . Role: .................... Student
+              \          /           
+               \________/            - GitHub Stats ------------------------------------
+                                     . Repos: .... 8+ {Contributed: 24} | Stars: ........... 15
+                                     . Contributions: .......... 235+ | Followers: ........ 10
+                                     . Lines of Code on GitHub: . 25,000 ( 30,000++, 5,000-- )
 ```
 
 ### ⚙️ TECH ARSENAL
