@@ -29,9 +29,35 @@
 
 
 ### 🖥️ COMMAND TERMINAL
-<div align="center">
-  <img src="assets/terminal-animated.svg" width="100%" alt="Command Terminal" />
-</div>
+
+```text
+           /\                       /\           sahitya@0xsingh
+          /  \                     /  \          ---------------------------------------------------
+         / /\ \                   / /\ \         . OS: ...................... macOS, Linux
+        / /  \ \                 / /  \ \        . Uptime: .................. Always Learning
+       / /    \ \_______________/ /    \ \       . Host: .................... Developer Machine
+      / /     /                   \     \ \      . Kernel: .................. Open Source Enthusiast
+     | |     /       _______       \     | |     . IDE: ..................... VSCode
+     | |    |       / _____ \       |    | |     
+    / /     |      / /     \ \      |     \ \    . Languages.Programming: ... Python, Java, JavaScript
+   / /      |     / /       \ \     |      \ \   . Languages.Computer: ...... HTML, CSS, Markdown
+  / /       |     \ \______  | |    |       \ \  . Languages.Real: .......... English, Hindi
+ | |      _ \      \______ \ | |    / _      | | 
+ | |     / \ \            \ \| |   / / \     | | . Hobbies.Software: ........ Web Development, Open Source
+ | |     \o/ /             \ \ /   \ \o/     | | . Hobbies.Hardware: ........ Tech Exploring
+  \ \    / _/       _______/  /     \_ \    / /  
+   \ \  | |        / ______  /        | |  / /   - Contact -----------------------------------------
+    \ \ | |       / /      \ \        | | / /    . GitHub: .................. @sahitya0xsingh
+     \ \| |      / /        \ \       | |/ /     . Role: .................... Student
+      \ \  \     \ \________/ /      /  / /      
+       \ \  \     \__________/      /  / /       - GitHub Stats ------------------------------------
+        \ \  \                     /  / /        . Repos: .... 8+ {Contributed: 24} | Stars: ........... 15
+         \ \  \                   /  / /         . Contributions: .......... 235+ | Followers: ........ 10
+          \ \  \_________________/  / /          . Lines of Code on GitHub: . 25,000 ( 30,000++, 5,000-- )
+           \ \                     / /
+            \ \___________________/ /
+             \_____________________/
+```
 
 ### ⚙️ TECH ARSENAL
 <div align="center">
