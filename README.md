@@ -31,7 +31,7 @@
 ### 🖥️ COMMAND TERMINAL
 
 <div align="center">
-  <img src="assets/terminal.svg" alt="Command Terminal" width="920" />
+  <img src="assets/terminal.svg?v=3" alt="Command Terminal" width="100%" />
 </div>
 
 ### ⚙️ TECH ARSENAL
