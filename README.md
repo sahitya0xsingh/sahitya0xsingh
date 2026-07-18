@@ -30,31 +30,9 @@
 
 ### 🖥️ COMMAND TERMINAL
 
-```text
-       _____                         _____       sahitya@0xsingh
-     /  _  \                       /  _  \       ------------------------------------
-   /  /  \   \___________________/   /  \  \     . OS: .......... macOS, Linux
-  /  /  .  \       ███████████       /  .  \  \  . Uptime: ...... Always Learning
- |  |       _      ████   ████      _       |  | . Host: ........ Developer Machine
- \  \   .  /       ████               \  .  /  / . Kernel: ...... Open Source
-  |  |    /        ██████████          \    |  | . IDE: ......... VSCode
-  |  |  .  \         ██████████       /  .  |  | 
-  |  |       \             ████     /       |  | . Langs(Code): . Python, Java, JS
-  |  |  ____       ████    ████       ____  |  | . Langs(Web): .. HTML, CSS, MD
-   \  \/ _  \       ████  ██████      /  _ \/  / . Langs(Real): . English, Hindi
-    \ | (o)  |       ██████████      |  (o) | /  
-     \ \____/         ██████        \____/ /     . Hobbies: ..... Web Dev, OS
-      \ \  .           ████            .  /      . Hardware: .... Tech Exploring
-       \ \              ██               /       
-        \ \  .          █          .    /        - Contact --------------------------
-         \ \        \ \___/ /          /         . GitHub: ...... @sahitya0xsingh
-          \ \___   -  \_|_/  -   ___/ /          . Role: ........ Student
-           \    \___  \___/  ___/    /           
-            \_______\_______/_______/            - GitHub Stats ---------------------
-              \       \___/       /              . Repos: ....... 8+ {Contrib: 24}
-               \_________________/               . Contributions: 235+
-                                                 . Lines of Code: 25k (30k+, 5k-)
-```
+<div align="center">
+  <img src="assets/terminal.svg" alt="Command Terminal" width="900" />
+</div>
 
 ### ⚙️ TECH ARSENAL
 <div align="center">
