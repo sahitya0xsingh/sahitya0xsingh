@@ -23,13 +23,24 @@ Everything on this page except this paragraph is generated from live GitHub data
 ### `~/projects`
 
 <!-- PROJECTS:START -->
-<sub>`ls: no original projects published yet. this list fills itself when one ships.`</sub>
+| project | lang | ★ | commits | last push |
+|:--|:--|:--:|:--:|:--|
+| [`NST`](https://github.com/sahitya0xsingh/NST) | — | 0 | 1 | 11w ago |
 <!-- PROJECTS:END -->
 
 ### `~/oss` <sub>merged upstream</sub>
 
 <!-- CONTRIBUTIONS:START -->
-<sub>`git log: merged upstream pull requests will appear here automatically.`</sub>
+| repository | pull request | merged |
+|:--|:--|:--|
+| `apereo/cas` | [Declare record pattern variable as final in CompoundCondition](https://github.com/apereo/cas/pull/9737) | 10 Oct 2026 |
+| `checkstyle/checkstyle-openrewrite-recipes` | [supplemental: resolve FinalPatternVariable violations](https://github.com/checkstyle/checkstyle-openrewrite-recipes/pull/460) | 06 Oct 2026 |
+| `checkstyle/checkstyle` | [supplemental: fix violations from FinalPatternVariable](https://github.com/checkstyle/checkstyle/pull/21799) | 03 Oct 2026 |
+| `checkstyle/checkstyle` | [Issue #13189: Declare MSG_INVALID_PATTERN in AbstractNameCheck subclass…](https://github.com/checkstyle/checkstyle/pull/21610) | 16 Sep 2026 |
+| `checkstyle/checkstyle` | [Issue #13189: Declare MSG_WS_* constants in ParenPadCheck and TypecastP…](https://github.com/checkstyle/checkstyle/pull/21608) | 16 Sep 2026 |
+| `checkstyle/checkstyle` | [Issue #13189: Declare MSG_KEY in SuperCloneCheck and SuperFinalizeCheck](https://github.com/checkstyle/checkstyle/pull/21597) | 16 Sep 2026 |
+| `checkstyle/checkstyle` | [Issue #21062: Add InappropriateJavadocBlockTagsOnField check](https://github.com/checkstyle/checkstyle/pull/21116) | 30 Aug 2026 |
+| `NST-DEVFORGE/DevForge` | [feat(members): add Dushyant and Pranav, update Sahitya handle and stats](https://github.com/NST-DEVFORGE/DevForge/pull/21) | 29 Aug 2026 |
 <!-- CONTRIBUTIONS:END -->
 
 ### `~/connect`
