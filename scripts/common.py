@@ -45,6 +45,21 @@ DEFAULT_PROFILE = {
     "tools": "Git · Docker · HTML/CSS",
     "focus": "open source · web · ML explainability",
     "status": "open to collaborate",
+    "title": "Student",
+    "os": "macOS, Linux",
+    "uptime": "Always Learning",
+    "host_machine": "Developer Machine",
+    "kernel": "Open Source",
+    "ide": "VS Code",
+    "lang_code": "Python, Java, JavaScript",
+    "lang_web": "HTML, CSS, Markdown",
+    "lang_real": "English, Hindi",
+    "hobbies": "Web Development",
+    "focus_short": "Open Source",
+    "hardware": "Tech Exploring",
+    "loc": "25K+",
+    "linkedin": "sahitya-singh",
+    "linkedin_full": "sahitya-singh-7012b137b",
 }
 
 

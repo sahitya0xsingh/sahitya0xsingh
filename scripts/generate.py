@@ -12,9 +12,10 @@ import readme_sections
 import svg_footer
 import svg_heatmap
 import svg_splash
+import svg_stack
 import svg_htop
 import svg_terminal
-from common import LOGIN, demo_stats, profile, write_asset
+from common import LOGIN, demo_stats, load_json, profile, write_asset
 
 
 def main() -> None:
@@ -31,6 +32,8 @@ def main() -> None:
         "terminal.svg": write_asset("terminal.svg", svg_terminal.render(m, prof, stats)),
         "htop.svg": write_asset("htop.svg", svg_htop.render(m, stats, prof)),
         "activity.svg": write_asset("activity.svg", svg_heatmap.render(m, stats, prof)),
+        "stack.svg": write_asset("stack.svg", svg_stack.stack(prof, load_json("stack.json", svg_stack.DEFAULT_STACK))),
+        "connect.svg": write_asset("connect.svg", svg_stack.connect(prof, stats["login"])),
         "logout.svg": write_asset("logout.svg", svg_footer.render(prof)),
         "README.md": readme_sections.update(stats),
     }

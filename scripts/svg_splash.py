@@ -1,8 +1,6 @@
 """Start page: the logo, rebuilt from this repo's own source code, revealed by a laser scan."""
 from __future__ import annotations
 
-import hashlib
-import math
 from pathlib import Path
 
 from common import (ACCENT, BG, BRIGHT, GREEN, LINE, LINE2, MONO, MUTED, TEXT,
@@ -127,63 +125,97 @@ def render(m: dict, prof: dict, stats: dict) -> str:
             + f'<path d="M{cx},{BY - 26}v10M{cx},{BY + bh + 16}v10M{BX - 26},{cy}h10M{BX + bw + 16},{cy}h10" '
               f'stroke="{ACCENT}" stroke-width="1.2"/>')
 
-    # ── left readout ──
-    hist = [sum(row.count(l) for row in grid) for l in range(5)]
-    tot = sum(hist) or 1
-    ent = -sum((h / tot) * math.log2(h / tot) for h in hist if h)
-    ghash = hashlib.sha1("".join(map(str, sum(grid, []))).encode()).hexdigest()[:12].upper()
-    lx, ly = 52, 132
-    readout = [("TARGET", "LOGO"), ("SOURCE", src.upper()[:18]), ("GLYPHS", f"{glyphs}"),
-               ("GRID", f"{COLS}×{ROWS}"), ("ENTROPY", f"{ent:.2f} bit"), ("HASH", ghash),
-               ("BUILT FROM", "./scripts/*.py")]
-    left = [f'<text x="{lx}" y="{ly - 22}" font-family="{MONO}" font-size="9" fill="{ACCENT}" '
-            f'letter-spacing="2">▸ TELEMETRY</text>']
-    for i, (a, b) in enumerate(readout):
-        y = ly + i * 26
-        left.append(_stamp(.3 + i * .12, None,
-                           f'<text x="{lx}" y="{y}" font-family="{MONO}" font-size="9" fill="{MUTED}" letter-spacing="1.5">{a}</text>'
-                           f'<text x="{lx}" y="{y + 11}" font-family="{MONO}" font-size="11" fill="{TEXT}">{esc(b)}</text>'))
-    hy = ly + len(readout) * 26 + 10
-    left.append(f'<text x="{lx}" y="{hy}" font-family="{MONO}" font-size="9" fill="{MUTED}" letter-spacing="1.5">LUMA HISTOGRAM</text>')
-    peak = max(hist[1:]) or 1
-    for l in range(1, 5):
-        bwid = 150 * hist[l] / peak
-        left.append(f'<rect x="{lx}" y="{hy + 8 + (l - 1) * 11}" width="0" height="7" fill="{LEVEL_FILL[l]}">'
-                    f'<animate attributeName="width" from="0" to="{bwid:.0f}" begin="{SCAN_START + l * .3:.2f}s" '
-                    f'dur=".8s" fill="freeze"/></rect>')
+    # ── fastfetch-style readouts on both sides of the scan ──
+    CH = 5.75  # advance at 9.5px
 
-    # ── right readout: progress, then verdict ──
-    rx = W - 52
+    def row(x0: float, x1: float, y: float, k: str, v: str, vcol: str = TEXT) -> str:
+        k_end = x0 + len(k) * CH + 6
+        v_start = x1 - len(v) * CH - 6
+        dots = (f'<line x1="{k_end:.0f}" y1="{y - 3}" x2="{v_start:.0f}" y2="{y - 3}" stroke="{LINE2}" '
+                f'stroke-dasharray="1 3"/>' if v_start - k_end > 8 else "")
+        return (f'<text x="{x0}" y="{y}" font-family="{MONO}" font-size="9.5" fill="{ACCENT}">{esc(k)}</text>{dots}'
+                f'<text x="{x1}" y="{y}" text-anchor="end" font-family="{MONO}" font-size="9.5" fill="{vcol}">{esc(v)}</text>')
+
+    def header(x0: float, x1: float, y: float, title: str) -> str:
+        w = len(title) * 6.4 + 10
+        return (f'<text x="{x0}" y="{y}" font-family="{MONO}" font-size="9" font-weight="700" fill="{BRIGHT}" '
+                f'letter-spacing="2">▸ {esc(title)}</text>'
+                f'<line x1="{x0 + w + 14:.0f}" y1="{y - 3}" x2="{x1}" y2="{y - 3}" stroke="{LINE2}"/>')
+
+    lx0, lx1 = 40, BX - 40
+    sections = [
+        ("SYSTEM", [("OS", prof["os"]), ("Uptime", prof["uptime"]), ("Host", prof["host_machine"]),
+                    ("Kernel", prof["kernel"]), ("IDE", prof["ide"])]),
+        ("LANGUAGES", [("Code", prof["lang_code"]), ("Web", prof["lang_web"]), ("Real", prof["lang_real"])]),
+        ("PROFILE", [("Hobbies", prof["hobbies"]), ("Focus", prof["focus_short"]),
+                     ("Hardware", prof["hardware"])]),
+    ]
+    left, y, n = [], 96, 0
+    for title, items in sections:
+        left.append(_stamp(.2 + n * .14, None, header(lx0, lx1, y, title)))
+        y += 22
+        for k, v in items:
+            n += 1
+            left.append(_stamp(.2 + n * .14, None, row(lx0, lx1, y, k, v)))
+            y += 18
+        y += 14
+
+    # right: progress, then live stats rolling up, contact, verdict
+    rx0, rx1 = BX + bw + 40, W - 40
     steps = 10
-    pct = []
+    right = [f'<text x="{rx1}" y="96" text-anchor="end" font-family="{MONO}" font-size="9" fill="{ACCENT}" '
+             f'letter-spacing="2">SCAN PROGRESS ◂</text>',
+             _stamp(0, SCAN_START, f'<text x="{rx1}" y="128" text-anchor="end" font-family="{MONO}" font-size="28" '
+                                   f'font-weight="800" fill="{MUTED}">---%</text>')]
     for i in range(steps + 1):
         t0 = SCAN_START + SCAN_DUR * i / steps
         t1 = SCAN_START + SCAN_DUR * (i + 1) / steps if i < steps else None
-        pct.append(_stamp(t0, t1, f'<text x="{rx}" y="160" text-anchor="end" font-family="{MONO}" '
-                                  f'font-size="34" font-weight="800" fill="{BRIGHT}">{i * 10:03d}%</text>'))
-    right = [f'<text x="{rx}" y="{ly - 22}" text-anchor="end" font-family="{MONO}" font-size="9" fill="{ACCENT}" '
-             f'letter-spacing="2">SCAN PROGRESS ◂</text>',
-             _stamp(0, SCAN_START, f'<text x="{rx}" y="160" text-anchor="end" font-family="{MONO}" font-size="34" '
-                                   f'font-weight="800" fill="{MUTED}">---%</text>'),
-             "".join(pct),
-             f'<rect x="{rx - 190}" y="172" width="190" height="6" fill="none" stroke="{LINE2}"/>'
-             f'<rect x="{rx - 189}" y="173" width="0" height="4" fill="{ACCENT}">'
-             f'<animate attributeName="width" from="0" to="188" begin="{SCAN_START}s" dur="{SCAN_DUR}s" fill="freeze"/></rect>',
-             _stamp(SCAN_START, t_end, f'<text x="{rx}" y="198" text-anchor="end" font-family="{MONO}" font-size="10" '
-                                       f'fill="{ACCENT}" letter-spacing="2">SCANNING<tspan>'
-                                       f'<animate attributeName="opacity" values="1;0;1" dur=".6s" repeatCount="indefinite"/>_</tspan></text>')]
-    verdict = [("MATCH", "99.7%"), ("ID", stats["login"].upper()), ("ROLE", prof["role"].split("·")[0].strip().upper()),
-               ("CLEARANCE", "ROOT")]
-    for i, (a, b) in enumerate(verdict):
-        y = 236 + i * 26
-        right.append(_stamp(t_end + .15 + i * .15, None,
-                            f'<text x="{rx}" y="{y}" text-anchor="end" font-family="{MONO}" font-size="9" fill="{MUTED}" letter-spacing="1.5">{a}</text>'
-                            f'<text x="{rx}" y="{y + 13}" text-anchor="end" font-family="{MONO}" font-size="12" '
-                            f'fill="{BRIGHT}" font-weight="700">{esc(b)}</text>'))
-    ag_t = t_end + .9
+        right.append(_stamp(t0, t1, f'<text x="{rx1}" y="128" text-anchor="end" font-family="{MONO}" '
+                                    f'font-size="28" font-weight="800" fill="{BRIGHT}">{i * 10:03d}%</text>'))
+    right.append(f'<rect x="{rx0}" y="138" width="{rx1 - rx0}" height="5" fill="none" stroke="{LINE2}"/>'
+                 f'<rect x="{rx0 + 1}" y="139" width="0" height="3" fill="{ACCENT}">'
+                 f'<animate attributeName="width" from="0" to="{rx1 - rx0 - 2}" begin="{SCAN_START}s" '
+                 f'dur="{SCAN_DUR}s" fill="freeze"/></rect>')
+    right.append(_stamp(SCAN_START, t_end, f'<text x="{rx0}" y="158" font-family="{MONO}" font-size="9" '
+                                           f'fill="{ACCENT}" letter-spacing="2">SCANNING<tspan>'
+                                           f'<animate attributeName="opacity" values="1;0;1" dur=".6s" '
+                                           f'repeatCount="indefinite"/>_</tspan></text>'))
+    right.append(_stamp(t_end, None, f'<text x="{rx0}" y="158" font-family="{MONO}" font-size="9" fill="{GREEN}" '
+                                     f'letter-spacing="2">MATCH · {esc(stats["login"].upper())}</text>'))
+
+    def rolling(x0, x1, y, k, final, suffix, t):
+        """value counts up in a few quick frames"""
+        out = []
+        frames = 6
+        for f in range(frames + 1):
+            v = round(final * f / frames)
+            ta = t + f * .07
+            tb = t + (f + 1) * .07 if f < frames else None
+            out.append(_stamp(ta, tb, row(x0, x1, y, k, f"{v}{suffix}", BRIGHT)))
+        return "".join(out)
+
+    ry = 192
+    st = t_end + .1
+    right.append(_stamp(st, None, header(rx0, rx1, ry, "GITHUB STATS")))
+    ry += 22
+    for k, final, suf in (("Repositories", m["repo_count"], ""), ("Merged PRs", m["pr_count"], ""),
+                          ("Contributions", m["total"], " /yr")):
+        right.append(rolling(rx0, rx1, ry, k, final, suf, st + .1))
+        ry += 18
+    right.append(_stamp(st + .3, None, row(rx0, rx1, ry, "Lines of Code", prof["loc"], BRIGHT)))
+    ry += 32
+    ct = st + .5
+    right.append(_stamp(ct, None, header(rx0, rx1, ry, "CONTACT")))
+    ry += 22
+    for i, (k, v) in enumerate((("GitHub", f"@{stats['login']}"), ("LinkedIn", prof["linkedin"]),
+                                ("Role", prof["title"]))):
+        right.append(_stamp(ct + .1 + i * .12, None, row(rx0, rx1, ry, k, v)))
+        ry += 18
+    ag_t = ct + .7
+    ay = ry + 14
     right.append(_stamp(ag_t, None,
-                        f'<rect x="{rx - 190}" y="358" width="190" height="34" fill="{GREEN}" fill-opacity=".12" stroke="{GREEN}"/>'
-                        f'<text x="{rx - 95}" y="380" text-anchor="middle" font-family="{MONO}" font-size="14" '
+                        f'<rect x="{rx0}" y="{ay}" width="{rx1 - rx0}" height="30" fill="{GREEN}" fill-opacity=".12" stroke="{GREEN}"/>'
+                        f'<text x="{(rx0 + rx1) / 2}" y="{ay + 20}" text-anchor="middle" font-family="{MONO}" font-size="13" '
                         f'font-weight="800" fill="{GREEN}" letter-spacing="3" filter="url(#lg)">ACCESS GRANTED'
                         f'<animate attributeName="opacity" values="1;.45;1" dur="1.4s" begin="{ag_t + .4:.2f}s" repeatCount="indefinite"/></text>'))
 

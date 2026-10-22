@@ -1,0 +1,70 @@
+[
+  {
+    "group": "LANGUAGES",
+    "items": [
+      [
+        "Python",
+        "#3776AB"
+      ],
+      [
+        "Java",
+        "#E76F00"
+      ],
+      [
+        "JavaScript",
+        "#F7DF1E"
+      ]
+    ]
+  },
+  {
+    "group": "WEB",
+    "items": [
+      [
+        "HTML5",
+        "#E34F26"
+      ],
+      [
+        "CSS3",
+        "#1572B6"
+      ],
+      [
+        "React",
+        "#61DAFB"
+      ]
+    ]
+  },
+  {
+    "group": "TOOLING",
+    "items": [
+      [
+        "Git",
+        "#F05032"
+      ],
+      [
+        "Docker",
+        "#2496ED"
+      ],
+      [
+        "VS Code",
+        "#3fa0f0"
+      ]
+    ]
+  },
+  {
+    "group": "PLATFORMS",
+    "items": [
+      [
+        "macOS",
+        "#c9d1d9"
+      ],
+      [
+        "Linux",
+        "#FCC624"
+      ],
+      [
+        "GitHub",
+        "#f0f6fc"
+      ]
+    ]
+  }
+]
