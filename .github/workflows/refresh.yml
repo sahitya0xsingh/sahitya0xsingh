@@ -1,0 +1,47 @@
+# Re-renders the start screen, terminal header, htop monitor, activity heatmap and the
+# projects / upstream tables from live GitHub data. Commits only on change.
+name: refresh profile
+
+on:
+  schedule:
+    - cron: "35 0,6,12,18 * * *"   # every 6 hours (06:05 IST first run)
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["scripts/**", "data/profile.json", "assets/logo.*"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: profile-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Pillow (reads your logo / avatar)
+        run: pip install --quiet pillow
+
+      - name: Render
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PROFILE_LOGIN: ${{ github.repository_owner }}
+        run: python scripts/generate.py
+
+      - name: Commit
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets README.md
+          if git diff --cached --quiet; then echo "no changes"; exit 0; fi
+          git commit -m "chore: refresh profile telemetry"
+          for i in 1 2 3; do git pull --rebase && git push && exit 0; sleep 5; done
+          exit 1
