@@ -25,13 +25,11 @@ tools: [Git, Docker, React, Linux]
 
 <img src="assets/divider.svg" width="100%" alt=""/>
 
-### <code>02</code> Open source
+### <code>02</code> Projects
 
-| project | what I do |
-|:--|:--|
-| [**checkstyle/checkstyle**](https://github.com/checkstyle/checkstyle) | regular contributor, 20+ pull requests to the Java static-analysis tool |
-| [checkstyle/contribution](https://github.com/checkstyle/contribution) · [sevntu.checkstyle](https://github.com/sevntu-checkstyle/sevntu.checkstyle) · [openrewrite-recipes](https://github.com/checkstyle/checkstyle-openrewrite-recipes) | companion repos: regression tooling, extra checks, automated fixes |
-| [**openSUSE**](https://www.opensuse.org/) | community member |
+<a href="https://github.com/sahityasingh08/PreFlight"><img src="assets/project-preflight.svg" width="100%" alt="PreFlight: runs a GitHub org's CI locally in Docker so you push only when it passes. 97.1% match with GitHub CI across 106 replayed PRs."/></a>
+
+<p align="center"><sub><a href="https://sahityasingh08.github.io/PreFlight/">live dashboard</a> · <a href="https://sahityasingh08.github.io/PreFlight/#guide">step-by-step guide</a> · <a href="https://github.com/sahityasingh08/PreFlight">source</a></sub></p>
 
 <img src="assets/divider.svg" width="100%" alt=""/>
 
