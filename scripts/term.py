@@ -1,14 +1,11 @@
-"""Brand cards for the profile: one card system, warm black and amber, gold edges.
+"""Three black-and-amber terminal cards for the profile.
 
-hero      a member card: logo, name, quote, chip, a "card number" made of real stats, halftone portrait
+hero      `whoami`, a quote and a halftone portrait with a light sweep and glitch slices
 records   a split-flap board of personal records, digits rolling like odometers
 skyline   one building per week, one lit window per contribution, searchlights over the city
-orbit     repos I've sent pull requests to, as planets
-project   one card per entry in data/projects.json
 
-Every card shares one frame: brand mark and wordmark top-left, card label top-right, a guilloche
-(banknote-style) background, a gold edge and a light sheen that sweeps across. All motion is SVG/SMIL,
-so it plays inside GitHub's <img> sandbox.
+Warm blacks with one amber accent. Every card shares one CRT layer: film grain, scanlines, a rolling
+refresh band and a vignette. All motion is SVG/SMIL, so it plays inside GitHub's <img> sandbox.
 """
 from __future__ import annotations
 
@@ -36,74 +33,43 @@ def _open(w: int, h: int, label: str) -> str:
             f'<title>{esc(label)}</title>')
 
 
-_LOGO: dict[int, str] = {}
-
-
-def _logo(px: int = 64) -> str:
-    """assets/logo.png as an amber mark on transparent, base64 PNG (brightness becomes alpha)."""
-    if px in _LOGO:
-        return _LOGO[px]
-    src = ROOT / "assets" / "logo.png"
-    try:
-        import base64
-        import io
-        from PIL import Image, ImageOps
-        im = ImageOps.autocontrast(Image.open(src).convert("L")).resize((px, px), Image.LANCZOS)
-        mark = Image.new("RGBA", im.size, (245, 165, 36, 0))
-        mark.putalpha(im)
-        buf = io.BytesIO()
-        mark.save(buf, "PNG", optimize=True)
-        _LOGO[px] = base64.b64encode(buf.getvalue()).decode()
-    except (ImportError, OSError):
-        _LOGO[px] = ""
-    return _LOGO[px]
-
-
-def _brandmark(x: float, y: float, size: float, wordmark: bool = True, big: bool = False) -> str:
-    b64 = _logo(128 if big else 64)
-    img = (f'<image href="data:image/png;base64,{b64}" xlink:href="data:image/png;base64,{b64}" '
-           f'x="{x}" y="{y}" width="{size}" height="{size}"/>' if b64 else "")
-    if not wordmark:
-        return img
-    fs, fs2 = (15, 10) if big else (11, 8)
-    tx = x + size + (14 if big else 10)
-    return (img + f'<text x="{tx}" y="{y + size * .48:.0f}" font-family="{MONO}" font-size="{fs}" font-weight="800" '
-                  f'fill="{TEXT}" letter-spacing="{5 if big else 4}">SAHITYA SINGH</text>'
-                  f'<text x="{tx}" y="{y + size * .48 + fs2 + 8:.0f}" font-family="{MONO}" font-size="{fs2}" fill="{HI}" '
-                  f'letter-spacing="{4 if big else 3}">OPEN SOURCE · ENGINEERING</text>')
-
-
 def _window(w: int, h: int, title: str, foot_l: str, foot_r: str) -> str:
-    """Card body and header: background, guilloche, brand mark, card label; footer line."""
-    return (f'<rect x="1" y="1" width="{w - 2}" height="{h - 2}" rx="22" fill="url(#cbg)"/>'
-            f'<g clip-path="url(#cclip)"><rect width="{w}" height="{h}" fill="url(#cguil)"/>'
-            f'<circle cx="{w - 90}" cy="40" r="{min(w, h) * .45:.0f}" fill="{HI}" opacity=".045"/></g>'
-            + _brandmark(26, 12, 30)
-            + f'<text x="{w - 28}" y="32" text-anchor="end" font-family="{MONO}" font-size="10.5" font-weight="700" '
-              f'fill="{HI}" letter-spacing="3">{esc(title)}</text>'
-              f'<line x1="26" y1="52" x2="{w - 26}" y2="52" stroke="{HI}" stroke-opacity=".18"/>'
-              f'<line x1="26" y1="{h - 34}" x2="{w - 26}" y2="{h - 34}" stroke="{HI}" stroke-opacity=".14"/>'
-              f'<text x="26" y="{h - 14}" font-family="{MONO}" font-size="10.5" fill="{MUTE}" letter-spacing="1">{esc(foot_l)}</text>'
-              f'<text x="{w - 26}" y="{h - 14}" text-anchor="end" font-family="{MONO}" font-size="10.5" fill="{MUTE}" '
-              f'letter-spacing="1">{esc(foot_r)}</text>')
+    dots = "".join(f'<circle cx="{22 + i * 18}" cy="18" r="5.5" fill="none" stroke="{MUTE}"/>' for i in range(3))
+    live = (f'<circle cx="{w - 30}" cy="18" r="3.5" fill="{HI}">'
+            f'<animate attributeName="opacity" values="1;.2;1" dur="1.8s" repeatCount="indefinite"/></circle>'
+            f'<text x="{w - 42}" y="22" text-anchor="end" font-family="{MONO}" font-size="10.5" fill="{MUTE}" '
+            f'letter-spacing="2">LIVE</text>')
+    return (f'<rect x=".5" y=".5" width="{w - 1}" height="{h - 1}" rx="12" fill="{WIN}" stroke="{EDGE}"/>'
+            f'<path d="M12.5,.5H{w - 12.5}A12,12 0 0 1 {w - .5},12.5V36H.5V12.5A12,12 0 0 1 12.5,.5Z" fill="{BAR}"/>'
+            f'<line x1=".5" y1="36" x2="{w - .5}" y2="36" stroke="{EDGE}"/>{dots}{live}'
+            f'<text x="{w / 2}" y="22" text-anchor="middle" font-family="{MONO}" font-size="12" fill="{MUTE}">{esc(title)}</text>'
+            f'<line x1="24" y1="{h - 34}" x2="{w - 24}" y2="{h - 34}" stroke="{EDGE}"/>'
+            f'<text x="24" y="{h - 14}" font-family="{MONO}" font-size="11" fill="{MUTE}">{esc(foot_l)}</text>'
+            f'<text x="{w - 24}" y="{h - 14}" text-anchor="end" font-family="{MONO}" font-size="11" fill="{MUTE}">{esc(foot_r)}</text>')
 
 
 def _crt(w: int, h: int, uid: str) -> tuple[str, str]:
-    """(defs, overlay) for the card finish: gradients and patterns, then a sweeping sheen and a gold edge."""
-    defs = (f'<clipPath id="cclip"><rect x="1" y="1" width="{w - 2}" height="{h - 2}" rx="22"/></clipPath>'
-            f'<linearGradient id="cbg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1a1611"/>'
-            f'<stop offset=".55" stop-color="#0b0a09"/><stop offset="1" stop-color="#140f08"/></linearGradient>'
-            f'<linearGradient id="cedge" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffc35c" stop-opacity=".9"/>'
-            f'<stop offset=".5" stop-color="{HI}" stop-opacity=".15"/><stop offset="1" stop-color="#ffc35c" stop-opacity=".7"/></linearGradient>'
-            f'<linearGradient id="csheen" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/>'
-            f'<stop offset=".5" stop-color="#ffe2a8" stop-opacity=".12"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>'
-            f'<pattern id="cguil" width="28" height="28" patternUnits="userSpaceOnUse">'
-            f'<path d="M0,14 Q7,0 14,14 T28,14" fill="none" stroke="{HI}" stroke-opacity=".055"/></pattern>')
-    overlay = (f'<g clip-path="url(#cclip)" pointer-events="none">'
-               f'<rect x="-400" y="-100" width="240" height="{h + 200}" fill="url(#csheen)" transform="rotate(18)">'
-               f'<animate attributeName="x" values="-400;{w + 300}" dur="{3 + w / 400:.1f}s" begin="1s" '
-               f'repeatCount="indefinite"/></rect></g>'
-               f'<rect x="1.5" y="1.5" width="{w - 3}" height="{h - 3}" rx="21.5" fill="none" stroke="url(#cedge)" stroke-width="1.5"/>')
+    """(defs, overlay): grain, scanlines, a rolling refresh band and a vignette over the window body."""
+    defs = (f'<clipPath id="{uid}-body"><rect x="1" y="37" width="{w - 2}" height="{h - 38}" rx="11"/></clipPath>'
+            f'<filter id="{uid}-grain" x="0" y="0" width="100%" height="100%">'
+            f'<feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="1" seed="3" stitchTiles="stitch"/>'
+            f'<feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 -.4"/></filter>'
+            f'<pattern id="{uid}-scan" width="4" height="3" patternUnits="userSpaceOnUse">'
+            f'<rect width="4" height="1" fill="#000" opacity=".45"/></pattern>'
+            f'<linearGradient id="{uid}-roll" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb547" stop-opacity="0"/>'
+            f'<stop offset=".5" stop-color="#ffb547" stop-opacity=".05"/><stop offset="1" stop-color="#ffb547" stop-opacity="0"/></linearGradient>'
+            f'<radialGradient id="{uid}-vig" cx=".5" cy=".55" r=".75"><stop offset=".55" stop-color="#000" stop-opacity="0"/>'
+            f'<stop offset="1" stop-color="#000" stop-opacity=".55"/></radialGradient>')
+    overlay = (f'<g clip-path="url(#{uid}-body)" pointer-events="none">'
+               f'<rect width="{w}" height="{h}" filter="url(#{uid}-grain)" opacity=".09"/>'
+               f'<rect width="{w}" height="{h}" fill="url(#{uid}-scan)"/>'
+               f'<rect x="0" y="-120" width="{w}" height="120" fill="url(#{uid}-roll)">'
+               f'<animate attributeName="y" values="-120;{h}" dur="6.5s" repeatCount="indefinite"/></rect>'
+               f'<rect width="{w}" height="{h}" fill="url(#{uid}-vig)"/>'
+               # whole-screen flicker, rare and short
+               f'<rect width="{w}" height="{h}" fill="#ffb547" opacity="0">'
+               f'<animate attributeName="opacity" values="0;0;.06;0;.03;0" keyTimes="0;.86;.87;.88;.9;1" '
+               f'dur="7s" repeatCount="indefinite"/></rect></g>')
     return defs, overlay
 
 
@@ -112,20 +78,27 @@ def _at(t: float, body: str) -> str:
     return f'<g opacity="0"><set attributeName="opacity" to="1" begin="{t:.2f}s" fill="freeze"/>{body}</g>'
 
 
-def _typed(x: float, y: float, title: str, t: float, uid: str, size: float = 17) -> tuple[str, str, float]:
-    """A section title that writes itself in behind an amber bar: (clip defs, svg, time it ends)."""
+def _typed(x: float, y: float, cmd: str, t: float, uid: str, size: float = 14) -> tuple[str, str, float]:
+    """A prompt line whose command types itself in: (clip defs, svg, time typing ends)."""
     cw = size * 0.602
-    dur = max(.25, len(title) * .03)
-    tx = x + 14
-    clip = (f'<clipPath id="{uid}"><rect x="{tx}" y="{y - size}" width="0" height="{size * 1.5}">'
-            f'<animate attributeName="width" from="0" to="{len(title) * cw + 4:.1f}" begin="{t + .1:.2f}s" '
+    dur = max(.25, len(cmd) * .045)
+    px = x + 4 * cw
+    clip = (f'<clipPath id="{uid}"><rect x="{px}" y="{y - size}" width="0" height="{size * 1.5}">'
+            f'<animate attributeName="width" from="0" to="{len(cmd) * cw + 2:.1f}" begin="{t + .15:.2f}s" '
             f'dur="{dur:.2f}s" fill="freeze"/></rect></clipPath>')
-    line = (f'<rect x="{x}" y="{y - size + 3}" width="4" height="{size}" fill="{HI}"/>'
-            f'<text x="{tx}" y="{y}" font-family="{MONO}" font-size="{size}" font-weight="800" fill="{TEXT}" '
-            f'clip-path="url(#{uid})" xml:space="preserve">{esc(title)}</text>')
-    return clip, _at(t, line), t + .1 + dur
+    line = (f'<text x="{x}" y="{y}" font-family="{MONO}" font-size="{size}" xml:space="preserve">'
+            f'<tspan fill="{HI}" font-weight="700">~ </tspan><tspan fill="{MUTE}">$ </tspan></text>'
+            f'<text x="{px}" y="{y}" font-family="{MONO}" font-size="{size}" fill="{TEXT}" '
+            f'clip-path="url(#{uid})" xml:space="preserve">{esc(cmd)}</text>')
+    return clip, _at(t, line), t + .15 + dur
 
 
+def _cursor(x: float, y: float, t: float, size: float = 14) -> str:
+    return _at(t, f'<text x="{x}" y="{y}" font-family="{MONO}" font-size="{size}" xml:space="preserve">'
+                  f'<tspan fill="{HI}" font-weight="700">~ </tspan><tspan fill="{MUTE}">$ </tspan></text>'
+                  f'<rect x="{x + 4 * size * .602:.1f}" y="{y - size + 2}" width="{size * .6:.1f}" height="{size + 1}" fill="{HI}">'
+                  f'<animate attributeName="opacity" values="1;1;0;0" keyTimes="0;.5;.5;1" dur="1.1s" '
+                  f'begin="{t:.2f}s" repeatCount="indefinite"/></rect>')
 
 
 def _glitch(body: str, x: float, y: float, w: float, h: float, uid: str, period: float = 4.0,
@@ -210,61 +183,92 @@ def _halftone(x0: float, y0: float, size: float, n: int = 64) -> tuple[str, str]
     return defs, svg
 
 
+def _rain(x0: float, x1: float, y0: float, y1: float, uid: str, cols: int = 26) -> str:
+    """Faint columns of 0s and 1s drifting down behind everything."""
+    rng = random.Random(uid)
+    out = [f'<clipPath id="{uid}"><rect x="{x0}" y="{y0}" width="{x1 - x0}" height="{y1 - y0}"/></clipPath>'
+           f'<g clip-path="url(#{uid})" opacity=".05" font-family="{MONO}" font-size="11" fill="{HI}">']
+    step = (x1 - x0) / cols
+    for c in range(cols):
+        chars = "".join(rng.choice("01") for _ in range(40))
+        spans = "".join(f'<tspan x="{x0 + c * step + 4:.0f}" dy="13">{ch}</tspan>' for ch in chars)
+        dur = rng.uniform(6, 14)
+        start = rng.uniform(-520, -200)
+        out.append(f'<text y="0"><animateTransform attributeName="transform" type="translate" '
+                   f'values="0 {start:.0f};0 {y1 + 40:.0f}" dur="{dur:.1f}s" begin="-{rng.uniform(0, dur):.1f}s" '
+                   f'repeatCount="indefinite"/>{spans}</text>')
+    out.append("</g>")
+    return "".join(out)
 
 
 # ── cards ──────────────────────────────────────────────────────────────────
 def hero(m: dict, prof: dict, stats: dict) -> str:
-    """The member card: brand mark, name, quote, chip, a card number made of real stats, portrait."""
-    W, H = 1000, 580
-    fin_defs, fin = _crt(W, H, "h")
-    pdefs, portrait = _halftone(600, 120, 330)
-    gold = "#ffc35c"
-    chip = (f'<g transform="translate(64 300)"><rect width="62" height="46" rx="8" fill="url(#chipg)"/>'
-            f'<path d="M0,16H20M0,30H20M42,16H62M42,30H62M20,0V46M42,0V46M20,23H42" stroke="#7a4d08" '
-            f'stroke-width="1.4" fill="none"/></g>'
-            f'<g transform="translate(146 323)" fill="none" stroke="{DIM}" stroke-width="2" stroke-linecap="round">'
-            + "".join(f'<path d="M{i * 7},-{6 + i * 4} a{8 + i * 5},{8 + i * 5} 0 0 1 0,{12 + i * 8}"/>' for i in range(3))
-            + "</g>")
-    best = m["best"]["count"] if m.get("best") else 0
-    groups = [(m["total"], "CONTRIB"), (m["pr_count"], "PULL REQ"), (m["repo_count"], "REPOS"), (best, "BEST DAY")]
-    number = "".join(
-        _at(.5 + k * .18, f'<text x="{64 + k * 128}" y="410" font-family="{MONO}" font-size="30" font-weight="700" '
-                          f'fill="{TEXT}" letter-spacing="4">{n:04d}</text>'
-                          f'<text x="{64 + k * 128}" y="430" font-family="{MONO}" font-size="9.5" fill="{MUTE}" '
-                          f'letter-spacing="2">{lab}</text>')
-        for k, (n, lab) in enumerate(groups))
-    q = prof["quote"]
-    foot = [("CARDHOLDER", f"@{stats['login'].upper()}", 64), ("BASED IN", prof.get("city", "BENGALURU"), 330),
-            ("LONGEST STREAK", f"{m['longest']} DAYS", 560)]
-    footer = "".join(f'<text x="{x}" y="502" font-family="{MONO}" font-size="10" fill="{MUTE}" letter-spacing="2">{k}</text>'
-                     f'<text x="{x}" y="522" font-family="{MONO}" font-size="14" font-weight="700" fill="{TEXT}" '
-                     f'letter-spacing="3">{esc(v)}</text>' for k, v, x in foot)
-    body = (f'<rect x="16" y="16" width="{W - 32}" height="{H - 32}" rx="28" fill="url(#cbg)"/>'
-            f'<g clip-path="url(#cclip)"><rect width="{W}" height="{H}" fill="url(#cguil)"/>'
-            f'<circle cx="{W - 120}" cy="80" r="260" fill="{HI}" opacity=".05"/>{portrait}</g>'
-            + _brandmark(58, 52, 58, big=True)
-            + f'<g transform="translate({W - 64} 70)"><text text-anchor="end" font-family="{MONO}" font-size="10" '
-              f'fill="{MUTE}" letter-spacing="3">MEMBER CARD</text><text y="20" text-anchor="end" font-family="{MONO}" '
-              f'font-size="13" font-weight="700" fill="{gold}" letter-spacing="3">NO. 0x08</text></g>'
-            + _at(.2, f'<text x="64" y="190" font-family="{MONO}" font-size="44" font-weight="800" fill="{TEXT}" '
-                      f'letter-spacing="-1">{esc(prof["name"])}</text>'
-                      f'<text x="64" y="220" font-family="{MONO}" font-size="14" fill="{DIM}">{esc(prof["headline"])}</text>')
-            + _at(.35, f'<rect x="64" y="240" width="3" height="40" fill="{HI}"/>'
-                       + "".join(f'<text x="80" y="{256 + i * 20}" font-family="{MONO}" font-size="13.5" font-style="italic" '
-                                 f'fill="{TEXT}">{esc(line)}</text>' for i, line in enumerate(q)))
-            + chip + number
-            + f'<line x1="64" y1="470" x2="{W - 64}" y2="470" stroke="{HI}" stroke-opacity=".25"/>' + footer
-            + f'<text x="{W - 64}" y="522" text-anchor="end" font-family="{MONO}" font-size="20" font-weight="800" '
-              f'fill="{HI}" letter-spacing="2">openSUSE</text>')
-    inset = f'<clipPath id="cclip"><rect x="16" y="16" width="{W - 32}" height="{H - 32}" rx="28"/></clipPath>'
-    defs = (inset + fin_defs.split("</clipPath>", 1)[1] + pdefs
-            + '<linearGradient id="chipg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd27a"/>'
-              '<stop offset=".5" stop-color="#d9962a"/><stop offset="1" stop-color="#ffcf6e"/></linearGradient>')
-    edge = (f'<rect x="16.5" y="16.5" width="{W - 33}" height="{H - 33}" rx="28" fill="none" stroke="url(#cedge)" '
-            f'stroke-width="1.5"/>')
-    sheen = fin.split("</g>")[0] + "</g>"     # sheen only; this card draws its own inset edge
-    return (_open(W, H, f"{prof['name']} member card: {prof['headline']}. {' '.join(q)}")
-            + f"<defs>{defs}</defs>" + body + sheen + edge + "</svg>")
+    W, H = 1000, 460
+    crt_defs, crt = _crt(W, H, "h")
+    pdefs, portrait = _halftone(40, 66, 320)
+    defs, body = [crt_defs, pdefs], [_rain(1, W - 1, 37, H - 35, "hr"), portrait]
+
+    x, y, t = 400, 84, .4
+    c, ln, t = _typed(x, y, "whoami", t, "c1")
+    defs.append(c)
+    body.append(ln)
+    t += .15
+    name = (f'<text x="{x}" y="{y + 44}" font-family="{MONO}" font-size="36" font-weight="800" '
+            f'fill="{TEXT}" letter-spacing="-.5">{esc(prof["name"])}</text>')
+    # a ghost copy of the name that splits off now and then
+    ghost = (f'<text x="{x}" y="{y + 44}" font-family="{MONO}" font-size="36" font-weight="800" fill="none" '
+             f'stroke="{DIM}" stroke-width=".8" letter-spacing="-.5" opacity="0">{esc(prof["name"])}'
+             f'<animate attributeName="opacity" values="0;0;.9;.9;0;0" keyTimes="0;.7;.705;.74;.745;1" dur="5s" repeatCount="indefinite"/>'
+             f'<animateTransform attributeName="transform" type="translate" values="0 0;0 0;-5 1;4 -1;0 0;0 0" '
+             f'keyTimes="0;.7;.705;.74;.745;1" dur="5s" repeatCount="indefinite"/></text>')
+    body.append(_at(t, ghost + _glitch(name, x, y + 12, 400, 42, "name", period=5, slices=3, amp=10)
+                    + f'<text x="{x}" y="{y + 70}" font-family="{MONO}" font-size="13.5" fill="{DIM}">'
+                      f'{esc(prof["headline"])}</text>'))
+
+    # the quote: the one line that says what I do, set larger than everything else
+    y += 108
+    qt = t + .45
+    qh = len(prof["quote"]) * 28 + 6
+    body.append(_at(qt, f'<rect x="{x}" y="{y - 22}" width="3" height="0" fill="{HI}">'
+                        f'<animate attributeName="height" from="0" to="{qh}" begin="{qt:.2f}s" dur=".5s" fill="freeze"/></rect>'))
+    for k, line in enumerate(prof["quote"]):
+        qc, ql, _ = _typed_text(x + 18, y + k * 28, line, qt + .1 + k * .9, f"q{k}", 18, TEXT, italic=True)
+        defs.append(qc)
+        body.append(ql)
+    y += len(prof["quote"]) * 28 + 34
+    t = qt + .1 + len(prof["quote"]) * .9
+    c, ln, t = _typed(x, y, "cat now.txt", t, "c2")
+    defs.append(c)
+    body.append(ln)
+    t += .15
+    for k, line in enumerate(prof["now"]):
+        body.append(_at(t + k * .08, f'<text x="{x}" y="{y + 26 + k * 21}" font-family="{MONO}" font-size="13.5" '
+                                     f'fill="{DIM}">{esc(line)}</text>'))
+    y += 26 + len(prof["now"]) * 21 + 14
+    body.append(_cursor(x, y, t + .6))
+
+    return (_open(W, H, f"{prof['name']}: {prof['role']}") + f"<defs>{''.join(defs)}</defs>"
+            + _window(W, H, f"{prof['user']}@{prof['host']}: ~ — zsh", prof["footer"], f"updated {now_ist():%Y-%m-%d}")
+            + "".join(body) + crt + "</svg>")
+
+
+def _typed_text(x: float, y: float, text: str, t: float, uid: str, size: float, fill: str,
+                italic: bool = False) -> tuple[str, str, float]:
+    """Plain text that types itself in, with a block caret riding the edge."""
+    cw = size * .602
+    dur = max(.3, len(text) * .02)
+    wpx = len(text) * cw + 2
+    clip = (f'<clipPath id="{uid}"><rect x="{x}" y="{y - size}" width="0" height="{size * 1.5}">'
+            f'<animate attributeName="width" from="0" to="{wpx:.1f}" begin="{t:.2f}s" dur="{dur:.2f}s" fill="freeze"/>'
+            f'</rect></clipPath>')
+    style = ' font-style="italic"' if italic else ""
+    svg = (f'<text x="{x}" y="{y}" font-family="{MONO}" font-size="{size}" fill="{fill}"{style} '
+           f'clip-path="url(#{uid})" xml:space="preserve">{esc(text)}</text>'
+           f'<rect x="{x}" y="{y - size + 3}" width="{size * .55:.1f}" height="{size}" fill="{HI}" opacity="0">'
+           f'<set attributeName="opacity" to=".9" begin="{t:.2f}s"/>'
+           f'<animate attributeName="x" from="{x}" to="{x + wpx:.1f}" begin="{t:.2f}s" dur="{dur:.2f}s" fill="freeze"/>'
+           f'<set attributeName="opacity" to="0" begin="{t + dur + .05:.2f}s"/></rect>')
+    return clip, svg, t + dur
 
 
 def records(m: dict, stats: dict, prof: dict) -> str:
@@ -281,7 +285,7 @@ def records(m: dict, stats: dict, prof: dict) -> str:
         ("ACTIVE DAYS", m["active"], f"OF {m['span']}", "days with at least one contribution"),
         ("REPOSITORIES", m["repo_count"], "PUBLIC", f"@{stats['login']}"),
     ]
-    clip, cmd, t = _typed(28, 86, "Personal records", .2, "r1")
+    clip, cmd, t = _typed(28, 72, "records --all --rank", .2, "r1")
     defs = [crt_defs, clip,
             '<linearGradient id="flap" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1e1c1a"/>'
             '<stop offset=".5" stop-color="#151413"/><stop offset=".5" stop-color="#0c0b0a"/><stop offset="1" stop-color="#121110"/></linearGradient>']
@@ -354,7 +358,7 @@ def records(m: dict, stats: dict, prof: dict) -> str:
                          f'<tspan x="20">{esc(tape)}</tspan><tspan x="{20 + tw_px:.0f}">{esc(tape)}</tspan></text></g>'))
     return (_open(W, H, "Personal records: " + ", ".join(f"{r[0].lower()} {r[1]}" for r in rows))
             + f"<defs>{''.join(defs)}</defs>"
-            + _window(W, H, "CARD 03 · RECORDS",
+            + _window(W, H, f"{prof['user']}@{prof['host']}: ~/records — zsh",
                       "source: GitHub contribution calendar and search", f"updated {now_ist():%Y-%m-%d}")
             + cmd + "".join(body) + crt + "</svg>")
 
@@ -377,11 +381,11 @@ def skyline(m: dict, stats: dict, prof: dict) -> str:
     bw = (W - 2 * x0) / n
     win, wgap = 3.2, 2.2          # window size and spacing
     rng = random.Random(stats["login"])
-    clip, cmd, t = _typed(28, 86, "Commit history: one building per week", .2, "s1")
+    clip, cmd, t = _typed(28, 72, "git log --since=12.months --author=me | skyline", .2, "s1")
     defs = [crt_defs, clip,
             f'<clipPath id="ground"><rect x="0" y="0" width="{W}" height="{base}"/></clipPath>',
             f'<clipPath id="skyclip"><rect x="1" y="92" width="{W - 2}" height="{base - 92}"/></clipPath>',
-            f'<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="{WIN}" stop-opacity="0"/>'
+            f'<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="{WIN}"/>'
             f'<stop offset="1" stop-color="#1d160b"/></linearGradient>',
             '<linearGradient id="beam" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ffb547" stop-opacity=".22"/>'
             '<stop offset="1" stop-color="#ffb547" stop-opacity="0"/></linearGradient>',
@@ -497,7 +501,7 @@ def skyline(m: dict, stats: dict, prof: dict) -> str:
                f'<tspan fill="{DIM}"> weeks with the lights on</tspan></text>')
     return (_open(W, H, f"Commit skyline: one building per week, {lit_total} contributions as lit windows")
             + f"<defs>{''.join(defs)}</defs>"
-            + _window(W, H, "CARD 04 · COMMIT HISTORY",
+            + _window(W, H, f"{prof['user']}@{prof['host']}: ~/skyline — zsh",
                       "one building per week · one lit window per contribution", f"updated {now_ist():%Y-%m-%d}")
             + cmd + f'<g clip-path="url(#skyclip)">{"".join(sky)}</g>'
             + f'<g id="city" clip-path="url(#ground)">{"".join(city)}</g>' + reflect + road + ground
@@ -524,7 +528,7 @@ def project(p: dict) -> str:
     W, H = 1000, 300
     uid = p["slug"]
     crt_defs, crt = _crt(W, H, f"p{uid}")
-    clip, cmd, t = _typed(28, 86, "Featured project", .2, f"{uid}c")
+    clip, cmd, t = _typed(28, 72, p["command"], .2, f"{uid}c")
     body = [_at(t, f'<text x="28" y="112" font-family="{MONO}" font-size="10.5" fill="{HI}" letter-spacing="3">'
                    f'{esc(p["kicker"])}</text>'
                    f'<text x="28" y="150" font-family="{MONO}" font-size="32" font-weight="800" fill="{TEXT}" '
@@ -552,7 +556,7 @@ def project(p: dict) -> str:
         x += w + 8
     body.append(_at(t + .8, "".join(chips)))
     return (_open(W, H, f"{p['name']}: {' '.join(p['desc'])}") + f"<defs>{crt_defs}{clip}</defs>"
-            + _window(W, H, "CARD 02 · PROJECTS", p["repo"].replace("https://", ""),
+            + _window(W, H, f"sahitya@github: ~/projects/{uid} — zsh", p["repo"].replace("https://", ""),
                       p.get("site", "").replace("https://", ""))
             + cmd + "".join(body) + crt + "</svg>")
 
@@ -564,7 +568,7 @@ def orbit(m: dict, stats: dict, prof: dict) -> str:
     hide = set(prof.get("hide_repos", []))
     planets = [(r, n) for r, n in stats.get("pr_repos", []) if r not in hide and not r.startswith(stats["login"] + "/")][:7]
     cx, cy = W / 2, 262
-    clip, cmd, t = _typed(28, 86, "Pull requests in orbit", .2, "o1")
+    clip, cmd, t = _typed(28, 72, "gh search prs --author=@me | orbit", .2, "o1")
     body = [f'<circle cx="{cx}" cy="{cy}" r="70" fill="{HI}" opacity=".05"/>'
             f'<circle cx="{cx}" cy="{cy}" r="30" fill="{HI}" opacity=".9"><animate attributeName="r" values="30;33;30" '
             f'dur="3s" repeatCount="indefinite"/></circle>'
@@ -588,11 +592,11 @@ def orbit(m: dict, stats: dict, prof: dict) -> str:
                         f'<text x="{r + 8:.0f}" y="4" font-family="{MONO}" font-size="11" fill="{TEXT}">{esc(name)}'
                         f'<tspan fill="{HI}" font-weight="700"> {n}</tspan></text></g>'))
     total = sum(n for _, n in planets)
-    legend = (f'<text x="{W - 28}" y="86" text-anchor="end" font-family="{MONO}" font-size="12.5" xml:space="preserve">'
+    legend = (f'<text x="{W - 28}" y="72" text-anchor="end" font-family="{MONO}" font-size="12.5" xml:space="preserve">'
               f'<tspan fill="{HI}" font-weight="700">{len(planets)}</tspan><tspan fill="{DIM}"> repos in orbit   </tspan>'
               f'<tspan fill="{HI}" font-weight="700">{total}</tspan><tspan fill="{DIM}"> pull requests between them</tspan></text>')
     return (_open(W, H, "Pull requests by repository: " + ", ".join(f"{r} {n}" for r, n in planets))
             + f"<defs>{crt_defs}{clip}</defs>"
-            + _window(W, H, "CARD 05 · ORBIT", "planet size = pull requests · inner = more",
+            + _window(W, H, f"{prof['user']}@{prof['host']}: ~/orbit — zsh", "planet size = pull requests · inner = more",
                       f"updated {now_ist():%Y-%m-%d}")
             + cmd + "".join(body) + _at(t + 1.4, legend) + crt + "</svg>")

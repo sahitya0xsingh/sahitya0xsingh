@@ -1,4 +1,4 @@
-<img src="assets/hero.svg" width="100%" alt="Sahitya Singh member card: name, quote, card number made of GitHub stats, halftone portrait"/>
+<img src="assets/hero.svg" width="100%" alt="Terminal card: halftone portrait of Sahitya Singh, whoami, a quote and current work"/>
 
 <p align="center">
   <a href="https://www.linkedin.com/in/sahityasingh08/">LinkedIn</a> &nbsp;·&nbsp;
