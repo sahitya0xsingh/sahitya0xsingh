@@ -1,5 +1,4 @@
-# Re-renders the start screen, terminal header, htop monitor, activity heatmap and the
-# projects / upstream tables from live GitHub data. Commits only on change.
+# Refreshes the live numbers and the pull-request list in README.md. Commits only on change.
 name: refresh profile
 
 on:
@@ -8,7 +7,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ["scripts/**", "data/profile.json", "assets/photo.*"]
+    paths: ["scripts/**", "data/profile.json"]
 
 permissions:
   contents: write
@@ -27,9 +26,6 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install Pillow (reads your logo / avatar)
-        run: pip install --quiet pillow
-
       - name: Render
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -40,7 +36,7 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assets README.md
+          git add README.md
           if git diff --cached --quiet; then echo "no changes"; exit 0; fi
           git commit -m "chore: refresh profile telemetry"
           for i in 1 2 3; do git pull --rebase && git push && exit 0; sleep 5; done

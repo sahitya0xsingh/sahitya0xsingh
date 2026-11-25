@@ -1,77 +1,39 @@
-<img src="assets/hero.svg" width="100%" alt="Terminal card: halftone portrait of Sahitya Singh, whoami, a quote and current work"/>
+### Hi, I'm Sahitya.
 
-<p align="center">
-  <a href="https://www.linkedin.com/in/sahityasingh08/">LinkedIn</a> &nbsp;·&nbsp;
-  <a href="mailto:sahityasingh508002@gmail.com">sahityasingh508002@gmail.com</a> &nbsp;·&nbsp;
-  <a href="https://en.opensuse.org/openSUSE:Members">openSUSE member</a> &nbsp;·&nbsp;
-  Bengaluru, India
-</p>
+I'm a Computer Science student at Newton School of Technology in Bengaluru and a member of the openSUSE community.
+I like working on the tools other developers depend on, and my rule is simple: **ship small, ship often, and leave every codebase a little better than I found it.**
 
-<img src="assets/divider.svg" width="100%" alt=""/>
+<!-- STATS:START -->
+<sub>**424** contributions this year &nbsp;·&nbsp; **98** pull requests to other projects &nbsp;·&nbsp; best day **84** (11 Jul) &nbsp;·&nbsp; longest streak **18 days**</sub>
+<!-- STATS:END -->
 
-### <code>01</code> About
+#### Right now
 
-```yaml
-name: Sahitya Singh
-education: Computer Science, Newton School of Technology
-community: openSUSE member
-focus:
-  - open source (static analysis and developer tooling)
-  - web development
-  - ML explainability
-languages: [Java, Python, JavaScript]
-tools: [Git, Docker, React, Linux]
-```
+- **[checkstyle](https://github.com/checkstyle/checkstyle)**: regular contributor to the Java static-analysis tool, its [regression tooling](https://github.com/checkstyle/contribution) and its [OpenRewrite recipes](https://github.com/checkstyle/checkstyle-openrewrite-recipes).
+- **[PreFlight](https://github.com/sahityasingh08/PreFlight)**: my own project (more below).
+- **openSUSE**: community member, and invited participant at openSUSE.Asia Summit 2026 in Yogyakarta.
 
-<img src="assets/divider.svg" width="100%" alt=""/>
+#### Built
 
-### <code>02</code> Projects
+**[PreFlight](https://github.com/sahityasingh08/PreFlight)** runs a GitHub organisation's CI on your machine, in Docker, so you push only when it passes.
+I replayed 106 real pull requests from six projects (checkstyle, Flask, Express, axios, zustand, httpx): it matched GitHub's own CI on **97.1%** of 416 job runs and caught **90 of 91** real failures before push.
+<sub>[Live dashboard](https://sahityasingh08.github.io/PreFlight/) · [Step-by-step guide](https://sahityasingh08.github.io/PreFlight/#guide) · Python, Docker, GitHub Actions, React</sub>
 
-<a href="https://github.com/sahityasingh08/PreFlight"><img src="assets/project-preflight.svg" width="100%" alt="PreFlight: runs a GitHub org's CI locally in Docker so you push only when it passes. 97.1% match with GitHub CI across 106 replayed PRs."/></a>
+#### Where my pull requests went
 
-<p align="center"><sub><a href="https://sahityasingh08.github.io/PreFlight/">live dashboard</a> · <a href="https://sahityasingh08.github.io/PreFlight/#guide">step-by-step guide</a> · <a href="https://github.com/sahityasingh08/PreFlight">source</a></sub></p>
+<!-- UPSTREAM:START -->
+- [`SAPTARSHI-coder/EaseMotion-css`](https://github.com/SAPTARSHI-coder/EaseMotion-css/pulls?q=is%3Apr+author%3Asahityasingh08) &nbsp;39 PRs
+- [`checkstyle/checkstyle`](https://github.com/checkstyle/checkstyle/pulls?q=is%3Apr+author%3Asahityasingh08) &nbsp;20 PRs
+- [`dhairyagothi/100_days_100_web_project`](https://github.com/dhairyagothi/100_days_100_web_project/pulls?q=is%3Apr+author%3Asahityasingh08) &nbsp;15 PRs
+- [`Aditya8369/Pollution-Control-Hub`](https://github.com/Aditya8369/Pollution-Control-Hub/pulls?q=is%3Apr+author%3Asahityasingh08) &nbsp;8 PRs
+- [`ronisarkarexe/story-spark-ai`](https://github.com/ronisarkarexe/story-spark-ai/pulls?q=is%3Apr+author%3Asahityasingh08) &nbsp;6 PRs
+- [`checkstyle/contribution`](https://github.com/checkstyle/contribution/pulls?q=is%3Apr+author%3Asahityasingh08) &nbsp;3 PRs
+<!-- UPSTREAM:END -->
 
-<img src="assets/divider.svg" width="100%" alt=""/>
+#### Tools I reach for
 
-### <code>03</code> Records
+<img src="https://skillicons.dev/icons?i=java,python,js,react,html,css,git,docker,linux,vscode&theme=dark" alt="Java, Python, JavaScript, React, HTML, CSS, Git, Docker, Linux, VS Code"/>
 
-<img src="assets/records.svg" width="100%" alt="Personal records board: contributions this year, best day, pull requests, longest streak, active days and repositories"/>
+#### Say hello
 
-<img src="assets/divider.svg" width="100%" alt=""/>
-
-### <code>04</code> Commit history
-
-<img src="assets/skyline.svg" width="100%" alt="Commit skyline: one building per week of the last year, one lit window per contribution"/>
-
-<img src="assets/divider.svg" width="100%" alt=""/>
-
-### <code>05</code> Orbit
-
-<img src="assets/orbit.svg" width="100%" alt="Repositories I have sent pull requests to, drawn as planets orbiting me"/>
-
-<img src="assets/divider.svg" width="100%" alt=""/>
-
-<h3 align="center"><code>06</code> Tech Stack</h3>
-
-<p align="center">
-  <img src="https://skillicons.dev/icons?i=java,python,js,react,html,css,git,docker,vscode,github&theme=dark&perline=10" alt="Java, Python, JavaScript, React, HTML, CSS, Git, Docker, VS Code, GitHub"/>
-</p>
-
-<img src="assets/divider.svg" width="100%" alt=""/>
-
-<h3 align="center">Connect with me</h3>
-
-<p align="center">
-  <a href="https://www.linkedin.com/in/sahityasingh08/"><img src="https://img.shields.io/badge/linkedin-sahityasingh08-141312?logo=linkedin&color=141312&labelColor=0a0a0a&logoColor=f5a524&style=flat-square" height="30" alt="LinkedIn: sahityasingh08"/></a>
-  &nbsp;
-  <a href="mailto:sahityasingh508002@gmail.com"><img src="https://img.shields.io/badge/mail-sahityasingh508002%40gmail.com-141312?logo=gmail&color=141312&labelColor=0a0a0a&logoColor=f5a524&style=flat-square" height="30" alt="Email: sahityasingh508002@gmail.com"/></a>
-</p>
-
-<p align="center">
-  <a href="https://github.com/sahityasingh08?tab=followers"><img src="https://img.shields.io/github/followers/sahityasingh08?label=followers&logo=github&color=141312&labelColor=0a0a0a&logoColor=f5a524&style=flat-square" alt="GitHub followers"/></a>
-  <img src="https://komarev.com/ghpvc/?username=sahityasingh08&label=profile%20views&color=f5a524&style=flat-square" alt="Profile views"/>
-  <a href="https://en.opensuse.org/openSUSE:Members"><img src="https://img.shields.io/badge/openSUSE-member-141312?logo=opensuse&color=141312&labelColor=0a0a0a&logoColor=f5a524&style=flat-square" alt="openSUSE member"/></a>
-  <a href="https://github.com/checkstyle/checkstyle/pulls?q=is%3Apr+author%3Asahityasingh08"><img src="https://img.shields.io/badge/checkstyle-contributor-141312?logo=apachemaven&color=141312&labelColor=0a0a0a&logoColor=f5a524&style=flat-square" alt="checkstyle contributor"/></a>
-</p>
-
-<p align="center"><sub>cards drawn by <a href="scripts/term.py">scripts/term.py</a> from public GitHub data · refreshed every 6 hours</sub></p>
+[LinkedIn](https://www.linkedin.com/in/sahityasingh08/) &nbsp;·&nbsp; [sahityasingh508002@gmail.com](mailto:sahityasingh508002@gmail.com)

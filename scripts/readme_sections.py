@@ -47,12 +47,29 @@ def replace_block(text: str, name: str, body: str) -> str:
     return pat.sub(lambda m: f"{m.group(1)}\n{body}\n{m.group(3)}", text)
 
 
-def update(stats: dict) -> bool:
+def stats_line(m: dict) -> str:
+    """One quiet line of live numbers for the text-first README."""
+    best = m["best"]
+    day = dt.date.fromisoformat(best["date"]).strftime("%-d %b") if best.get("date") else ""
+    return (f"<sub>**{m['total']}** contributions this year &nbsp;·&nbsp; **{m['pr_count']}** pull requests to other projects"
+            f" &nbsp;·&nbsp; best day **{best['count']}** ({day}) &nbsp;·&nbsp; longest streak **{m['longest']} days**</sub>")
+
+
+def upstream(stats: dict, hide: list[str], n: int = 6) -> str:
+    """Where my pull requests went, most first."""
+    rows = [(r, c) for r, c in stats.get("pr_repos", []) if r not in hide and not r.startswith(LOGIN + "/")][:n]
+    return "\n".join(f"- [`{r}`](https://github.com/{r}/pulls?q=is%3Apr+author%3A{LOGIN}) &nbsp;{c} PRs" for r, c in rows)
+
+
+def update(stats: dict, m: dict | None = None, hide: list[str] | None = None) -> bool:
     if stats.get("demo"):
         return False
     text = README.read_text(encoding="utf-8")
     new = replace_block(text, "PROJECTS", projects(stats["repos"]))
     new = replace_block(new, "CONTRIBUTIONS", contributions(stats["prs"]))
+    if m is not None:
+        new = replace_block(new, "STATS", stats_line(m))
+    new = replace_block(new, "UPSTREAM", upstream(stats, hide or []))
     if new != text:
         README.write_text(new, encoding="utf-8")
         return True
