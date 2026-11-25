@@ -58,8 +58,8 @@ DEFAULT_PROFILE = {
     "focus_short": "Open Source",
     "hardware": "Tech Exploring",
     "loc": "25K+",
-    "linkedin": "sahitya-singh",
-    "linkedin_full": "sahitya-singh-7012b137b",
+    "linkedin": "sahityasingh08",
+    "linkedin_full": "sahityasingh08",
 }
 
 
