@@ -1,10 +1,10 @@
-"""Three black-and-blue terminal cards for the profile.
+"""Three black-and-amber terminal cards for the profile.
 
 hero      `whoami`, a quote and a halftone portrait with a light sweep and glitch slices
 records   a split-flap board of personal records, digits rolling like odometers
 skyline   one building per week, one lit window per contribution, searchlights over the city
 
-Navy blacks with one electric-blue accent. Every card shares one CRT layer: film grain, scanlines, a rolling
+Warm blacks with one amber accent. Every card shares one CRT layer: film grain, scanlines, a rolling
 refresh band and a vignette. All motion is SVG/SMIL, so it plays inside GitHub's <img> sandbox.
 """
 from __future__ import annotations
@@ -15,14 +15,14 @@ import random
 from common import ROOT, esc, now_ist
 
 # ── theme ───────────────────────────────────────────────────────────────────
-WIN = "#05080f"
-BAR = "#0b1221"
-EDGE = "#16223a"
-TEXT = "#e8f0ff"
-DIM = "#9fb2d0"
-MUTE = "#4b5a78"
-HI = "#4da3ff"                                             # the one accent: electric blue
-RAMP = ["#0d1526", "#12305e", "#1d4f9a", "#3b82f6", "#9cceff"]  # empty → busiest
+WIN = "#0a0a0a"
+BAR = "#141312"
+EDGE = "#272522"
+TEXT = "#f5f1ea"
+DIM = "#a8a29e"
+MUTE = "#5c5650"
+HI = "#f5a524"                                             # the one accent: amber
+RAMP = ["#171615", "#4a3206", "#8a5a0b", "#d08a14", "#ffc35c"]  # empty → busiest
 MONO = ("ui-monospace, 'SF Mono', SFMono-Regular, 'JetBrains Mono', Menlo, Consolas, "
         "'Liberation Mono', monospace")
 
@@ -56,8 +56,8 @@ def _crt(w: int, h: int, uid: str) -> tuple[str, str]:
             f'<feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 -.4"/></filter>'
             f'<pattern id="{uid}-scan" width="4" height="3" patternUnits="userSpaceOnUse">'
             f'<rect width="4" height="1" fill="#000" opacity=".45"/></pattern>'
-            f'<linearGradient id="{uid}-roll" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6fb4ff" stop-opacity="0"/>'
-            f'<stop offset=".5" stop-color="#6fb4ff" stop-opacity=".05"/><stop offset="1" stop-color="#6fb4ff" stop-opacity="0"/></linearGradient>'
+            f'<linearGradient id="{uid}-roll" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb547" stop-opacity="0"/>'
+            f'<stop offset=".5" stop-color="#ffb547" stop-opacity=".05"/><stop offset="1" stop-color="#ffb547" stop-opacity="0"/></linearGradient>'
             f'<radialGradient id="{uid}-vig" cx=".5" cy=".55" r=".75"><stop offset=".55" stop-color="#000" stop-opacity="0"/>'
             f'<stop offset="1" stop-color="#000" stop-opacity=".55"/></radialGradient>')
     overlay = (f'<g clip-path="url(#{uid}-body)" pointer-events="none">'
@@ -67,7 +67,7 @@ def _crt(w: int, h: int, uid: str) -> tuple[str, str]:
                f'<animate attributeName="y" values="-120;{h}" dur="6.5s" repeatCount="indefinite"/></rect>'
                f'<rect width="{w}" height="{h}" fill="url(#{uid}-vig)"/>'
                # whole-screen flicker, rare and short
-               f'<rect width="{w}" height="{h}" fill="#6fb4ff" opacity="0">'
+               f'<rect width="{w}" height="{h}" fill="#ffb547" opacity="0">'
                f'<animate attributeName="opacity" values="0;0;.06;0;.03;0" keyTimes="0;.86;.87;.88;.9;1" '
                f'dur="7s" repeatCount="indefinite"/></rect></g>')
     return defs, overlay
@@ -155,7 +155,7 @@ def _halftone(x0: float, y0: float, size: float, n: int = 64) -> tuple[str, str]
             r = cell * .6 * v ** 1.15
             if r < .35:
                 continue
-            col = RAMP[4] if v > .66 else "#5aa2ff" if v > .42 else "#2f6fd0"
+            col = RAMP[4] if v > .66 else "#f0a030" if v > .42 else "#b8720f"
             dots.append(f'<circle cx="{x0 + (i + .5) * cell:.1f}" cy="{y0 + (j + .5) * cell:.1f}" r="{r:.2f}" fill="{col}"/>')
     mx, my = x0 + size / 2, y0 + size / 2
     band = size * .35
@@ -287,8 +287,8 @@ def records(m: dict, stats: dict, prof: dict) -> str:
     ]
     clip, cmd, t = _typed(28, 72, "records --all --rank", .2, "r1")
     defs = [crt_defs, clip,
-            '<linearGradient id="flap" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#111b30"/>'
-            '<stop offset=".5" stop-color="#0c1426"/><stop offset=".5" stop-color="#060a14"/><stop offset="1" stop-color="#0a1222"/></linearGradient>']
+            '<linearGradient id="flap" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1e1c1a"/>'
+            '<stop offset=".5" stop-color="#151413"/><stop offset=".5" stop-color="#0c0b0a"/><stop offset="1" stop-color="#121110"/></linearGradient>']
     body = []
     tw, th, tg = 30, 42, 4          # tile width, height, gap
     digits = 4
@@ -307,7 +307,7 @@ def records(m: dict, stats: dict, prof: dict) -> str:
         for i, ch in enumerate(txt):
             tx = x_tiles + i * (tw + tg)
             uid = f"od{k}{i}"
-            tile = (f'<rect x="{tx}" y="{y}" width="{tw}" height="{th}" rx="3" fill="url(#flap)" stroke="#1a2846"/>'
+            tile = (f'<rect x="{tx}" y="{y}" width="{tw}" height="{th}" rx="3" fill="url(#flap)" stroke="#2c2a27"/>'
                     f'<line x1="{tx}" y1="{y + th / 2}" x2="{tx + tw}" y2="{y + th / 2}" stroke="#000" stroke-width="1.2"/>')
             if ch == " ":
                 body.append(_at(t0, tile))
@@ -338,7 +338,7 @@ def records(m: dict, stats: dict, prof: dict) -> str:
                 f'letter-spacing="3">PLAYER 1 · {esc(stats["login"].upper())}</text>')
     # a selector that walks down the board, like picking a row on a cabinet
     steps = ";".join(f"{y0 + k * rh - 6}" for k in range(len(rows)))
-    body.append(_at(end, f'<rect x="20" y="{y0 - 6}" width="{W - 40}" height="{rh - 4}" fill="#6fb4ff" opacity=".055">'
+    body.append(_at(end, f'<rect x="20" y="{y0 - 6}" width="{W - 40}" height="{rh - 4}" fill="#ffb547" opacity=".055">'
                          f'<animate attributeName="y" values="{steps}" dur="{len(rows) * .9:.1f}s" calcMode="discrete" '
                          f'repeatCount="indefinite"/></rect>'
                          f'<text x="16" y="{y0 + 27}" font-family="{MONO}" font-size="13" fill="{HI}">▶'
@@ -386,11 +386,11 @@ def skyline(m: dict, stats: dict, prof: dict) -> str:
             f'<clipPath id="ground"><rect x="0" y="0" width="{W}" height="{base}"/></clipPath>',
             f'<clipPath id="skyclip"><rect x="1" y="92" width="{W - 2}" height="{base - 92}"/></clipPath>',
             f'<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="{WIN}"/>'
-            f'<stop offset="1" stop-color="#0d1830"/></linearGradient>',
-            '<linearGradient id="beam" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#6fb4ff" stop-opacity=".22"/>'
-            '<stop offset="1" stop-color="#6fb4ff" stop-opacity="0"/></linearGradient>',
-            '<linearGradient id="meteor" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#6fb4ff" stop-opacity="0"/>'
-            '<stop offset="1" stop-color="#6fb4ff"/></linearGradient>',
+            f'<stop offset="1" stop-color="#1d160b"/></linearGradient>',
+            '<linearGradient id="beam" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ffb547" stop-opacity=".22"/>'
+            '<stop offset="1" stop-color="#ffb547" stop-opacity="0"/></linearGradient>',
+            '<linearGradient id="meteor" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ffb547" stop-opacity="0"/>'
+            '<stop offset="1" stop-color="#ffb547"/></linearGradient>',
             '<filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3" result="b"/>'
             '<feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>']
 
@@ -402,9 +402,9 @@ def skyline(m: dict, stats: dict, prof: dict) -> str:
         sky.append(f'<circle cx="{sx:.0f}" cy="{sy:.0f}" r="{rng.choice((.6, .8, 1.1))}" fill="{HI}" '
                    f'opacity="{rng.uniform(.15, .55):.2f}">{tw}</circle>')
     # moon with a halo
-    sky.append(f'<circle cx="{W - 120}" cy="132" r="30" fill="#6fb4ff" opacity=".05"/>'
+    sky.append(f'<circle cx="{W - 120}" cy="132" r="30" fill="#ffb547" opacity=".05"/>'
                f'<circle cx="{W - 120}" cy="132" r="17" fill="{HI}" filter="url(#glow)"/>'
-               f'<circle cx="{W - 112}" cy="126" r="16" fill="#060a14"/>')
+               f'<circle cx="{W - 112}" cy="126" r="16" fill="#0c0b0a"/>')
     # two searchlights sweeping the sky
     for bx_, dur, ph in ((x0 + bw * n * .3, 9, 0), (x0 + bw * n * .72, 7, 2.5)):
         sky.append(f'<polygon points="{bx_ - 2},{base} {bx_ + 2},{base} {bx_ + 60},{100} {bx_ - 60},{100}" fill="url(#beam)">'
@@ -434,13 +434,13 @@ def skyline(m: dict, stats: dict, prof: dict) -> str:
             wx = bx + wgap + i * (win + wgap) + (w - wgap - cols * (win + wgap)) / 2 + wgap / 2
             wy = base - h + 6 + j * (win + wgap)
             if k in lit:
-                fill = HI if rng.random() < .55 else "#7cb4ff"
+                fill = HI if rng.random() < .55 else "#ffd08a"
                 blink = (f'<animate attributeName="opacity" values="1;1;.15;1" keyTimes="0;.8;.85;1" '
                          f'dur="{rng.uniform(3, 9):.1f}s" begin="-{rng.uniform(0, 5):.1f}s" repeatCount="indefinite"/>'
                          if rng.random() < .12 else "")
                 wins.append(f'<rect x="{wx:.1f}" y="{wy:.1f}" width="{win}" height="{win}" fill="{fill}">{blink}</rect>')
             else:
-                wins.append(f'<rect x="{wx:.1f}" y="{wy:.1f}" width="{win}" height="{win}" fill="#0f1a33"/>')
+                wins.append(f'<rect x="{wx:.1f}" y="{wy:.1f}" width="{win}" height="{win}" fill="#1f1d1b"/>')
         roof = ""
         if c == busiest:  # an antenna with a beacon on the busiest week
             ax = bx + w / 2
@@ -454,7 +454,7 @@ def skyline(m: dict, stats: dict, prof: dict) -> str:
         city.append(f'<g transform="translate(0 {h + 30:.0f})">'
                     f'<animateTransform attributeName="transform" type="translate" from="0 {h + 30:.0f}" to="0 0" '
                     f'begin="{rise:.2f}s" dur=".7s" calcMode="spline" keySplines=".2 .8 .2 1" fill="freeze"/>'
-                    f'<rect x="{bx:.1f}" y="{base - h:.1f}" width="{w:.1f}" height="{h:.1f}" fill="#081020" stroke="#1a2846" stroke-width=".6"/>'
+                    f'<rect x="{bx:.1f}" y="{base - h:.1f}" width="{w:.1f}" height="{h:.1f}" fill="#0f0e0d" stroke="#2c2a27" stroke-width=".6"/>'
                     f'{"".join(wins)}{roof}</g>')
 
     # the city reflected in wet ground below the baseline
@@ -466,14 +466,14 @@ def skyline(m: dict, stats: dict, prof: dict) -> str:
     lit_total = sum(weeks.values())
     ground = f'<line x1="{x0 - 10}" y1="{base + .5}" x2="{W - x0 + 10}" y2="{base + .5}" stroke="{DIM}" stroke-opacity=".6"/>'
     # street under the city: lane markings and traffic running both ways
-    road = (f'<rect x="{x0 - 10}" y="{base + 1}" width="{W - 2 * x0 + 20}" height="14" fill="#070b16"/>'
+    road = (f'<rect x="{x0 - 10}" y="{base + 1}" width="{W - 2 * x0 + 20}" height="14" fill="#0d0c0b"/>'
             f'<line x1="{x0}" y1="{base + 8}" x2="{W - x0}" y2="{base + 8}" stroke="{MUTE}" stroke-dasharray="6 8" stroke-width=".8"/>')
     for k in range(7):
         rtl = k % 2
         yy = base + (11 if rtl else 4)
         dur = rng.uniform(5, 11)
         a0, a1 = (W - x0, x0 - 10) if rtl else (x0 - 10, W - x0)
-        lights = (f'<rect x="0" y="0" width="7" height="2.4" rx="1" fill="{HI if not rtl else "#3a78d1"}"/>'
+        lights = (f'<rect x="0" y="0" width="7" height="2.4" rx="1" fill="{HI if not rtl else "#c98516"}"/>'
                   f'<rect x="{-14 if not rtl else 7}" y=".7" width="14" height="1" fill="{HI}" opacity=".25"/>')
         road += (f'<g><animateTransform attributeName="transform" type="translate" values="{a0} {yy};{a1} {yy}" '
                  f'dur="{dur:.1f}s" begin="-{rng.uniform(0, dur):.1f}s" repeatCount="indefinite"/>{lights}</g>')
@@ -513,9 +513,9 @@ def divider() -> str:
     W, H = 1000, 24
     return (_open(W, H, "section divider")
             + '<defs><linearGradient id="dv" x1="0" y1="0" x2="1" y2="0">'
-              '<stop offset="0" stop-color="#3b82f6" stop-opacity="0"/><stop offset=".5" stop-color="#3b82f6" stop-opacity=".7"/>'
-              '<stop offset="1" stop-color="#3b82f6" stop-opacity="0"/></linearGradient>'
-              '<radialGradient id="gl"><stop offset="0" stop-color="#9cceff"/><stop offset="1" stop-color="#9cceff" stop-opacity="0"/></radialGradient></defs>'
+              '<stop offset="0" stop-color="#d08a14" stop-opacity="0"/><stop offset=".5" stop-color="#d08a14" stop-opacity=".7"/>'
+              '<stop offset="1" stop-color="#d08a14" stop-opacity="0"/></linearGradient>'
+              '<radialGradient id="gl"><stop offset="0" stop-color="#ffc35c"/><stop offset="1" stop-color="#ffc35c" stop-opacity="0"/></radialGradient></defs>'
             + f'<rect x="0" y="{H / 2 - .5}" width="{W}" height="1" fill="url(#dv)"/>'
             + f'<rect x="{W / 2 - 4}" y="{H / 2 - 4}" width="8" height="8" fill="{WIN}" stroke="{HI}" transform="rotate(45 {W / 2} {H / 2})"/>'
             + f'<ellipse cx="0" cy="{H / 2}" rx="60" ry="3" fill="url(#gl)">'
