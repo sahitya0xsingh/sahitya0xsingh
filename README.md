@@ -32,12 +32,12 @@
 
 <a href="https://www.linkedin.com/in/sahitya-singh-7012b137b/"><img src="https://skillicons.dev/icons?i=linkedin" width="52" alt="LinkedIn"/></a>
 &nbsp;&nbsp;
-<a href="https://github.com/sahitya0xsingh"><img src="https://skillicons.dev/icons?i=github" width="52" alt="GitHub"/></a>
+<a href="https://github.com/sahityasingh08"><img src="https://skillicons.dev/icons?i=github" width="52" alt="GitHub"/></a>
 
 <br><br>
 
 <a href="https://www.linkedin.com/in/sahitya-singh-7012b137b/"><img src="https://img.shields.io/badge/LinkedIn-connect-0d1117?style=for-the-badge&logo=linkedin&logoColor=58A6FF&labelColor=0d1117" alt="Connect on LinkedIn"/></a>
-<a href="https://github.com/sahitya0xsingh"><img src="https://img.shields.io/badge/GitHub-follow-0d1117?style=for-the-badge&logo=github&logoColor=58A6FF&labelColor=0d1117" alt="Follow on GitHub"/></a>
+<a href="https://github.com/sahityasingh08"><img src="https://img.shields.io/badge/GitHub-follow-0d1117?style=for-the-badge&logo=github&logoColor=58A6FF&labelColor=0d1117" alt="Follow on GitHub"/></a>
 
 </div>
 

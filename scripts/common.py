@@ -15,7 +15,7 @@ ASSETS = ROOT / "assets"
 DATA = ROOT / "data"
 README = ROOT / "README.md"
 
-LOGIN = os.environ.get("PROFILE_LOGIN", "sahitya0xsingh")
+LOGIN = os.environ.get("PROFILE_LOGIN", "sahityasingh08")
 IST = dt.timezone(dt.timedelta(hours=5, minutes=30))
 
 # ── Palette: restrained, GitHub-dark compatible, one accent ────────────────
@@ -126,7 +126,7 @@ def demo_stats(seed: int = 7) -> dict:
     for i in range(1, 9):
         days[-i]["count"] = max(days[-i]["count"], rnd.randint(1, 5))
     repos = [
-        {"name": "sahitya0xsingh", "url": "#", "desc": "profile", "stars": 1, "lang": "Python",
+        {"name": "sahityasingh08", "url": "#", "desc": "profile", "stars": 1, "lang": "Python",
          "commits": 64, "pushed": (dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=1)).isoformat(), "fork": False},
         {"name": "shap", "url": "#", "desc": "", "stars": 0, "lang": "Jupyter Notebook",
          "commits": 3, "pushed": (dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=20)).isoformat(), "fork": True},
