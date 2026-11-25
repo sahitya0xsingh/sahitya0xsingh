@@ -17,6 +17,7 @@ The `refresh profile` workflow runs it every 6 hours and commits only when somet
 
 - Change the text on the hero card in `data/profile.json`.
 - Swap the portrait by replacing `assets/photo.jpg` with a head-and-shoulders photo.
+- Keep a repo off the orbit card by adding it to `hide_repos` in `data/profile.json`, e.g. `["owner/repo"]`.
 - Pushing either file re-renders the cards automatically.
 
 ## Preview locally
