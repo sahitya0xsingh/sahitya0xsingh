@@ -34,6 +34,99 @@ def _stamp(t: float, t_end: float | None, body: str) -> str:
             f'{body}</g>')
 
 
+PHOTO_PX = 320  # embedded size: crisp on retina, small enough to keep the svg light
+
+
+def _photo_b64() -> str | None:
+    """assets/photo.jpg (or .png), downscaled and embedded so GitHub's image proxy can render it."""
+    root = Path(__file__).resolve().parent.parent / "assets"
+    src = next((root / n for n in ("photo.jpg", "photo.jpeg", "photo.png") if (root / n).exists()), None)
+    if not src:
+        return None
+    try:
+        import io
+        from PIL import Image
+        im = Image.open(src).convert("RGB")
+        side = min(im.size)
+        im = im.crop(((im.width - side) // 2, (im.height - side) // 2,
+                      (im.width + side) // 2, (im.height + side) // 2)).resize((PHOTO_PX, PHOTO_PX), Image.LANCZOS)
+        buf = io.BytesIO()
+        im.save(buf, "JPEG", quality=84, optimize=True)
+        data = buf.getvalue()
+    except ImportError:
+        data = src.read_bytes()
+    return base64.b64encode(data).decode()
+
+
+def _portrait(prof: dict, x0: float, x1: float, t_lock: float) -> str:
+    """Holographic ID card: the photo materialises as a cyan hologram, glitches, then locks into full colour."""
+    b64 = _photo_b64()
+    cx, cy, r = (x0 + x1) / 2, 196, 84
+    out = []
+    # orbiting rings
+    ring = lambda rr, dash, dur, sw, col, op: (
+        f'<circle cx="{cx}" cy="{cy}" r="{rr}" fill="none" stroke="{col}" stroke-width="{sw}" '
+        f'stroke-dasharray="{dash}" opacity="{op}"><animateTransform attributeName="transform" type="rotate" '
+        f'from="0 {cx} {cy}" to="{360 if dur > 0 else -360} {cx} {cy}" dur="{abs(dur)}s" repeatCount="indefinite"/></circle>')
+    out.append(_stamp(.1, None, ring(r + 9, "60 8 4 8", 18, 1.6, ACCENT, .9) + ring(r + 17, "2 6", -30, 1, ACCENT, .55)
+                      + ring(r + 24, "120 60", 11, .8, "#a371f7", .5)))
+    # tick marks at the cardinal points
+    ticks = "".join(f'<path d="M{cx},{cy - r - 30}v8" stroke="{ACCENT}" stroke-width="1.4" transform="rotate({a} {cx} {cy})"/>'
+                    for a in (0, 90, 180, 270))
+    out.append(_stamp(.1, None, ticks))
+    if b64:
+        img = lambda extra="", flt="": (f'<image href="data:image/jpeg;base64,{b64}" x="{cx - r}" y="{cy - r}" '
+                                        f'width="{2 * r}" height="{2 * r}" clip-path="url(#pclip)"{flt}>{extra}</image>')
+        # phase 1: flickering cyan hologram with an rgb-split glitch
+        holo = (f'<g opacity="0"><animate attributeName="opacity" values="0;.9;.3;1;.6;1" keyTimes="0;.15;.25;.4;.5;1" '
+                f'begin=".2s" dur="1s" fill="freeze"/>'
+                f'<animate attributeName="opacity" to="0" begin="{t_lock + .25:.2f}s" dur=".5s" fill="freeze"/>'
+                + img('<animate attributeName="x" values="{0};{1};{0};{2};{0}" keyTimes="0;.1;.2;.3;1" dur="2.3s" '
+                      'repeatCount="indefinite"/>'.format(cx - r, cx - r + 5, cx - r - 4), ' filter="url(#holoR)" opacity=".6"')
+                + img("", ' filter="url(#holo)"') + '</g>')
+        # phase 2: true colour, wiped in top-down when the scan locks
+        real = (f'<g clip-path="url(#pwipe)">{img()}</g>')
+        out.append(holo + real)
+        out.append(f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="url(#pscan)" opacity=".3"/>')
+        # a sweep bar that keeps scanning the face
+        out.append(f'<g clip-path="url(#pclip)"><rect x="{cx - r}" y="{cy - r}" width="{2 * r}" height="14" fill="url(#psweep)">'
+                   f'<animate attributeName="y" values="{cy - r - 14};{cy + r}" dur="3.2s" repeatCount="indefinite"/></rect></g>')
+    out.append(f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="none" stroke="{ACCENT}" stroke-width="1.5" filter="url(#lg)"/>')
+    # verified chip on the ring
+    out.append(_stamp(t_lock + .3, None,
+                      f'<g transform="translate({cx + r * .62} {cy + r * .62})"><circle r="13" fill="{BG}" stroke="{GREEN}" stroke-width="1.5"/>'
+                      f'<path d="M-5,0 l3.5,3.5 l6.5,-7" fill="none" stroke="{GREEN}" stroke-width="2.2" stroke-linecap="round"/></g>'))
+    # name plate
+    ny = cy + r + 52
+    name = esc(prof["name"].upper())
+    out.append(_stamp(t_lock + .2, None,
+                      f'<text x="{cx}" y="{ny}" text-anchor="middle" font-family="{MONO}" font-size="19" font-weight="800" '
+                      f'fill="{BRIGHT}" letter-spacing="3" filter="url(#lg)">{name}</text>'
+                      f'<text x="{cx}" y="{ny + 20}" text-anchor="middle" font-family="{MONO}" font-size="9.5" fill="{ACCENT}" '
+                      f'letter-spacing="1.5">{esc(prof["role"])}</text>'))
+    # three short lines, decoded in sequence
+    rows = [("FOCUS", prof["focus_short"] + " · Web", TEXT), ("STACK", "Python · Java · JS", TEXT),
+            ("STATUS", "● " + prof["status"], GREEN)]
+    y = ny + 50
+    for i, (k, v, col) in enumerate(rows):
+        out.append(_stamp(t_lock + .45 + i * .15, None,
+                          f'<text x="{x0}" y="{y}" font-family="{MONO}" font-size="9" fill="{MUTED}" letter-spacing="2">{k}</text>'
+                          f'<text x="{x1}" y="{y}" text-anchor="end" font-family="{MONO}" font-size="9.5" fill="{col}">{esc(v)}</text>'
+                          f'<line x1="{x0}" y1="{y + 7}" x2="{x1}" y2="{y + 7}" stroke="{LINE}"/>'))
+        y += 22
+    defs = (f'<defs><clipPath id="pclip"><circle cx="{cx}" cy="{cy}" r="{r}"/></clipPath>'
+            f'<clipPath id="pwipe"><rect x="{cx - r}" y="{cy - r}" width="{2 * r}" height="0">'
+            f'<animate attributeName="height" from="0" to="{2 * r}" begin="{t_lock:.2f}s" dur=".7s" fill="freeze"/></rect></clipPath>'
+            f'<filter id="holo" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="'
+            f'.05 .1 .02 0 0  .25 .55 .1 0 .03  .35 .7 .15 0 .12  0 0 0 1 0"/></filter>'
+            f'<filter id="holoR" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="'
+            f'.4 .6 .1 0 .05  0 0 0 0 0  .2 .3 .05 0 .08  0 0 0 .8 0"/></filter>'
+            f'<pattern id="pscan" width="4" height="3" patternUnits="userSpaceOnUse"><rect width="4" height="1" fill="{BG}" opacity=".55"/></pattern>'
+            f'<linearGradient id="psweep" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="{ACCENT}" stop-opacity="0"/>'
+            f'<stop offset="1" stop-color="{ACCENT}" stop-opacity=".45"/></linearGradient></defs>')
+    return defs + "".join(out)
+
+
 def render(m: dict, prof: dict, stats: dict) -> str:
     grid, colours, src = logo_grid(COLS, ROWS)
     code = _code_stream()
@@ -142,23 +235,7 @@ def render(m: dict, prof: dict, stats: dict) -> str:
                 f'letter-spacing="2">▸ {esc(title)}</text>'
                 f'<line x1="{x0 + w + 14:.0f}" y1="{y - 3}" x2="{x1}" y2="{y - 3}" stroke="{LINE2}"/>')
 
-    lx0, lx1 = 40, BX - 40
-    sections = [
-        ("SYSTEM", [("OS", prof["os"]), ("Uptime", prof["uptime"]), ("Host", prof["host_machine"]),
-                    ("Kernel", prof["kernel"]), ("IDE", prof["ide"])]),
-        ("LANGUAGES", [("Code", prof["lang_code"]), ("Web", prof["lang_web"]), ("Real", prof["lang_real"])]),
-        ("PROFILE", [("Hobbies", prof["hobbies"]), ("Focus", prof["focus_short"]),
-                     ("Hardware", prof["hardware"])]),
-    ]
-    left, y, n = [], 96, 0
-    for title, items in sections:
-        left.append(_stamp(.2 + n * .14, None, header(lx0, lx1, y, title)))
-        y += 22
-        for k, v in items:
-            n += 1
-            left.append(_stamp(.2 + n * .14, None, row(lx0, lx1, y, k, v)))
-            y += 18
-        y += 14
+    left = [_portrait(prof, 40, BX - 40, SCAN_START + SCAN_DUR)]
 
     # right: progress, then live stats rolling up, contact, verdict
     rx0, rx1 = BX + bw + 40, W - 40
@@ -222,7 +299,7 @@ def render(m: dict, prof: dict, stats: dict) -> str:
     # bottom prompt + subtle hint
     hint = _stamp(ag_t + .3, None,
                   f'<text x="{W / 2}" y="{H - 30}" text-anchor="middle" font-family="{MONO}" font-size="11" fill="{MUTED}" '
-                  f'letter-spacing="4">▼  SCROLL TO BOOT  ▼'
+                  f'letter-spacing="4">▼  IDENTITY VERIFIED  ▼'
                   f'<animate attributeName="opacity" values="1;.25;1" dur="1.6s" repeatCount="indefinite"/></text>')
     status = (f'<text x="{W / 2}" y="{BY + bh + 42}" text-anchor="middle" font-family="{MONO}" font-size="10" '
               f'fill="{MUTED}" letter-spacing="2">logo rendered from {glyphs} characters of this repo\'s own source code</text>')
