@@ -49,5 +49,5 @@ tools: [Git, Docker, React, Linux]
 
 ## Contact
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-sahitya--singh-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/sahitya-singh-7012b137b/)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-sahityasingh08-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/sahityasingh08/)
 [![GitHub](https://img.shields.io/badge/GitHub-sahityasingh08-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/sahityasingh08)
