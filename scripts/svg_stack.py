@@ -56,10 +56,9 @@ def stack(prof: dict, groups: list[dict]) -> str:
               f'<animate attributeName="width" from="0" to="{bar_w - 4}" begin=".3s" dur="{done_t - .3:.2f}s" fill="freeze"/></rect>'
               f'<g opacity="0"><set attributeName="opacity" to="1" begin="{done_t:.2f}s" fill="freeze"/>'
               f'<text x="{bx + bar_w + 14}" y="{by}" font-family="{MONO}" font-size="11" fill="{TEXT}" xml:space="preserve">'
-              f'{total}/{total} packages installed  <tspan fill="{GREEN}">· all systems nominal</tspan></text></g>')
+              f'{total} tools</text></g>')
 
-    frame = hud_frame(W, H, tl="PKG // MANIFEST", tr=f"{total} INSTALLED", bl="ALWAYS LEARNING",
-                      br="NEXT: WHATEVER'S INTERESTING", tab="TECH STACK", trace=True, fid="st")
+    frame = hud_frame(W, H, tab="TECH STACK", trace=True, fid="st")
     return svg_open(W, H, "Tech stack") + f"""
 <rect width="{W}" height="{H}" rx="14" fill="{BG}"/>
 {frame}

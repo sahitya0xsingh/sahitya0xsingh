@@ -27,7 +27,7 @@ def render(m: dict, stats: dict, prof: dict) -> str:
     prompt = (f'<text x="{bx}" y="{py}" font-family="{MONO}" font-size="13" xml:space="preserve">'
               f'<tspan fill="{GREEN}">{esc(prof["user"])}@{esc(prof["host"])}</tspan><tspan fill="{MUTED}">:</tspan>'
               f'<tspan fill="{ACCENT}">~</tspan><tspan fill="{MUTED}">$ </tspan>'
-              f'<tspan fill="{BRIGHT}">git log --all --since="1 year" --author=@{esc(stats["login"])} | heatmap</tspan></text>')
+              f'<tspan fill="{BRIGHT}">git log --since="1 year" --author={esc(stats["login"])}</tspan></text>')
 
     days = stats["days"]
     first = dt.date.fromisoformat(days[0]["date"])
@@ -77,8 +77,7 @@ def render(m: dict, stats: dict, prof: dict) -> str:
                         for i, c in enumerate(RAMP))
               + f'<text x="{legend_x + 30 + 5 * 15 + 4}" y="{sy}" font-family="{MONO}" font-size="10" fill="{MUTED}">more</text>')
 
-    frame = hud_frame(W, H, tl="LOG // 365D", tr=f"Σ {m['total']}", bl="SCAN 9S", br="LEVELS: QUARTILE",
-                      tab="GIT LOG", trace=True, fid="ha")
+    frame = hud_frame(W, H, tab="CONTRIBUTIONS", trace=True, fid="ha")
     return svg_open(W, H, f"{m['total']} contributions in the last year") + f"""
 <defs><linearGradient id="beam" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="{ACCENT}" stop-opacity="0"/><stop offset="1" stop-color="{ACCENT}" stop-opacity=".35"/></linearGradient></defs>
 <rect width="{W}" height="{H}" rx="14" fill="{BG}"/>
