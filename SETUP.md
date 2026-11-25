@@ -5,7 +5,7 @@ The `refresh profile` workflow runs it every 6 hours and commits only when somet
 
 | File | What it does |
 |:--|:--|
-| `scripts/term.py` | draws `assets/hero.svg` (halftone portrait, `whoami`, quote), `assets/activity.svg` (contribution calendar) and `assets/skyline.svg` (one building per week, one lit window per contribution) |
+| `scripts/term.py` | draws `assets/hero.svg` (halftone portrait, `whoami`, quote), `assets/records.svg` (split-flap records board) and `assets/skyline.svg` (one building per week, one lit window per contribution) |
 | `scripts/github_api.py` | one GraphQL query for repos, merged PRs and the contribution calendar |
 | `scripts/metrics.py` | streaks, active days, best day |
 | `scripts/readme_sections.py` | rewrites the blocks between `<!-- NAME:START -->` and `<!-- NAME:END -->` in `README.md` |
