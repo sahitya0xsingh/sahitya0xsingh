@@ -5,15 +5,15 @@
   "role": "CS student, open-source contributor",
   "headline": "CS @ Newton School of Technology · openSUSE member",
   "now": [
-    "- contributing to checkstyle and apereo/cas",
+    "- contributing to checkstyle and its tooling",
     "- member of the openSUSE community",
-    "- building web projects in Python, Java and JavaScript"
+    "- building web projects and small dev tools"
   ],
   "footer": "bengaluru, in",
   "linkedin": "sahityasingh08",
   "linkedin_full": "sahityasingh08",
   "quote": [
-    "“I write the checks that keep big Java codebases",
-    "clean, and build for the web on the side.”"
+    "“Ship small, ship often, and leave every",
+    "codebase a little better than I found it.”"
   ]
 }

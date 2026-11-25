@@ -24,7 +24,7 @@ def main() -> None:
 
     changed = {
         "hero.svg": write_asset("hero.svg", term.hero(m, prof, stats)),
-        "activity.svg": write_asset("activity.svg", term.activity(m, stats, prof)),
+        "records.svg": write_asset("records.svg", term.records(m, stats, prof)),
         "skyline.svg": write_asset("skyline.svg", term.skyline(m, stats, prof)),
         "README.md": readme_sections.update(stats),
     }

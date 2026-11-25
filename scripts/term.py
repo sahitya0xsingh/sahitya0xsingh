@@ -1,7 +1,7 @@
 """Three monochrome terminal cards for the profile.
 
 hero      `whoami`, a quote and a halftone portrait with a light sweep and glitch slices
-activity  contribution calendar with a scanning playhead
+records   a split-flap board of personal records, digits rolling like odometers
 skyline   one building per week, one lit window per contribution, searchlights over the city
 
 Black, white and greys only. Every card shares one CRT layer: film grain, scanlines, a rolling
@@ -52,9 +52,8 @@ def _crt(w: int, h: int, uid: str) -> tuple[str, str]:
     """(defs, overlay): grain, scanlines, a rolling refresh band and a vignette over the window body."""
     defs = (f'<clipPath id="{uid}-body"><rect x="1" y="37" width="{w - 2}" height="{h - 38}" rx="11"/></clipPath>'
             f'<filter id="{uid}-grain" x="0" y="0" width="100%" height="100%">'
-            f'<feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" seed="3" stitchTiles="stitch">'
-            f'<animate attributeName="seed" values="3;9;17;26;4;31" dur=".6s" calcMode="discrete" repeatCount="indefinite"/>'
-            f'</feTurbulence><feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 -.4"/></filter>'
+            f'<feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="1" seed="3" stitchTiles="stitch"/>'
+            f'<feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 -.4"/></filter>'
             f'<pattern id="{uid}-scan" width="4" height="3" patternUnits="userSpaceOnUse">'
             f'<rect width="4" height="1" fill="#000" opacity=".45"/></pattern>'
             f'<linearGradient id="{uid}-roll" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/>'
@@ -179,7 +178,7 @@ def _halftone(x0: float, y0: float, size: float, n: int = 64) -> tuple[str, str]
             f'<circle cx="{mx}" cy="{my}" r="{r0 + 8:.0f}" fill="none" stroke="{HI}" stroke-width="1.2" stroke-dasharray="40 {2 * 3.1416 * (r0 + 8) - 40:.0f}" opacity=".7">'
             f'<animateTransform attributeName="transform" type="rotate" from="0 {mx} {my}" to="-360 {mx} {my}" dur="9s" repeatCount="indefinite"/></circle>')
     svg = (ring + f'<g clip-path="url(#develop)">'
-           + _glitch(base + lit, x0, y0, size, size, "portrait", period=3.6, slices=5, amp=12) + '</g>')
+           + _glitch(base + lit, x0, y0, size, size, "portrait", period=3.6, slices=3, amp=12) + '</g>')
     return defs, svg
 
 
@@ -271,75 +270,80 @@ def _typed_text(x: float, y: float, text: str, t: float, uid: str, size: float, 
     return clip, svg, t + dur
 
 
-def activity(m: dict, stats: dict, prof: dict) -> str:
-    W, H = 1000, 304
-    crt_defs, crt = _crt(W, H, "a")
-    days = stats["days"]
-    first = dt.date.fromisoformat(days[0]["date"])
-    first_sun = first - dt.timedelta(days=(first.weekday() + 1) % 7)
-    nz = sorted(d["count"] for d in days if d["count"])
-    q = [nz[int(len(nz) * f)] for f in (.25, .5, .75)] if nz else [1, 2, 3]
-
-    def level(c: int) -> int:
-        return 0 if c == 0 else 1 if c <= q[0] else 2 if c <= q[1] else 3 if c <= q[2] else 4
-
-    gx, gy, cs, gap = 78, 118, 13, 3
-    glow_attr = ' filter="url(#cellglow)"'
-    cols: dict[int, list[str]] = {}
-    months, last_m = [], None
-    for d in days:
-        date = dt.date.fromisoformat(d["date"])
-        c, r = (date - first_sun).days // 7, (date.weekday() + 1) % 7
-        lv = level(d["count"])
-        pulse = ('<animate attributeName="opacity" values="1;.55;1" dur="2.4s" '
-                 f'begin="{(c * .07) % 2.4:.2f}s" repeatCount="indefinite"/>' if lv == 4 else "")
-        cols.setdefault(c, []).append(
-            f'<rect x="{gx + c * (cs + gap)}" y="{gy + r * (cs + gap)}" width="{cs}" height="{cs}" rx="2" '
-            f'fill="{RAMP[lv]}"{glow_attr if lv == 4 else ""}>'
-            f'<title>{d["count"]} on {date:%d %b %Y}</title>{pulse}</rect>')
-        if date.month != last_m and date.day <= 7:
-            months.append(f'<text x="{gx + c * (cs + gap)}" y="{gy - 10}" font-family="{MONO}" font-size="11" '
-                          f'fill="{MUTE}">{date:%b}</text>')
-            last_m = date.month
-    ncols = max(cols) + 1
-    clip, cmd, t = _typed(28, 72, f"gh contributions --user {stats['login']} --last 12mo", .2, "a1")
-    grid = "".join(_at(t + .1 + c * .018, "".join(v)) for c, v in sorted(cols.items()))
-    gh = 7 * (cs + gap) - gap
-    gw = ncols * (cs + gap)
-    # a playhead that keeps scanning the year, with a soft trail
-    head = (f'<g opacity="0"><set attributeName="opacity" to="1" begin="{t + 1.2:.2f}s"/>'
-            f'<rect x="{gx - 40}" y="{gy - 4}" width="40" height="{gh + 8}" fill="url(#trail)">'
-            f'<animate attributeName="x" values="{gx - 40};{gx + gw - 40}" dur="5s" begin="{t + 1.2:.2f}s" repeatCount="indefinite"/></rect>'
-            f'<rect x="{gx}" y="{gy - 6}" width="1.5" height="{gh + 12}" fill="{HI}">'
-            f'<animate attributeName="x" values="{gx};{gx + gw}" dur="5s" begin="{t + 1.2:.2f}s" repeatCount="indefinite"/></rect></g>')
-    labels = "".join(f'<text x="{gx - 12}" y="{gy + r * (cs + gap) + 10}" text-anchor="end" font-family="{MONO}" '
-                     f'font-size="10.5" fill="{MUTE}">{n}</text>' for r, n in ((1, "Mon"), (3, "Wed"), (5, "Fri")))
-    legend_x = W - 28 - 5 * 17
-    legend = (f'<text x="{legend_x - 8}" y="{gy + 7 * (cs + gap) + 22}" text-anchor="end" font-family="{MONO}" '
-              f'font-size="11" fill="{MUTE}">less</text>'
-              + "".join(f'<rect x="{legend_x + k * 17}" y="{gy + 7 * (cs + gap) + 12}" width="{cs}" height="{cs}" rx="2" '
-                        f'fill="{RAMP[k]}"/>' for k in range(5)))
+def records(m: dict, stats: dict, prof: dict) -> str:
+    """A split-flap board of personal records; every digit rolls like an odometer before it lands."""
+    W, H = 1000, 470
+    crt_defs, crt = _crt(W, H, "r")
     best = m["best"]
-    best_d = dt.date.fromisoformat(best["date"]).strftime("%d %b") if best["date"] else "-"
-    summary = (f'<text x="{gx}" y="{gy + 7 * (cs + gap) + 22}" font-family="{MONO}" font-size="12.5" '
-               f'xml:space="preserve"><tspan fill="{HI}" font-weight="700">{m["total"]}</tspan>'
-               f'<tspan fill="{DIM}"> contributions   </tspan><tspan fill="{TEXT}">{m["active"]}</tspan>'
-               f'<tspan fill="{DIM}"> active days   best day </tspan><tspan fill="{TEXT}">{best["count"]} on {best_d}</tspan>'
-               f'<tspan fill="{DIM}">   longest streak </tspan><tspan fill="{TEXT}">{m["longest"]}d</tspan></text>')
-    defs = (crt_defs + clip
-            + '<linearGradient id="trail" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/>'
-              '<stop offset="1" stop-color="#fff" stop-opacity=".16"/></linearGradient>'
-              '<filter id="cellglow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.4" result="b"/>'
-              '<feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>')
-    return (_open(W, H, f"Contributions in the last year: {m['total']}") + f"<defs>{defs}</defs>"
-            + _window(W, H, f"{prof['user']}@{prof['host']}: ~/activity — zsh",
-                      "data: GitHub contribution calendar", f"updated {now_ist():%Y-%m-%d}")
-            + cmd + labels + "".join(months) + grid + head + _at(t + 1.2, summary + legend) + crt + "</svg>")
+    best_d = dt.date.fromisoformat(best["date"]) if best["date"] else None
+    rows = [
+        ("CONTRIBUTIONS", m["total"], "THIS YEAR", "every commit, PR, review and issue"),
+        ("BEST DAY", best["count"], "IN ONE DAY", f"{best_d:%d %b %Y}".upper() if best_d else ""),
+        ("PULL REQUESTS", m["pr_count"], "UPSTREAM", "shipped into other people's repos"),
+        ("LONGEST STREAK", m["longest"], "DAYS", "without missing a day"),
+        ("ACTIVE DAYS", m["active"], f"OF {m['span']}", "days with at least one contribution"),
+        ("REPOSITORIES", m["repo_count"], "PUBLIC", f"@{stats['login']}"),
+    ]
+    clip, cmd, t = _typed(28, 72, "records --all --rank", .2, "r1")
+    defs = [crt_defs, clip,
+            '<linearGradient id="flap" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1e1e1e"/>'
+            '<stop offset=".5" stop-color="#151515"/><stop offset=".5" stop-color="#0c0c0c"/><stop offset="1" stop-color="#121212"/></linearGradient>']
+    body = []
+    tw, th, tg = 30, 42, 4          # tile width, height, gap
+    digits = 4
+    x_lab, x_tiles = 70, 330
+    y0, rh = 118, 54
+    strip = "0123456789" * 3
+    for k, (label, val, unit, note) in enumerate(rows):
+        y = y0 + k * rh
+        t0 = t + .3 + k * .22
+        rank = f"#{k + 1:02d}"
+        body.append(_at(t0, f'<text x="28" y="{y + 27}" font-family="{MONO}" font-size="11" fill="{MUTE}">{rank}</text>'
+                            f'<text x="{x_lab}" y="{y + 27}" font-family="{MONO}" font-size="14" font-weight="700" '
+                            f'fill="{TEXT}" letter-spacing="3">{label}</text>'
+                            f'<line x1="{x_lab}" y1="{y + rh - 6}" x2="{W - 28}" y2="{y + rh - 6}" stroke="{EDGE}"/>'))
+        txt = str(val).rjust(digits)
+        for i, ch in enumerate(txt):
+            tx = x_tiles + i * (tw + tg)
+            uid = f"od{k}{i}"
+            tile = (f'<rect x="{tx}" y="{y}" width="{tw}" height="{th}" rx="3" fill="url(#flap)" stroke="#2a2a2a"/>'
+                    f'<line x1="{tx}" y1="{y + th / 2}" x2="{tx + tw}" y2="{y + th / 2}" stroke="#000" stroke-width="1.2"/>')
+            if ch == " ":
+                body.append(_at(t0, tile))
+                continue
+            d = int(ch)
+            land = 20 + d               # lands on the third copy of the digit, after two full spins
+            defs.append(f'<clipPath id="{uid}"><rect x="{tx}" y="{y}" width="{tw}" height="{th}" rx="3"/></clipPath>')
+            col = "".join(f'<tspan x="{tx + tw / 2}" dy="{th if j else 0}">{c}</tspan>' for j, c in enumerate(strip))
+            spin = 1.1 + i * .18
+            body.append(_at(t0, tile + f'<g clip-path="url(#{uid})"><text x="{tx + tw / 2}" y="{y + th * .72}" '
+                                       f'text-anchor="middle" font-family="{MONO}" font-size="27" font-weight="800" fill="{HI}">'
+                                       f'<animateTransform attributeName="transform" type="translate" from="0 0" to="0 {-land * th}" '
+                                       f'begin="{t0:.2f}s" dur="{spin:.2f}s" calcMode="spline" keySplines=".15 .7 .2 1" fill="freeze"/>'
+                                       f'{col}</text></g>'
+                                       f'<line x1="{tx}" y1="{y + th / 2}" x2="{tx + tw}" y2="{y + th / 2}" stroke="#000" stroke-width="1.2"/>'))
+        done = t0 + 1.1 + digits * .18
+        ux = x_tiles + digits * (tw + tg) + 16
+        body.append(_at(done, f'<text x="{ux}" y="{y + 20}" font-family="{MONO}" font-size="12" font-weight="700" '
+                              f'fill="{HI}" letter-spacing="2">{esc(unit)}</text>'
+                              f'<text x="{ux}" y="{y + 36}" font-family="{MONO}" font-size="11" fill="{MUTE}">{esc(note)}</text>'))
+        # the winning row gets a pulsing "NEW RECORD" stamp
+        if k == 1:
+            body.append(_at(done + .2, f'<g transform="translate({W - 150} {y + 8}) rotate(-6)">'
+                                       f'<rect width="118" height="26" fill="none" stroke="{HI}" stroke-width="1.5"/>'
+                                       f'<text x="59" y="18" text-anchor="middle" font-family="{MONO}" font-size="12" '
+                                       f'font-weight="800" fill="{HI}" letter-spacing="2">NEW RECORD</text>'
+                                       f'<animate attributeName="opacity" values="1;.35;1" dur="1.2s" repeatCount="indefinite"/></g>'))
+    return (_open(W, H, "Personal records: " + ", ".join(f"{r[0].lower()} {r[1]}" for r in rows))
+            + f"<defs>{''.join(defs)}</defs>"
+            + _window(W, H, f"{prof['user']}@{prof['host']}: ~/records — zsh",
+                      "source: GitHub contribution calendar and search", f"updated {now_ist():%Y-%m-%d}")
+            + cmd + "".join(body) + crt + "</svg>")
 
 
 def skyline(m: dict, stats: dict, prof: dict) -> str:
     """One building per week of the last year; every contribution switches on a window."""
-    W, H = 1000, 380
+    W, H = 1000, 420
     crt_defs, crt = _crt(W, H, "s")
     days = stats["days"]
     first = dt.date.fromisoformat(days[0]["date"])
@@ -355,7 +359,7 @@ def skyline(m: dict, stats: dict, prof: dict) -> str:
     bw = (W - 2 * x0) / n
     win, wgap = 3.2, 2.2          # window size and spacing
     rng = random.Random(stats["login"])
-    clip, cmd, t = _typed(28, 72, "skyline --last 12mo --one-window-per-commit", .2, "s1")
+    clip, cmd, t = _typed(28, 72, "git log --since=12.months --author=me | skyline", .2, "s1")
     defs = [crt_defs, clip,
             f'<clipPath id="ground"><rect x="0" y="0" width="{W}" height="{base}"/></clipPath>',
             f'<clipPath id="skyclip"><rect x="1" y="92" width="{W - 2}" height="{base - 92}"/></clipPath>',
@@ -438,15 +442,45 @@ def skyline(m: dict, stats: dict, prof: dict) -> str:
 
     wk = first_sun + dt.timedelta(weeks=busiest)
     lit_total = sum(weeks.values())
+    ground = f'<line x1="{x0 - 10}" y1="{base + .5}" x2="{W - x0 + 10}" y2="{base + .5}" stroke="{DIM}" stroke-opacity=".6"/>'
+    # street under the city: lane markings and traffic running both ways
+    road = (f'<rect x="{x0 - 10}" y="{base + 1}" width="{W - 2 * x0 + 20}" height="14" fill="#0d0d0d"/>'
+            f'<line x1="{x0}" y1="{base + 8}" x2="{W - x0}" y2="{base + 8}" stroke="{MUTE}" stroke-dasharray="6 8" stroke-width=".8"/>')
+    for k in range(7):
+        rtl = k % 2
+        yy = base + (11 if rtl else 4)
+        dur = rng.uniform(5, 11)
+        a0, a1 = (W - x0, x0 - 10) if rtl else (x0 - 10, W - x0)
+        lights = (f'<rect x="0" y="0" width="7" height="2.4" rx="1" fill="{HI if not rtl else "#8a8a8a"}"/>'
+                  f'<rect x="{-14 if not rtl else 7}" y=".7" width="14" height="1" fill="{HI}" opacity=".25"/>')
+        road += (f'<g><animateTransform attributeName="transform" type="translate" values="{a0} {yy};{a1} {yy}" '
+                 f'dur="{dur:.1f}s" begin="-{rng.uniform(0, dur):.1f}s" repeatCount="indefinite"/>{lights}</g>')
+    # month ticks under the street
+    axis, seen = [], set()
+    for c in range(n):
+        d0 = first_sun + dt.timedelta(weeks=c)
+        if d0.month not in seen and d0.day <= 7:
+            seen.add(d0.month)
+            axis.append(f'<text x="{x0 + c * bw:.0f}" y="{base + 30}" font-family="{MONO}" font-size="10.5" '
+                        f'fill="{MUTE}">{d0:%b}</text>')
+    # a callout pinned to the tallest tower
+    hb = 14 + (weeks[busiest] / top) ** .55 * 170
+    ax = x0 + busiest * bw + bw / 2
+    ay = base - hb - 23
+    callout = (f'<path d="M{ax + 4},{ay} l14,-14 h70" fill="none" stroke="{HI}" stroke-width=".8"/>'
+               f'<text x="{ax + 22}" y="{ay - 19}" font-family="{MONO}" font-size="11" font-weight="700" fill="{HI}">'
+               f'PEAK · {weeks[busiest]} commits</text>'
+               f'<text x="{ax + 22}" y="{ay - 6}" font-family="{MONO}" font-size="10" fill="{DIM}">week of {wk:%d %b %Y}</text>')
+    base += 26
     caption = (f'<text x="{x0}" y="{base + 30}" font-family="{MONO}" font-size="12.5" xml:space="preserve">'
                f'<tspan fill="{HI}" font-weight="700">{n}</tspan><tspan fill="{DIM}"> buildings   </tspan>'
-               f'<tspan fill="{HI}" font-weight="700">{lit_total}</tspan><tspan fill="{DIM}"> lit windows   tallest: week of </tspan>'
-               f'<tspan fill="{TEXT}">{wk:%d %b}</tspan><tspan fill="{DIM}"> ({weeks[busiest]})</tspan></text>')
-    ground = f'<line x1="{x0 - 10}" y1="{base + .5}" x2="{W - x0 + 10}" y2="{base + .5}" stroke="{DIM}" stroke-opacity=".6"/>'
+               f'<tspan fill="{HI}" font-weight="700">{lit_total}</tspan><tspan fill="{DIM}"> lit windows   </tspan>'
+               f'<tspan fill="{HI}" font-weight="700">{sum(1 for v in weeks.values() if v)}</tspan>'
+               f'<tspan fill="{DIM}"> weeks with the lights on</tspan></text>')
     return (_open(W, H, f"Commit skyline: one building per week, {lit_total} contributions as lit windows")
             + f"<defs>{''.join(defs)}</defs>"
             + _window(W, H, f"{prof['user']}@{prof['host']}: ~/skyline — zsh",
-                      "taller = busier week · oldest on the left", f"updated {now_ist():%Y-%m-%d}")
+                      "one building per week · one lit window per contribution", f"updated {now_ist():%Y-%m-%d}")
             + cmd + f'<g clip-path="url(#skyclip)">{"".join(sky)}</g>'
-            + f'<g id="city" clip-path="url(#ground)">{"".join(city)}</g>' + reflect + ground
-            + _at(t + .2 + n * .025 + .5, caption) + crt + "</svg>")
+            + f'<g id="city" clip-path="url(#ground)">{"".join(city)}</g>' + reflect + road + ground
+            + "".join(axis) + _at(t + .2 + n * .025 + .5, caption + callout) + crt + "</svg>")
