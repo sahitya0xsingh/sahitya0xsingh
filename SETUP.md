@@ -1,6 +1,6 @@
 # Setup
 
-Copy everything in this folder into the root of your `sahitya0xsingh/sahitya0xsingh` repository.
+Copy everything in this folder into the root of your `sahityasingh08/sahityasingh08` repository.
 
 ## Install
 
