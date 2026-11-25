@@ -559,3 +559,131 @@ def project(p: dict) -> str:
             + _window(W, H, f"sahitya@github: ~/projects/{uid} — zsh", p["repo"].replace("https://", ""),
                       p.get("site", "").replace("https://", ""))
             + cmd + "".join(body) + crt + "</svg>")
+
+
+def boot(m: dict, stats: dict, prof: dict) -> str:
+    """A boot log that types itself in before the hero: every [ OK ] line is a real fact."""
+    W, H = 1000, 250
+    crt_defs, crt = _crt(W, H, "b")
+    lines = [
+        ("mounting", f"/home/{prof['user']}"),
+        ("loading", "checkstyle modules"),
+        ("starting", "openSUSE community daemon"),
+        ("linking", f"{m['total']} contributions from the last year"),
+        ("spawning", "PreFlight · 97.1% CI match"),
+    ]
+    body, t = [], .3
+    for k, (verb, what) in enumerate(lines):
+        y = 66 + k * 24
+        body.append(_at(t, f'<text x="28" y="{y}" font-family="{MONO}" font-size="13" xml:space="preserve">'
+                           f'<tspan fill="{MUTE}">[ </tspan><tspan fill="{HI}" font-weight="700">OK</tspan>'
+                           f'<tspan fill="{MUTE}"> ]  </tspan><tspan fill="{DIM}">{verb} </tspan>'
+                           f'<tspan fill="{TEXT}">{esc(what)}</tspan></text>'))
+        t += .32
+    # progress bar that fills while the log prints
+    bar_w = W - 56
+    body.append(f'<rect x="28" y="{66 + len(lines) * 24 - 4}" width="{bar_w}" height="6" rx="3" fill="none" stroke="{EDGE}"/>'
+                f'<rect x="29" y="{66 + len(lines) * 24 - 3}" width="0" height="4" rx="2" fill="{HI}">'
+                f'<animate attributeName="width" from="0" to="{bar_w - 2}" begin=".3s" dur="{t - .3:.2f}s" fill="freeze"/></rect>')
+    fy = 66 + len(lines) * 24 + 32
+    body.append(_at(t + .1, f'<text x="28" y="{fy}" font-family="{MONO}" font-size="18" font-weight="800" fill="{HI}" '
+                            f'letter-spacing="2">SAHITYA OS {now_ist():%y.%m}</text>'
+                            f'<text x="290" y="{fy}" font-family="{MONO}" font-size="13" fill="{DIM}">ready. scroll down to log in</text>'
+                            f'<rect x="530" y="{fy - 13}" width="9" height="15" fill="{HI}">'
+                            f'<animate attributeName="opacity" values="1;1;0;0" keyTimes="0;.5;.5;1" dur="1s" repeatCount="indefinite"/></rect>'))
+    return (_open(W, H, "Boot log: " + "; ".join(f"{v} {w}" for v, w in lines)) + f"<defs>{crt_defs}</defs>"
+            + _window(W, H, f"{prof['user']}@{prof['host']}: boot — tty1", "", "")
+            + "".join(body) + crt + "</svg>")
+
+
+def pulse(m: dict, stats: dict, prof: dict) -> str:
+    """The last 120 days of contributions drawn as a heartbeat on ECG paper."""
+    W, H = 1000, 320
+    crt_defs, crt = _crt(W, H, "e")
+    days = stats["days"][-120:]
+    top = max((d["count"] for d in days), default=1) or 1
+    x0, x1, base = 40, W - 40, 220
+    step = (x1 - x0) / len(days)
+    pts = [(x0, base)]
+    for i, d in enumerate(days):
+        x = x0 + i * step
+        c = d["count"]
+        if c:
+            h = (c / top) ** .5 * 120 + 8
+            pts += [(x + step * .25, base), (x + step * .4, base - h), (x + step * .55, base + h * .28),
+                    (x + step * .7, base)]
+        else:
+            pts.append((x + step, base))
+    pts.append((x1, base))
+    path = "M" + " L".join(f"{x:.1f},{y:.1f}" for x, y in pts)
+    length = sum(((b[0] - a[0]) ** 2 + (b[1] - a[1]) ** 2) ** .5 for a, b in zip(pts, pts[1:]))
+    dur = 7
+    grid = (f'<pattern id="ecg" width="20" height="20" patternUnits="userSpaceOnUse">'
+            f'<path d="M20,0H0V20" fill="none" stroke="{HI}" stroke-opacity=".07"/>'
+            f'<path d="M4,0V20M8,0V20M12,0V20M16,0V20M0,4H20M0,8H20M0,12H20M0,16H20" stroke="{HI}" stroke-opacity=".025"/></pattern>')
+    week = sum(d["count"] for d in days[-7:]) / 7
+    clip, cmd, t = _typed(28, 72, "watch -n 1 heartbeat --last 120d", .2, "e1")
+    trace = (f'<path d="{path}" fill="none" stroke="{HI}" stroke-opacity=".18" stroke-width="1.2"/>'
+             f'<path d="{path}" fill="none" stroke="{HI}" stroke-width="2" stroke-linejoin="round" '
+             f'stroke-dasharray="{length:.0f}" stroke-dashoffset="{length:.0f}">'
+             f'<animate attributeName="stroke-dashoffset" values="{length:.0f};0;0" keyTimes="0;.85;1" dur="{dur}s" '
+             f'repeatCount="indefinite"/></path>'
+             f'<circle r="4" fill="#ffe2a8"><animateMotion dur="{dur}s" repeatCount="indefinite" keyPoints="0;1;1" '
+             f'keyTimes="0;.85;1" calcMode="linear" path="{path}"/></circle>'
+             f'<circle r="11" fill="{HI}" opacity=".25"><animateMotion dur="{dur}s" repeatCount="indefinite" '
+             f'keyPoints="0;1;1" keyTimes="0;.85;1" calcMode="linear" path="{path}"/></circle>')
+    heart = (f'<text x="{W - 28}" y="76" text-anchor="end" font-family="{MONO}" font-size="30" font-weight="800" fill="{HI}">'
+             f'♥ {week:.1f}<animate attributeName="opacity" values="1;.35;1;.6;1" keyTimes="0;.1;.2;.3;1" dur="1.1s" '
+             f'repeatCount="indefinite"/></text>'
+             f'<text x="{W - 28}" y="96" text-anchor="end" font-family="{MONO}" font-size="10.5" fill="{MUTE}" '
+             f'letter-spacing="2">CONTRIBUTIONS / DAY · LAST 7 DAYS</text>')
+    first = dt.date.fromisoformat(days[0]["date"])
+    axis = "".join(f'<text x="{x0 + i * step:.0f}" y="{base + 62}" font-family="{MONO}" font-size="10.5" fill="{MUTE}">'
+                   f'{first + dt.timedelta(days=i):%d %b}</text>' for i in range(0, len(days), 20))
+    return (_open(W, H, f"Contribution heartbeat over the last 120 days; {week:.1f} per day this week")
+            + f"<defs>{crt_defs}{clip}{grid}</defs>"
+            + _window(W, H, f"{prof['user']}@{prof['host']}: ~/pulse — zsh", "one spike per active day · height = contributions",
+                      f"updated {now_ist():%Y-%m-%d}")
+            + cmd + heart + f'<rect x="{x0}" y="110" width="{x1 - x0}" height="160" fill="url(#ecg)"/>'
+            + _at(t, trace) + axis + crt + "</svg>")
+
+
+def orbit(m: dict, stats: dict, prof: dict) -> str:
+    """Repos I've sent pull requests to, as planets: size = PRs, inner orbits = more PRs."""
+    W, H = 1000, 470
+    crt_defs, crt = _crt(W, H, "o")
+    hide = set(prof.get("hide_repos", []))
+    planets = [(r, n) for r, n in stats.get("pr_repos", []) if r not in hide and not r.startswith(stats["login"] + "/")][:7]
+    cx, cy = W / 2, 262
+    clip, cmd, t = _typed(28, 72, "gh search prs --author=@me | orbit", .2, "o1")
+    body = [f'<circle cx="{cx}" cy="{cy}" r="70" fill="{HI}" opacity=".05"/>'
+            f'<circle cx="{cx}" cy="{cy}" r="30" fill="{HI}" opacity=".9"><animate attributeName="r" values="30;33;30" '
+            f'dur="3s" repeatCount="indefinite"/></circle>'
+            f'<text x="{cx}" y="{cy + 4}" text-anchor="middle" font-family="{MONO}" font-size="11" font-weight="800" '
+            f'fill="{WIN}">ME</text>']
+    top = planets[0][1] if planets else 1
+    rng = random.Random(stats["login"])
+    for k, (repo, n) in enumerate(planets):
+        rx = 110 + k * 52
+        ry = rx * .36
+        path = (f"M{cx - rx},{cy} a{rx},{ry} 0 1,0 {2 * rx},0 a{rx},{ry} 0 1,0 {-2 * rx},0")
+        r = 4 + (n / top) ** .5 * 11
+        dur = 9 + k * 4.5
+        name = repo.split("/")[1]
+        body.append(f'<ellipse cx="{cx}" cy="{cy}" rx="{rx}" ry="{ry:.1f}" fill="none" stroke="{HI}" '
+                    f'stroke-opacity="{.32 - k * .03:.2f}" stroke-dasharray="{"" if k % 2 else "3 5"}"/>')
+        body.append(_at(t + .2 + k * .15,
+                        f'<g><animateMotion dur="{dur:.1f}s" begin="-{rng.uniform(0, dur):.1f}s" repeatCount="indefinite" path="{path}"/>'
+                        f'<circle r="{r + 6:.1f}" fill="{HI}" opacity=".12"/>'
+                        f'<circle r="{r:.1f}" fill="{HI}"/>'
+                        f'<text x="{r + 8:.0f}" y="4" font-family="{MONO}" font-size="11" fill="{TEXT}">{esc(name)}'
+                        f'<tspan fill="{HI}" font-weight="700"> {n}</tspan></text></g>'))
+    total = sum(n for _, n in planets)
+    legend = (f'<text x="{W - 28}" y="72" text-anchor="end" font-family="{MONO}" font-size="12.5" xml:space="preserve">'
+              f'<tspan fill="{HI}" font-weight="700">{len(planets)}</tspan><tspan fill="{DIM}"> repos in orbit   </tspan>'
+              f'<tspan fill="{HI}" font-weight="700">{total}</tspan><tspan fill="{DIM}"> pull requests between them</tspan></text>')
+    return (_open(W, H, "Pull requests by repository: " + ", ".join(f"{r} {n}" for r, n in planets))
+            + f"<defs>{crt_defs}{clip}</defs>"
+            + _window(W, H, f"{prof['user']}@{prof['host']}: ~/orbit — zsh", "planet size = pull requests · inner = more",
+                      f"updated {now_ist():%Y-%m-%d}")
+            + cmd + "".join(body) + _at(t + 1.4, legend) + crt + "</svg>")

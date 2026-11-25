@@ -1,3 +1,5 @@
+<img src="assets/boot.svg" width="100%" alt="Boot log: mounting home, loading checkstyle modules, starting openSUSE community daemon, linking contributions, spawning PreFlight"/>
+
 <img src="assets/hero.svg" width="100%" alt="Terminal card: halftone portrait of Sahitya Singh, whoami, a quote and current work"/>
 
 <p align="center">
@@ -39,13 +41,25 @@ tools: [Git, Docker, React, Linux]
 
 <img src="assets/divider.svg" width="100%" alt=""/>
 
-### <code>04</code> Commit history
+### <code>04</code> Pulse
+
+<img src="assets/pulse.svg" width="100%" alt="Contributions over the last 120 days drawn as a heartbeat"/>
+
+<img src="assets/divider.svg" width="100%" alt=""/>
+
+### <code>05</code> Commit history
 
 <img src="assets/skyline.svg" width="100%" alt="Commit skyline: one building per week of the last year, one lit window per contribution"/>
 
 <img src="assets/divider.svg" width="100%" alt=""/>
 
-<h3 align="center"><code>05</code> Tech Stack</h3>
+### <code>06</code> Orbit
+
+<img src="assets/orbit.svg" width="100%" alt="Repositories I have sent pull requests to, drawn as planets orbiting me"/>
+
+<img src="assets/divider.svg" width="100%" alt=""/>
+
+<h3 align="center"><code>07</code> Tech Stack</h3>
 
 <p align="center">
   <img src="https://skillicons.dev/icons?i=java,python,js,react,html,css,git,docker,vscode,github&theme=dark&perline=10" alt="Java, Python, JavaScript, React, HTML, CSS, Git, Docker, VS Code, GitHub"/>
