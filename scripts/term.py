@@ -521,3 +521,41 @@ def divider() -> str:
             + f'<ellipse cx="0" cy="{H / 2}" rx="60" ry="3" fill="url(#gl)">'
               f'<animate attributeName="cx" values="-60;{W + 60}" dur="4.5s" repeatCount="indefinite"/></ellipse>'
             + "</svg>")
+
+
+def project(p: dict) -> str:
+    """A wide terminal card for one project: name, pitch, three headline numbers and tags."""
+    W, H = 1000, 300
+    uid = p["slug"]
+    crt_defs, crt = _crt(W, H, f"p{uid}")
+    clip, cmd, t = _typed(28, 72, p["command"], .2, f"{uid}c")
+    body = [_at(t, f'<text x="28" y="112" font-family="{MONO}" font-size="10.5" fill="{HI}" letter-spacing="3">'
+                   f'{esc(p["kicker"])}</text>'
+                   f'<text x="28" y="150" font-family="{MONO}" font-size="32" font-weight="800" fill="{TEXT}" '
+                   f'letter-spacing="-.5">{esc(p["name"])}</text>')]
+    for k, line in enumerate(p["desc"]):
+        body.append(_at(t + .15 + k * .1, f'<text x="28" y="{178 + k * 19}" font-family="{MONO}" font-size="13" '
+                                          f'fill="{DIM}">{esc(line)}</text>'))
+    # headline numbers, right side
+    sx = 600
+    for k, (v, lab) in enumerate(p["stats"]):
+        y = 112 + k * 44
+        body.append(_at(t + .3 + k * .15, f'<text x="{sx}" y="{y + 18}" font-family="{MONO}" font-size="26" '
+                                          f'font-weight="800" fill="{HI}">{esc(v)}</text>'
+                                          f'<text x="{sx + 120}" y="{y + 14}" font-family="{MONO}" font-size="12" '
+                                          f'fill="{DIM}">{esc(lab)}</text>'
+                                          f'<line x1="{sx}" y1="{y + 28}" x2="{W - 28}" y2="{y + 28}" stroke="{EDGE}"/>'))
+    # tag chips
+    x = 28
+    chips = []
+    for tag in p["tags"]:
+        w = len(tag) * 7.2 + 18
+        chips.append(f'<rect x="{x}" y="{H - 70}" width="{w:.0f}" height="20" rx="10" fill="none" stroke="{HI}" stroke-opacity=".5"/>'
+                     f'<text x="{x + w / 2:.0f}" y="{H - 56}" text-anchor="middle" font-family="{MONO}" font-size="11" '
+                     f'fill="{TEXT}">{esc(tag)}</text>')
+        x += w + 8
+    body.append(_at(t + .8, "".join(chips)))
+    return (_open(W, H, f"{p['name']}: {' '.join(p['desc'])}") + f"<defs>{crt_defs}{clip}</defs>"
+            + _window(W, H, f"sahitya@github: ~/projects/{uid} — zsh", p["repo"].replace("https://", ""),
+                      p.get("site", "").replace("https://", ""))
+            + cmd + "".join(body) + crt + "</svg>")

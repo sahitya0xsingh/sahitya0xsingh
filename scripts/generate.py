@@ -10,7 +10,7 @@ import sys
 import metrics
 import readme_sections
 import term
-from common import LOGIN, demo_stats, profile, write_asset
+from common import LOGIN, demo_stats, load_json, profile, write_asset
 
 
 def main() -> None:
@@ -27,6 +27,8 @@ def main() -> None:
         "records.svg": write_asset("records.svg", term.records(m, stats, prof)),
         "skyline.svg": write_asset("skyline.svg", term.skyline(m, stats, prof)),
         "divider.svg": write_asset("divider.svg", term.divider()),
+        **{f"project-{p['slug']}.svg": write_asset(f"project-{p['slug']}.svg", term.project(p))
+           for p in load_json("projects.json", [])},
         "README.md": readme_sections.update(stats),
     }
     for name, did in changed.items():

@@ -10,6 +10,7 @@ The `refresh profile` workflow runs it every 6 hours and commits only when somet
 | `scripts/metrics.py` | streaks, active days, best day |
 | `scripts/readme_sections.py` | rewrites the blocks between `<!-- NAME:START -->` and `<!-- NAME:END -->` in `README.md` |
 | `data/profile.json` | name, headline, quote, the `now.txt` lines and the footer |
+| `data/projects.json` | one entry per project card (`assets/project-<slug>.svg`) |
 | `assets/photo.jpg` | source for the halftone portrait |
 
 ## Edit
