@@ -5,11 +5,15 @@
   "role": "CS student, open-source contributor",
   "headline": "CS @ Newton School of Technology · openSUSE member",
   "now": [
-    "Contributing to Java static analysis at checkstyle,",
-    "with merged work in apereo/cas and openrewrite recipes.",
-    "Building web projects in Python, Java and JavaScript."
+    "- contributing to checkstyle and apereo/cas",
+    "- member of the openSUSE community",
+    "- building web projects in Python, Java and JavaScript"
   ],
   "footer": "bengaluru, in",
   "linkedin": "sahityasingh08",
-  "linkedin_full": "sahityasingh08"
+  "linkedin_full": "sahityasingh08",
+  "quote": [
+    "“I write the checks that keep big Java codebases",
+    "clean, and build for the web on the side.”"
+  ]
 }
