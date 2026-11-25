@@ -46,5 +46,4 @@ tools: [Git, Docker, React, Linux]
   <img src="https://komarev.com/ghpvc/?username=sahityasingh08&label=profile%20views&color=000000&style=flat-square" alt="Profile views"/>
   <a href="https://en.opensuse.org/openSUSE:Members"><img src="https://img.shields.io/badge/openSUSE-member-000000?style=flat-square&logo=opensuse&logoColor=white&labelColor=1a1a1a" alt="openSUSE member"/></a>
   <a href="https://github.com/checkstyle/checkstyle/pulls?q=is%3Apr+author%3Asahityasingh08"><img src="https://img.shields.io/badge/checkstyle-contributor-000000?style=flat-square&logo=apachemaven&logoColor=white&labelColor=1a1a1a" alt="checkstyle contributor"/></a>
-  <img src="https://img.shields.io/github/stars/sahityasingh08?affiliations=OWNER&label=stars&style=flat-square&logo=github&logoColor=white&color=000000&labelColor=1a1a1a" alt="Stars earned"/>
 </p>
