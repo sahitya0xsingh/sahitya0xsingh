@@ -17,7 +17,7 @@ I'm a Computer Science student at Newton School of Technology in Bengaluru and a
 I work on the tools other developers depend on, and my rule is simple: **ship small, ship often, and leave every codebase a little better than I found it.**
 
 <!-- STATS:START -->
-<sub>**426** contributions this year &nbsp;·&nbsp; **98** pull requests to other projects &nbsp;·&nbsp; best day **84** (11 Jul) &nbsp;·&nbsp; longest streak **18 days**</sub>
+<sub>**425** contributions this year &nbsp;·&nbsp; **98** pull requests to other projects &nbsp;·&nbsp; best day **84** (11 Jul) &nbsp;·&nbsp; longest streak **18 days**</sub>
 <!-- STATS:END -->
 
 - **[checkstyle](https://github.com/checkstyle/checkstyle)**: regular contributor to the Java static-analysis tool, its [regression tooling](https://github.com/checkstyle/contribution) and its [OpenRewrite recipes](https://github.com/checkstyle/checkstyle-openrewrite-recipes)
