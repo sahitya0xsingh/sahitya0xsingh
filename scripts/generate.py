@@ -26,6 +26,7 @@ def main() -> None:
         "hero.svg": write_asset("hero.svg", term.hero(m, prof, stats)),
         "records.svg": write_asset("records.svg", term.records(m, stats, prof)),
         "skyline.svg": write_asset("skyline.svg", term.skyline(m, stats, prof)),
+        "divider.svg": write_asset("divider.svg", term.divider()),
         "README.md": readme_sections.update(stats),
     }
     for name, did in changed.items():
