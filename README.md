@@ -1,8 +1,4 @@
-<div align="center">
-
-<img src="assets/start.svg" width="100%" alt="Sahitya Singh: photo, GitHub stats and open-source work"/>
-
-</div>
+<img src="assets/hero.svg" width="100%" alt="Terminal card: halftone portrait of Sahitya Singh, whoami, current work and GitHub stats"/>
 
 ## About
 
@@ -41,11 +37,11 @@ tools: [Git, Docker, React, Linux]
 
 ## Activity
 
-<img src="assets/activity.svg" width="100%" alt="Contribution heatmap for the last year"/>
+<img src="assets/activity.svg" width="100%" alt="Contribution calendar for the last 12 months"/>
 
 ## Stack
 
-<img src="assets/stack.svg" width="100%" alt="Tech stack: Python, Java, JavaScript, HTML5, CSS3, React, Git, Docker, VS Code, macOS, Linux, GitHub"/>
+`Java` `Python` `JavaScript` `React` `HTML` `CSS` `Git` `Docker` `Linux` `macOS`
 
 ## Contact
 

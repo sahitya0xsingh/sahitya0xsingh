@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ["scripts/**", "data/profile.json", "assets/logo.*", "assets/photo.*"]
+    paths: ["scripts/**", "data/profile.json", "assets/photo.*"]
 
 permissions:
   contents: write
