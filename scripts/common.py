@@ -137,4 +137,5 @@ def demo_stats(seed: int = 7) -> dict:
     ]
     return {"login": LOGIN, "days": days, "total": sum(x["count"] for x in days),
             "repos": repos, "prs": [], "pr_count": 2, "repo_count": 18, "followers": 7,
+            "pr_repos": [("checkstyle/checkstyle", 20), ("owner/web-project", 9), ("owner/tool", 4)],
             "demo": True}

@@ -15,5 +15,8 @@
   "quote": [
     "“I ship small, ship often, and leave every",
     "codebase a little better than I found it.”"
+  ],
+  "hide_repos": [
+    "apereo/cas"
   ]
 }

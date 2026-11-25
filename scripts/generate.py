@@ -23,7 +23,10 @@ def main() -> None:
     prof = profile()
 
     changed = {
+        "boot.svg": write_asset("boot.svg", term.boot(m, stats, prof)),
         "hero.svg": write_asset("hero.svg", term.hero(m, prof, stats)),
+        "pulse.svg": write_asset("pulse.svg", term.pulse(m, stats, prof)),
+        "orbit.svg": write_asset("orbit.svg", term.orbit(m, stats, prof)),
         "records.svg": write_asset("records.svg", term.records(m, stats, prof)),
         "skyline.svg": write_asset("skyline.svg", term.skyline(m, stats, prof)),
         "divider.svg": write_asset("divider.svg", term.divider()),

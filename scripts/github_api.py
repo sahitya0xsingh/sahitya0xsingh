@@ -28,7 +28,7 @@ query($login: String!, $prq: String!) {
       }
     }
   }
-  search(query: $prq, type: ISSUE, first: 8) {
+  search(query: $prq, type: ISSUE, first: 100) {
     issueCount
     nodes { ... on PullRequest { title url mergedAt repository { nameWithOwner } } }
   }
@@ -79,7 +79,11 @@ def fetch_stats(login: str) -> dict:
     prs = [{"title": n["title"], "url": n["url"], "merged": n["mergedAt"],
             "repo": n["repository"]["nameWithOwner"]}
            for n in d["search"]["nodes"] if n]
+    pr_repos: dict[str, int] = {}
+    for pr in prs:
+        pr_repos[pr["repo"]] = pr_repos.get(pr["repo"], 0) + 1
     return {"login": login, "days": days, "total": cal["totalContributions"], "repos": repos,
-            "prs": prs, "pr_count": d["search"]["issueCount"],
+            "prs": prs[:8], "pr_count": d["search"]["issueCount"],
+            "pr_repos": sorted(pr_repos.items(), key=lambda kv: -kv[1]),
             "repo_count": u["repositories"]["totalCount"],
             "followers": u["followers"]["totalCount"], "demo": False}
