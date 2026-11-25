@@ -50,7 +50,7 @@ tools: [Git, Docker, React, Linux]
 ### <code>05</code> Stack
 
 <p>
-  <img src="https://img.shields.io/badge/Java-0b1221?logo=openjdk&color=0b1221&labelColor=05080f&logoColor=4da3ff&style=flat-square" alt="Java"/> <img src="https://img.shields.io/badge/Python-0b1221?logo=python&color=0b1221&labelColor=05080f&logoColor=4da3ff&style=flat-square" alt="Python"/> <img src="https://img.shields.io/badge/JavaScript-0b1221?logo=javascript&color=0b1221&labelColor=05080f&logoColor=4da3ff&style=flat-square" alt="JavaScript"/> <img src="https://img.shields.io/badge/React-0b1221?logo=react&color=0b1221&labelColor=05080f&logoColor=4da3ff&style=flat-square" alt="React"/> <img src="https://img.shields.io/badge/HTML5-0b1221?logo=html5&color=0b1221&labelColor=05080f&logoColor=4da3ff&style=flat-square" alt="HTML5"/> <img src="https://img.shields.io/badge/CSS3-0b1221?logo=css3&color=0b1221&labelColor=05080f&logoColor=4da3ff&style=flat-square" alt="CSS3"/> <img src="https://img.shields.io/badge/Git-0b1221?logo=git&color=0b1221&labelColor=05080f&logoColor=4da3ff&style=flat-square" alt="Git"/> <img src="https://img.shields.io/badge/Docker-0b1221?logo=docker&color=0b1221&labelColor=05080f&logoColor=4da3ff&style=flat-square" alt="Docker"/> <img src="https://img.shields.io/badge/Linux-0b1221?logo=linux&color=0b1221&labelColor=05080f&logoColor=4da3ff&style=flat-square" alt="Linux"/> <img src="https://img.shields.io/badge/macOS-0b1221?logo=apple&color=0b1221&labelColor=05080f&logoColor=4da3ff&style=flat-square" alt="macOS"/>
+  <img src="https://skillicons.dev/icons?i=java,python,js,react,html,css,git,docker,linux,apple,vscode,github&theme=dark&perline=12" alt="Java, Python, JavaScript, React, HTML, CSS, Git, Docker, Linux, macOS, VS Code, GitHub"/>
 </p>
 
 <img src="assets/divider.svg" width="100%" alt=""/>
@@ -58,16 +58,16 @@ tools: [Git, Docker, React, Linux]
 <h3 align="center">Connect with me</h3>
 
 <p align="center">
-  <a href="https://www.linkedin.com/in/sahityasingh08/"><img src="https://img.shields.io/badge/linkedin-sahityasingh08-0b1221?logo=linkedin&color=0b1221&labelColor=05080f&logoColor=4da3ff&style=flat-square" height="30" alt="LinkedIn: sahityasingh08"/></a>
+  <a href="https://www.linkedin.com/in/sahityasingh08/"><img src="https://img.shields.io/badge/linkedin-sahityasingh08-141312?logo=linkedin&color=141312&labelColor=0a0a0a&logoColor=f5a524&style=flat-square" height="30" alt="LinkedIn: sahityasingh08"/></a>
   &nbsp;
-  <a href="mailto:sahityasingh508002@gmail.com"><img src="https://img.shields.io/badge/mail-sahityasingh508002%40gmail.com-0b1221?logo=gmail&color=0b1221&labelColor=05080f&logoColor=4da3ff&style=flat-square" height="30" alt="Email: sahityasingh508002@gmail.com"/></a>
+  <a href="mailto:sahityasingh508002@gmail.com"><img src="https://img.shields.io/badge/mail-sahityasingh508002%40gmail.com-141312?logo=gmail&color=141312&labelColor=0a0a0a&logoColor=f5a524&style=flat-square" height="30" alt="Email: sahityasingh508002@gmail.com"/></a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/sahityasingh08?tab=followers"><img src="https://img.shields.io/github/followers/sahityasingh08?label=followers&logo=github&color=0b1221&labelColor=05080f&logoColor=4da3ff&style=flat-square" alt="GitHub followers"/></a>
-  <img src="https://komarev.com/ghpvc/?username=sahityasingh08&label=profile%20views&color=3b82f6&style=flat-square" alt="Profile views"/>
-  <a href="https://en.opensuse.org/openSUSE:Members"><img src="https://img.shields.io/badge/openSUSE-member-0b1221?logo=opensuse&color=0b1221&labelColor=05080f&logoColor=4da3ff&style=flat-square" alt="openSUSE member"/></a>
-  <a href="https://github.com/checkstyle/checkstyle/pulls?q=is%3Apr+author%3Asahityasingh08"><img src="https://img.shields.io/badge/checkstyle-contributor-0b1221?logo=apachemaven&color=0b1221&labelColor=05080f&logoColor=4da3ff&style=flat-square" alt="checkstyle contributor"/></a>
+  <a href="https://github.com/sahityasingh08?tab=followers"><img src="https://img.shields.io/github/followers/sahityasingh08?label=followers&logo=github&color=141312&labelColor=0a0a0a&logoColor=f5a524&style=flat-square" alt="GitHub followers"/></a>
+  <img src="https://komarev.com/ghpvc/?username=sahityasingh08&label=profile%20views&color=f5a524&style=flat-square" alt="Profile views"/>
+  <a href="https://en.opensuse.org/openSUSE:Members"><img src="https://img.shields.io/badge/openSUSE-member-141312?logo=opensuse&color=141312&labelColor=0a0a0a&logoColor=f5a524&style=flat-square" alt="openSUSE member"/></a>
+  <a href="https://github.com/checkstyle/checkstyle/pulls?q=is%3Apr+author%3Asahityasingh08"><img src="https://img.shields.io/badge/checkstyle-contributor-141312?logo=apachemaven&color=141312&labelColor=0a0a0a&logoColor=f5a524&style=flat-square" alt="checkstyle contributor"/></a>
 </p>
 
 <p align="center"><sub>cards drawn by <a href="scripts/term.py">scripts/term.py</a> from public GitHub data · refreshed every 6 hours</sub></p>
