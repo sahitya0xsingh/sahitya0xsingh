@@ -47,10 +47,10 @@ tools: [Git, Docker, React, Linux]
 
 <img src="assets/divider.svg" width="100%" alt=""/>
 
-### <code>05</code> Stack
+<h3 align="center"><code>05</code> Tech Stack</h3>
 
-<p>
-  <img src="https://skillicons.dev/icons?i=java,python,js,react,html,css,git,docker,linux,apple,vscode,github&theme=dark&perline=12" alt="Java, Python, JavaScript, React, HTML, CSS, Git, Docker, Linux, macOS, VS Code, GitHub"/>
+<p align="center">
+  <img src="https://skillicons.dev/icons?i=java,python,js,react,html,css,git,docker,vscode,github&theme=dark&perline=10" alt="Java, Python, JavaScript, React, HTML, CSS, Git, Docker, VS Code, GitHub"/>
 </p>
 
 <img src="assets/divider.svg" width="100%" alt=""/>
