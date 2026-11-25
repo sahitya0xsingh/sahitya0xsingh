@@ -237,75 +237,29 @@ def render(m: dict, prof: dict, stats: dict) -> str:
 
     left = [_portrait(prof, 40, BX - 40, SCAN_START + SCAN_DUR)]
 
-    # right: progress, then live stats rolling up, contact, verdict
+    # right: GitHub numbers, then where to find me
     rx0, rx1 = BX + bw + 40, W - 40
-    steps = 10
-    right = [f'<text x="{rx1}" y="96" text-anchor="end" font-family="{MONO}" font-size="9" fill="{ACCENT}" '
-             f'letter-spacing="2">SCAN PROGRESS ◂</text>',
-             _stamp(0, SCAN_START, f'<text x="{rx1}" y="128" text-anchor="end" font-family="{MONO}" font-size="28" '
-                                   f'font-weight="800" fill="{MUTED}">---%</text>')]
-    for i in range(steps + 1):
-        t0 = SCAN_START + SCAN_DUR * i / steps
-        t1 = SCAN_START + SCAN_DUR * (i + 1) / steps if i < steps else None
-        right.append(_stamp(t0, t1, f'<text x="{rx1}" y="128" text-anchor="end" font-family="{MONO}" '
-                                    f'font-size="28" font-weight="800" fill="{BRIGHT}">{i * 10:03d}%</text>'))
-    right.append(f'<rect x="{rx0}" y="138" width="{rx1 - rx0}" height="5" fill="none" stroke="{LINE2}"/>'
-                 f'<rect x="{rx0 + 1}" y="139" width="0" height="3" fill="{ACCENT}">'
-                 f'<animate attributeName="width" from="0" to="{rx1 - rx0 - 2}" begin="{SCAN_START}s" '
-                 f'dur="{SCAN_DUR}s" fill="freeze"/></rect>')
-    right.append(_stamp(SCAN_START, t_end, f'<text x="{rx0}" y="158" font-family="{MONO}" font-size="9" '
-                                           f'fill="{ACCENT}" letter-spacing="2">SCANNING<tspan>'
-                                           f'<animate attributeName="opacity" values="1;0;1" dur=".6s" '
-                                           f'repeatCount="indefinite"/>_</tspan></text>'))
-    right.append(_stamp(t_end, None, f'<text x="{rx0}" y="158" font-family="{MONO}" font-size="9" fill="{GREEN}" '
-                                     f'letter-spacing="2">MATCH · {esc(stats["login"].upper())}</text>'))
-
-    def rolling(x0, x1, y, k, final, suffix, t):
-        """value counts up in a few quick frames"""
-        out = []
-        frames = 6
-        for f in range(frames + 1):
-            v = round(final * f / frames)
-            ta = t + f * .07
-            tb = t + (f + 1) * .07 if f < frames else None
-            out.append(_stamp(ta, tb, row(x0, x1, y, k, f"{v}{suffix}", BRIGHT)))
-        return "".join(out)
-
-    ry = 192
-    st = t_end + .1
-    right.append(_stamp(st, None, header(rx0, rx1, ry, "GITHUB STATS")))
+    right, ry = [], 96
+    right.append(_stamp(.2, None, header(rx0, rx1, ry, "GITHUB")))
     ry += 22
-    for k, final, suf in (("Repositories", m["repo_count"], ""), ("Merged PRs", m["pr_count"], ""),
-                          ("Contributions", m["total"], " /yr")):
-        right.append(rolling(rx0, rx1, ry, k, final, suf, st + .1))
+    for i, (k, v) in enumerate((("Repositories", str(m["repo_count"])), ("Merged PRs", str(m["pr_count"])),
+                                ("Contributions", f'{m["total"]} / yr'), ("Followers", str(stats.get("followers", 0))))):
+        right.append(_stamp(.3 + i * .12, None, row(rx0, rx1, ry, k, v, BRIGHT)))
         ry += 18
-    right.append(_stamp(st + .3, None, row(rx0, rx1, ry, "Lines of Code", prof["loc"], BRIGHT)))
-    ry += 32
-    ct = st + .5
-    right.append(_stamp(ct, None, header(rx0, rx1, ry, "CONTACT")))
+    ry += 18
+    right.append(_stamp(.8, None, header(rx0, rx1, ry, "OPEN SOURCE")))
     ry += 22
-    for i, (k, v) in enumerate((("GitHub", f"@{stats['login']}"), ("LinkedIn", prof["linkedin"]),
-                                ("Role", prof["title"]))):
-        right.append(_stamp(ct + .1 + i * .12, None, row(rx0, rx1, ry, k, v)))
+    for i, (k, v) in enumerate((("checkstyle", "contributor"), ("apereo/cas", "contributor"), ("openSUSE", "member"))):
+        right.append(_stamp(.9 + i * .12, None, row(rx0, rx1, ry, k, v)))
         ry += 18
-    ag_t = ct + .7
-    ay = ry + 14
-    right.append(_stamp(ag_t, None,
-                        f'<rect x="{rx0}" y="{ay}" width="{rx1 - rx0}" height="30" fill="{GREEN}" fill-opacity=".12" stroke="{GREEN}"/>'
-                        f'<text x="{(rx0 + rx1) / 2}" y="{ay + 20}" text-anchor="middle" font-family="{MONO}" font-size="13" '
-                        f'font-weight="800" fill="{GREEN}" letter-spacing="3" filter="url(#lg)">ACCESS GRANTED'
-                        f'<animate attributeName="opacity" values="1;.45;1" dur="1.4s" begin="{ag_t + .4:.2f}s" repeatCount="indefinite"/></text>'))
+    ry += 18
+    right.append(_stamp(1.2, None, header(rx0, rx1, ry, "CONTACT")))
+    ry += 22
+    for i, (k, v) in enumerate((("GitHub", f"@{stats['login']}"), ("LinkedIn", prof["linkedin"]))):
+        right.append(_stamp(1.3 + i * .12, None, row(rx0, rx1, ry, k, v)))
+        ry += 18
 
-    # bottom prompt + subtle hint
-    hint = _stamp(ag_t + .3, None,
-                  f'<text x="{W / 2}" y="{H - 30}" text-anchor="middle" font-family="{MONO}" font-size="11" fill="{MUTED}" '
-                  f'letter-spacing="4">▼  IDENTITY VERIFIED  ▼'
-                  f'<animate attributeName="opacity" values="1;.25;1" dur="1.6s" repeatCount="indefinite"/></text>')
-    status = (f'<text x="{W / 2}" y="{BY + bh + 42}" text-anchor="middle" font-family="{MONO}" font-size="10" '
-              f'fill="{MUTED}" letter-spacing="2">logo rendered from {glyphs} characters of this repo\'s own source code</text>')
-
-    frame = hud_frame(W, H, tl="SECURE TERMINAL", tr=f"NODE {stats['login'].upper()}",
-                      bl="v0x17 · STARTUP", br="AUTH: GLYPH-SCAN", tab="IDENTITY SCAN", fid="sp")
+    frame = hud_frame(W, H, tab=stats["login"].upper(), fid="sp")
     return svg_open(W, H, f"Start screen: {prof['name']} logo rendered from source code") + f"""
 <defs>
   {glow("lg", 1.8)}
@@ -329,8 +283,6 @@ def render(m: dict, prof: dict, stats: dict) -> str:
 {lock}
 {"".join(left)}
 {"".join(right)}
-{status}
-{hint}
 {scanlines(W, H)}
 </svg>
 """
