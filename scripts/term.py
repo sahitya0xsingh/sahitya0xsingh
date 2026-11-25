@@ -102,10 +102,11 @@ def _cursor(x: float, y: float, t: float, size: float = 14) -> str:
 
 
 def _glitch(body: str, x: float, y: float, w: float, h: float, uid: str, period: float = 4.0,
-            slices: int = 4, amp: float = 9) -> str:
+            slices: int = 4, amp: float = 9, clone: str = "") -> str:
     """Draw `body`, plus horizontal slices of it that jump sideways for a few frames every period."""
     rng = random.Random(uid)
     out = [f'<g id="{uid}">{body}</g>']
+    ref = clone or f"#{uid}"   # what the slices copy: a lighter element than the whole body if given
     for k in range(slices):
         sy = y + rng.uniform(0, h * .85)
         sh = rng.uniform(4, h * .14)
@@ -118,7 +119,7 @@ def _glitch(body: str, x: float, y: float, w: float, h: float, uid: str, period:
                    f'<rect x="{x - 20}" y="{sy:.1f}" width="{w + 40}" height="{sh:.1f}" fill="{WIN}"/>'
                    f'<g><animateTransform attributeName="transform" type="translate" '
                    f'values="0 0;0 0;{dx1:.1f} 0;{dx2:.1f} 0;0 0;0 0" keyTimes="{kt}" dur="{period}s" repeatCount="indefinite"/>'
-                   f'<use href="#{uid}" xlink:href="#{uid}"/></g></g>')
+                   f'<use href="{ref}" xlink:href="{ref}"/></g></g>')
     return "".join(out)
 
 
@@ -150,11 +151,11 @@ def _halftone(x0: float, y0: float, size: float, n: int = 64) -> tuple[str, str]
         for i in range(n):
             v = px[i, j] / 255
             d = ((i - cx) ** 2 + ((j - cy) * .9) ** 2) ** .5 / (n / 2)
-            v *= max(0.0, min(1.0, (1.0 - d) / .25))
-            r = cell * .55 * v ** 1.3
+            v *= max(0.0, min(1.0, (1.06 - d) / .3))
+            r = cell * .6 * v ** 1.15
             if r < .35:
                 continue
-            col = RAMP[4] if v > .74 else RAMP[3] if v > .48 else RAMP[2]
+            col = RAMP[4] if v > .66 else "#dcdcdc" if v > .42 else "#a6a6a6"
             dots.append(f'<circle cx="{x0 + (i + .5) * cell:.1f}" cy="{y0 + (j + .5) * cell:.1f}" r="{r:.2f}" fill="{col}"/>')
     mx, my = x0 + size / 2, y0 + size / 2
     band = size * .35
@@ -169,7 +170,7 @@ def _halftone(x0: float, y0: float, size: float, n: int = 64) -> tuple[str, str]
             f'transform="rotate(18 {mx} {my})"><animate attributeName="x" values="{x0 - band * 1.6:.0f};{x0 + size + band * .6:.0f}" '
             f'dur="3.2s" begin="2s" repeatCount="indefinite"/></rect></mask>'
 )
-    base = '<use href="#pdots" xlink:href="#pdots" opacity=".62"/>'
+    base = '<use href="#pdots" xlink:href="#pdots" opacity=".92"/>'
     lit = '<g mask="url(#sweep)"><use href="#pdots" xlink:href="#pdots"/></g>'
     # orbit ring and tick marks around the portrait
     r0 = size * .53
@@ -178,7 +179,7 @@ def _halftone(x0: float, y0: float, size: float, n: int = 64) -> tuple[str, str]
             f'<circle cx="{mx}" cy="{my}" r="{r0 + 8:.0f}" fill="none" stroke="{HI}" stroke-width="1.2" stroke-dasharray="40 {2 * 3.1416 * (r0 + 8) - 40:.0f}" opacity=".7">'
             f'<animateTransform attributeName="transform" type="rotate" from="0 {mx} {my}" to="-360 {mx} {my}" dur="9s" repeatCount="indefinite"/></circle>')
     svg = (ring + f'<g clip-path="url(#develop)">'
-           + _glitch(base + lit, x0, y0, size, size, "portrait", period=3.6, slices=3, amp=12) + '</g>')
+           + _glitch(base + lit, x0, y0, size, size, "portrait", period=3.6, slices=3, amp=12, clone="#pdots") + '</g>')
     return defs, svg
 
 
@@ -186,7 +187,7 @@ def _rain(x0: float, x1: float, y0: float, y1: float, uid: str, cols: int = 26) 
     """Faint columns of 0s and 1s drifting down behind everything."""
     rng = random.Random(uid)
     out = [f'<clipPath id="{uid}"><rect x="{x0}" y="{y0}" width="{x1 - x0}" height="{y1 - y0}"/></clipPath>'
-           f'<g clip-path="url(#{uid})" opacity=".07" font-family="{MONO}" font-size="11" fill="{HI}">']
+           f'<g clip-path="url(#{uid})" opacity=".05" font-family="{MONO}" font-size="11" fill="{HI}">']
     step = (x1 - x0) / cols
     for c in range(cols):
         chars = "".join(rng.choice("01") for _ in range(40))
@@ -272,7 +273,7 @@ def _typed_text(x: float, y: float, text: str, t: float, uid: str, size: float, 
 
 def records(m: dict, stats: dict, prof: dict) -> str:
     """A split-flap board of personal records; every digit rolls like an odometer before it lands."""
-    W, H = 1000, 470
+    W, H = 1000, 540
     crt_defs, crt = _crt(W, H, "r")
     best = m["best"]
     best_d = dt.date.fromisoformat(best["date"]) if best["date"] else None
@@ -327,13 +328,34 @@ def records(m: dict, stats: dict, prof: dict) -> str:
         body.append(_at(done, f'<text x="{ux}" y="{y + 20}" font-family="{MONO}" font-size="12" font-weight="700" '
                               f'fill="{HI}" letter-spacing="2">{esc(unit)}</text>'
                               f'<text x="{ux}" y="{y + 36}" font-family="{MONO}" font-size="11" fill="{MUTE}">{esc(note)}</text>'))
-        # the winning row gets a pulsing "NEW RECORD" stamp
-        if k == 1:
-            body.append(_at(done + .2, f'<g transform="translate({W - 150} {y + 8}) rotate(-6)">'
-                                       f'<rect width="118" height="26" fill="none" stroke="{HI}" stroke-width="1.5"/>'
-                                       f'<text x="59" y="18" text-anchor="middle" font-family="{MONO}" font-size="12" '
-                                       f'font-weight="800" fill="{HI}" letter-spacing="2">NEW RECORD</text>'
-                                       f'<animate attributeName="opacity" values="1;.35;1" dur="1.2s" repeatCount="indefinite"/></g>'))
+    end = t + .3 + len(rows) * .22 + 1.1 + digits * .18
+    # arcade header that flickers like a cabinet marquee
+    body.append(f'<text x="{W - 28}" y="78" text-anchor="end" font-family="{MONO}" font-size="24" font-weight="800" '
+                f'fill="{HI}" letter-spacing="7">HIGH SCORES'
+                f'<animate attributeName="opacity" values="1;1;.2;1;.4;1;1" keyTimes="0;.6;.62;.64;.66;.68;1" '
+                f'dur="3.5s" repeatCount="indefinite"/></text>'
+                f'<text x="{W - 28}" y="96" text-anchor="end" font-family="{MONO}" font-size="10.5" fill="{MUTE}" '
+                f'letter-spacing="3">PLAYER 1 · {esc(stats["login"].upper())}</text>')
+    # a selector that walks down the board, like picking a row on a cabinet
+    steps = ";".join(f"{y0 + k * rh - 6}" for k in range(len(rows)))
+    body.append(_at(end, f'<rect x="20" y="{y0 - 6}" width="{W - 40}" height="{rh - 4}" fill="#fff" opacity=".055">'
+                         f'<animate attributeName="y" values="{steps}" dur="{len(rows) * .9:.1f}s" calcMode="discrete" '
+                         f'repeatCount="indefinite"/></rect>'
+                         f'<text x="16" y="{y0 + 27}" font-family="{MONO}" font-size="13" fill="{HI}">▶'
+                         f'<animate attributeName="y" values="{";".join(str(y0 + k * rh + 27) for k in range(len(rows)))}" '
+                         f'dur="{len(rows) * .9:.1f}s" calcMode="discrete" repeatCount="indefinite"/></text>'))
+    # ticker tape along the bottom, looping forever
+    ty = y0 + len(rows) * rh + 8
+    tape = "   ✦   ".join(f"{r[0]} {r[1]} {r[2]}" for r in rows) + "   ✦   INSERT COIN TO CONTINUE   ✦   "
+    tw_px = len(tape) * 12 * .602
+    defs.append(f'<clipPath id="tape"><rect x="20" y="{ty}" width="{W - 40}" height="28"/></clipPath>')
+    body.append(_at(end, f'<line x1="20" y1="{ty}" x2="{W - 20}" y2="{ty}" stroke="{EDGE}"/>'
+                         f'<line x1="20" y1="{ty + 28}" x2="{W - 20}" y2="{ty + 28}" stroke="{EDGE}"/>'
+                         f'<g clip-path="url(#tape)"><text y="{ty + 19}" font-family="{MONO}" font-size="12" font-weight="700" '
+                         f'fill="{DIM}" letter-spacing="0" xml:space="preserve">'
+                         f'<animateTransform attributeName="transform" type="translate" values="0 0;{-tw_px:.0f} 0" '
+                         f'dur="{tw_px / 60:.1f}s" repeatCount="indefinite"/>'
+                         f'<tspan x="20">{esc(tape)}</tspan><tspan x="{20 + tw_px:.0f}">{esc(tape)}</tspan></text></g>'))
     return (_open(W, H, "Personal records: " + ", ".join(f"{r[0].lower()} {r[1]}" for r in rows))
             + f"<defs>{''.join(defs)}</defs>"
             + _window(W, H, f"{prof['user']}@{prof['host']}: ~/records — zsh",
