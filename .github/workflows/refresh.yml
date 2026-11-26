@@ -1,4 +1,4 @@
-# Redraws the live blueprint cards in assets/ every 6 hours. Commits only on change.
+# Redraws the neofetch card with live GitHub numbers every 6 hours. Commits only on change.
 name: refresh profile
 
 on:

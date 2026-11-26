@@ -1,23 +1,18 @@
 # How this profile works
 
-The README is drawn as a set of engineering-blueprint sheets. Everything is plain SVG made by the scripts in `scripts/`. There are no third-party widgets.
+The README is one neofetch-style card: an ASCII portrait on the left and system-style info on the right. It has a dark version and a light version, and GitHub shows the one that matches the visitor's theme.
 
 | File | What it is | Made by | Refreshed |
 |:--|:--|:--|:--|
-| `assets/hero.svg` | Sheet 01: the plotted portrait and title block | `scripts/hero.py` (needs Pillow) | by hand, when the photo or details change |
-| `assets/detail-*.svg` | Detail drawings: PreFlight, checkstyle, openSUSE, where my PRs went | `scripts/cards.py` | every 6 hours |
-| `assets/record.svg` | Sheet 02: contributions per day as a strip chart | `scripts/cards.py` | every 6 hours |
-
-`scripts/theme.py` holds the shared look: colours, grid, glow filters and the pen-drawing animation.
+| `data/ascii-dark.txt`, `data/ascii-light.txt` | the ASCII portrait | `scripts/ascii_art.py` from `assets/photo.jpg` (needs Pillow) | by hand, when the photo changes |
+| `assets/neofetch-dark.svg`, `assets/neofetch-light.svg` | the card | `scripts/neofetch.py` | every 6 hours, by the `refresh profile` workflow |
 
 ## Updating
 
-- **Live cards:** the `refresh profile` workflow runs `scripts/generate.py` every 6 hours and commits only when something changed.
-- **Header:** after changing `assets/photo.jpg` or the title block, run this locally and commit `assets/hero.svg`:
+- **Info lines** (name, studying, tools, contact): edit `lines()` in `scripts/neofetch.py`.
+- **GitHub stats:** these update by themselves.
+- **New photo:** replace `assets/photo.jpg`, then run this locally and commit the two text files:
 
   ```bash
-  pip install pillow && python scripts/hero.py
+  pip install pillow && python scripts/ascii_art.py
   ```
-
-- **Text:** edit the bio in `README.md` by hand.
-- **Hidden repos:** keep a repo out of the pull-request card with `hide_repos` in `data/profile.json`.

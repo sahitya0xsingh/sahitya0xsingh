@@ -1,18 +1,18 @@
-"""Redraw the live cards in assets/ (detail cards and the record strip).
+"""Redraw the neofetch card (assets/neofetch-dark.svg and -light.svg) with live GitHub numbers.
 
-    python scripts/generate.py          # live data (needs GITHUB_TOKEN)
+    python scripts/generate.py          # needs GITHUB_TOKEN
 """
 from __future__ import annotations
 
-import cards
 import metrics
-from common import LOGIN, profile
+import neofetch
+from common import LOGIN
 
 
 def main() -> None:
     from github_api import fetch_stats
     stats = fetch_stats(LOGIN)
-    cards.write_all(stats, metrics.compute(stats), profile().get("hide_repos", []))
+    neofetch.write_all(stats, metrics.compute(stats))
 
 
 if __name__ == "__main__":
