@@ -753,6 +753,7 @@ def mixer(m: dict, stats: dict, prof: dict) -> str:
     body = [f'<rect x="{x0 - 14:.0f}" y="96" width="{W - 2 * x0 + 28:.0f}" height="{H - 96 - 46}" rx="10" fill="url(#x-desk)" stroke="{EDGE}"/>']
     for sx, sy in [(x0 - 6, 104), (W - x0 + 6, 104), (x0 - 6, H - 58), (W - x0 + 6, H - 58)]:
         body.append(f'<circle cx="{sx:.0f}" cy="{sy}" r="3" fill="#2a2723"/><path d="M{sx - 2:.0f},{sy} h4" stroke="#0a0a0a"/>')
+    labels: list[str] = []
     for k, (repo, n) in enumerate(strips):
         master = k == n_s - 1
         x = x0 + k * (sw + sg)
@@ -806,14 +807,18 @@ def mixer(m: dict, stats: dict, prof: dict) -> str:
         g.append(f'<rect x="{x + 14}" y="350" width="{sw - 28}" height="22" rx="3" fill="#050505" stroke="#24211c"/>'
                  + _at(start + .5, f'<text x="{cx:.1f}" y="366" text-anchor="middle" font-family="{MONO}" font-size="13" font-weight="800" '
                                    f'fill="{HI}">{n}<tspan fill="{MUTE}" font-size="9.5" font-weight="400"> PR{"s" if n != 1 else ""}</tspan></text>'))
-        # masking-tape label
-        rot = rng.uniform(-2.2, 2.2)
-        nm = name if len(name) <= 14 else name[:13] + "…"
-        ow = owner if len(owner) <= 17 else owner[:16] + "…"
-        g.append(f'<g transform="rotate({rot:.1f} {cx:.1f} 400)"><rect x="{x + 6}" y="384" width="{sw - 12}" height="34" fill="{"#f5a524" if master else "#e9dfc6"}" opacity=".92"/>'
-                 f'<text x="{cx:.1f}" y="399" text-anchor="middle" font-family="{MONO}" font-size="10" font-weight="800" fill="#1b1712">'
-                 f'{esc("ALL REPOS" if master else nm)}</text>'
-                 f'<text x="{cx:.1f}" y="412" text-anchor="middle" font-family="{MONO}" font-size="8.5" fill="#5a5144">{esc("total" if master else (f"{nrepos[repo]} repos" if nrepos.get(repo, 1) > 1 else ow))}</text></g>')
+        # masking-tape label: flat, opaque, drawn above the CRT layer so scanlines never cross the text
+        rng.uniform(-2.2, 2.2)                            # keep the meter randomness stable
+        nm = name if len(name) <= 17 else name[:16] + "…"
+        ow = owner if len(owner) <= 18 else owner[:17] + "…"
+        fit = lambda txt, lim, w: (f' textLength="{w}" lengthAdjust="spacingAndGlyphs"' if len(txt) > lim else "")
+        sub = "total" if master else (f"{nrepos[repo]} repos" if nrepos.get(repo, 1) > 1 else ow)
+        labels.append(f'<rect x="{x + 5}" y="383" width="{sw - 10}" height="38" rx="2" fill="{"#f5a524" if master else "#f1e8d2"}" '
+                      f'stroke="{"#ffc35c" if master else "#fffaf0"}" stroke-opacity=".6"/>'
+                      f'<text x="{cx:.1f}" y="399" text-anchor="middle" font-family="{MONO}" font-size="11.5" font-weight="800" fill="#0d0b08"{fit(nm, 13, sw - 18)}>'
+                      f'{esc("ALL REPOS" if master else nm)}</text>'
+                      f'<text x="{cx:.1f}" y="414" text-anchor="middle" font-family="{MONO}" font-size="9.5" font-weight="600" '
+                      f'fill="{"#2a1d05" if master else "#3d352a"}"{fit(sub, 15, sw - 18)}>{esc(sub)}</text>')
         body.append("".join(g))
     legend = (f'<text x="{W - 28}" y="72" text-anchor="end" font-family="{MONO}" font-size="12.5" xml:space="preserve">'
               f'<tspan fill="{HI}" font-weight="700">{len(repos) + len([r for r, _ in stats.get("pr_repos", []) if r in hide])}</tspan><tspan fill="{DIM}"> repos   </tspan>'
@@ -822,4 +827,4 @@ def mixer(m: dict, stats: dict, prof: dict) -> str:
             + f"<defs>{''.join(defs)}</defs>"
             + _window(W, H, f"{prof['user']}@{prof['host']}: ~/mixdown — zsh", "one channel per organisation · level = merged pull requests · refreshed hourly",
                       f"updated {now_ist():%Y-%m-%d}")
-            + cmd + _at(t, "".join(body)) + _at(t + 1.6, legend) + crt + "</svg>")
+            + cmd + _at(t, "".join(body)) + _at(t + 1.6, legend) + crt + _at(t, "".join(labels)) + "</svg>")
