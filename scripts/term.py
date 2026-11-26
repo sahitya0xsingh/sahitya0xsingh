@@ -566,7 +566,7 @@ def mixer(m: dict, stats: dict, prof: dict) -> str:
     fader and a masking-tape label each, plus a master channel for the total."""
     hide = set(prof.get("hide_repos", []))
     repos = [(r, n) for r, n in stats.get("pr_repos", []) if r not in hide and not r.startswith(stats["login"] + "/")]
-    total = sum(n for _, n in repos)                      # master = every merged PR, not just the channels shown
+    total = m["pr_count"]                                 # master = every merged PR, hidden repos included
     # one channel per organisation, so all of checkstyle's repos add up on one strip
     by_owner: dict[str, list[tuple[str, int]]] = {}
     for r, n in repos:
@@ -659,7 +659,7 @@ def mixer(m: dict, stats: dict, prof: dict) -> str:
                  f'<text x="{cx:.1f}" y="412" text-anchor="middle" font-family="{MONO}" font-size="8.5" fill="#5a5144">{esc("total" if master else (f"{nrepos[repo]} repos" if nrepos.get(repo, 1) > 1 else ow))}</text></g>')
         body.append("".join(g))
     legend = (f'<text x="{W - 28}" y="72" text-anchor="end" font-family="{MONO}" font-size="12.5" xml:space="preserve">'
-              f'<tspan fill="{HI}" font-weight="700">{len(repos)}</tspan><tspan fill="{DIM}"> repos   </tspan>'
+              f'<tspan fill="{HI}" font-weight="700">{len(repos) + len([r for r, _ in stats.get("pr_repos", []) if r in hide])}</tspan><tspan fill="{DIM}"> repos   </tspan>'
               f'<tspan fill="{HI}" font-weight="700">{total}</tspan><tspan fill="{DIM}"> pull requests on the master bus</tspan></text>')
     return (_open(W, H, "Mixing desk of pull requests by repository: " + ", ".join(f"{r} {n}" for r, n in rows))
             + f"<defs>{''.join(defs)}</defs>"

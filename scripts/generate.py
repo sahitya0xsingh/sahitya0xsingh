@@ -20,10 +20,9 @@ def main() -> None:
         from github_api import fetch_stats
         stats = fetch_stats(LOGIN)
     prof = profile()
-    # one total everywhere: every merged PR to someone else's repo, minus the repos hidden in profile.json
-    hide = set(prof.get("hide_repos", []))
+    # one total everywhere: every merged PR to someone else's repo (hidden repos still count, they just get no channel)
     if stats.get("pr_repos"):
-        stats["pr_count"] = sum(n for r, n in stats["pr_repos"] if r not in hide and not r.startswith(LOGIN + "/"))
+        stats["pr_count"] = sum(n for r, n in stats["pr_repos"] if not r.startswith(LOGIN + "/"))
     m = metrics.compute(stats)
 
     changed = {
