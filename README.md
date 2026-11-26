@@ -29,7 +29,7 @@ tools: [Git, Docker, React, Linux]
 
 <a href="https://github.com/sahityasingh08/PreFlight"><img src="assets/project-preflight.svg" width="100%" alt="PreFlight: runs a GitHub org's CI locally in Docker so you push only when it passes. 97.1% match with GitHub CI across 106 replayed PRs."/></a>
 
-<p align="center"><sub><a href="https://sahityasingh08.github.io/PreFlight/">live dashboard</a> · <a href="https://sahityasingh08.github.io/PreFlight/#guide">step-by-step guide</a> · <a href="https://github.com/sahityasingh08/PreFlight">source</a></sub></p>
+<p align="center"><sub><a href="https://sahityasingh08.github.io/PreFlight/">live dashboard</a> · <a href="https://github.com/sahityasingh08/PreFlight">source</a></sub></p>
 
 <img src="assets/divider.svg" width="100%" alt=""/>
 
