@@ -10,6 +10,7 @@ refresh band and a vignette. All motion is SVG/SMIL, so it plays inside GitHub's
 from __future__ import annotations
 
 import datetime as dt
+import math
 import random
 
 from common import ROOT, esc, now_ist
@@ -202,6 +203,52 @@ def _rain(x0: float, x1: float, y0: float, y1: float, uid: str, cols: int = 26) 
 
 
 # ── cards ──────────────────────────────────────────────────────────────────
+def _neon_name(name: str, x: float, y: float, t: float, defs: list) -> str:
+    """The name as an amber neon sign: each letter's tube draws itself, lights up, then hums; two letters flicker
+    and the whole sign splits into red and cyan for a blink now and then."""
+    fs, cw = 46, 46 * .602
+    defs.append('<filter id="neon" x="-20%" y="-60%" width="140%" height="220%"><feGaussianBlur stdDeviation="6"/></filter>'
+                '<filter id="neon2" x="-20%" y="-60%" width="140%" height="220%"><feGaussianBlur stdDeviation="1.6"/></filter>')
+    font = f'font-family="{MONO}" font-size="{fs}" font-weight="800"'
+    glow, tubes, fills = [], [], []
+    flicker = {i for i, ch in enumerate(name) if ch.lower() == "i"}
+    for i, ch in enumerate(name):
+        if ch == " ":
+            continue
+        lx = x + i * cw
+        t0 = t + i * .07
+        fl = ""
+        if i in flicker:
+            per = 5.5 + i * .37
+            fl = (f'<animate attributeName="opacity" values="1;1;.15;1;.3;1;1" keyTimes="0;.8;.82;.84;.86;.9;1" '
+                  f'dur="{per:.2f}s" begin="{t0 + 2:.2f}s" repeatCount="indefinite"/>')
+        glow.append(f'<text x="{lx:.1f}" y="{y}" {font} fill="{HI}" opacity="0">'
+                    f'<animate attributeName="opacity" values="0;.9;.55;.85" keyTimes="0;.3;.6;1" begin="{t0 + .55:.2f}s" dur=".7s" fill="freeze"/>'
+                    f'{fl}{esc(ch)}</text>')
+        tubes.append(f'<text x="{lx:.1f}" y="{y}" {font} fill="none" stroke="{HI}" stroke-width="1.6" '
+                     f'stroke-dasharray="240" stroke-dashoffset="240">'
+                     f'<animate attributeName="stroke-dashoffset" from="240" to="0" begin="{t0:.2f}s" dur=".7s" fill="freeze"/>{fl}{esc(ch)}</text>')
+        fills.append(f'<text x="{lx:.1f}" y="{y}" {font} fill="#fff4d8" opacity="0">'
+                     f'<animate attributeName="opacity" values="0;1;.4;1" keyTimes="0;.4;.6;1" begin="{t0 + .55:.2f}s" dur=".5s" fill="freeze"/>'
+                     f'{fl}{esc(ch)}</text>')
+    end = t + len(name) * .07 + 1.2
+    w = len(name) * cw
+    # red / cyan split for a blink every ~6 s
+    split = "".join(
+        f'<text x="{x}" y="{y}" {font} fill="{c}" opacity="0" letter-spacing="0">{esc(name)}'
+        f'<animate attributeName="opacity" values="0;0;.75;.75;0;0" keyTimes="0;.9;.905;.93;.935;1" dur="6.3s" begin="{end:.2f}s" repeatCount="indefinite"/>'
+        f'<animateTransform attributeName="transform" type="translate" values="0 0;0 0;{dx} 0;{-dx / 2} 0;0 0;0 0" '
+        f'keyTimes="0;.9;.905;.93;.935;1" dur="6.3s" begin="{end:.2f}s" repeatCount="indefinite"/></text>'
+        for c, dx in (("#ff3b30", -5), ("#2fd5ff", 5)))
+    underline = (f'<path d="M{x},{y + 14} H{x + w:.0f}" stroke="{HI}" stroke-width="2.2" stroke-linecap="round" '
+                 f'stroke-dasharray="{w:.0f}" stroke-dashoffset="{w:.0f}"><animate attributeName="stroke-dashoffset" from="{w:.0f}" to="0" '
+                 f'begin="{end - .4:.2f}s" dur=".8s" fill="freeze"/></path>')
+    hum = (f'<g opacity="1"><animate attributeName="opacity" values="1;.86;1;.93;1" dur="2.3s" begin="{end:.2f}s" repeatCount="indefinite"/>'
+           f'<g filter="url(#neon)">{"".join(glow)}<g opacity="0"><set attributeName="opacity" to="1" begin="{end - .4:.2f}s" fill="freeze"/>{underline}</g></g>'
+           f'<g filter="url(#neon2)" opacity=".8">{"".join(tubes)}</g>{"".join(tubes)}{"".join(fills)}{underline}</g>')
+    return split + hum
+
+
 def hero(m: dict, prof: dict, stats: dict) -> str:
     W, H = 1000, 460
     crt_defs, crt = _crt(W, H, "h")
@@ -213,17 +260,10 @@ def hero(m: dict, prof: dict, stats: dict) -> str:
     defs.append(c)
     body.append(ln)
     t += .15
-    name = (f'<text x="{x}" y="{y + 44}" font-family="{MONO}" font-size="36" font-weight="800" '
-            f'fill="{TEXT}" letter-spacing="-.5">{esc(prof["name"])}</text>')
-    # a ghost copy of the name that splits off now and then
-    ghost = (f'<text x="{x}" y="{y + 44}" font-family="{MONO}" font-size="36" font-weight="800" fill="none" '
-             f'stroke="{DIM}" stroke-width=".8" letter-spacing="-.5" opacity="0">{esc(prof["name"])}'
-             f'<animate attributeName="opacity" values="0;0;.9;.9;0;0" keyTimes="0;.7;.705;.74;.745;1" dur="5s" repeatCount="indefinite"/>'
-             f'<animateTransform attributeName="transform" type="translate" values="0 0;0 0;-5 1;4 -1;0 0;0 0" '
-             f'keyTimes="0;.7;.705;.74;.745;1" dur="5s" repeatCount="indefinite"/></text>')
-    body.append(_at(t, ghost + _glitch(name, x, y + 12, 400, 42, "name", period=5, slices=3, amp=10)
-                    + f'<text x="{x}" y="{y + 70}" font-family="{MONO}" font-size="13.5" fill="{DIM}">'
-                      f'{esc(prof["headline"])}</text>'))
+    body.append(_neon_name(prof["name"], x, y + 50, t, defs))
+    body.append(_at(t + .9, f'<text x="{x}" y="{y + 82}" font-family="{MONO}" font-size="13.5" fill="{DIM}">'
+                            f'{esc(prof["headline"])}</text>'))
+    y += 12
 
     # the quote: the one line that says what I do, set larger than everything else
     y += 108
@@ -271,95 +311,134 @@ def _typed_text(x: float, y: float, text: str, t: float, uid: str, size: float, 
     return clip, svg, t + dur
 
 
+def _nice_max(v: float) -> int:
+    """Round a value up to a friendly dial maximum (comfortably above it)."""
+    v = max(1, v * 1.15)
+    mag = 10 ** int(math.log10(v))
+    for f in (1, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10):
+        if f * mag >= v:
+            return int(f * mag)
+    return int(10 * mag)
+
+
+def _dial(cx: float, cy: float, r: float, val: float, vmax: int, label: str, unit: str, t: float, uid: str) -> str:
+    """A big analogue gauge: 270-degree sweep, ticks and numbers, a red zone, a needle that sweeps up with an
+    overshoot, then twitches like a real instrument."""
+    a0, sweep = -225, 270
+    ang = lambda v: a0 + sweep * min(1.0, v / vmax)
+    pt = lambda deg, rr: (cx + rr * math.cos(math.radians(deg)), cy + rr * math.sin(math.radians(deg)))
+    out = [f'<circle cx="{cx}" cy="{cy}" r="{r + 14}" fill="#0b0a09" stroke="#2a2620" stroke-width="2"/>',
+           f'<circle cx="{cx}" cy="{cy}" r="{r + 6}" fill="url(#{uid}-face)"/>']
+    # red zone: last 12% of the scale
+    z0, z1 = pt(a0 + sweep * .88, r - 4), pt(a0 + sweep, r - 4)
+    out.append(f'<path d="M{z0[0]:.1f},{z0[1]:.1f} A{r - 4},{r - 4} 0 0 1 {z1[0]:.1f},{z1[1]:.1f}" fill="none" stroke="#ff5a1f" stroke-width="7" opacity=".85"/>')
+    for i in range(0, 51):
+        deg = a0 + sweep * i / 50
+        major = i % 5 == 0
+        p1, p2 = pt(deg, r - (16 if major else 9)), pt(deg, r - 2)
+        out.append(f'<line x1="{p1[0]:.1f}" y1="{p1[1]:.1f}" x2="{p2[0]:.1f}" y2="{p2[1]:.1f}" stroke="{TEXT if major else MUTE}" '
+                   f'stroke-width="{2 if major else 1}"/>')
+        if major:
+            tp = pt(deg, r - 30)
+            out.append(f'<text x="{tp[0]:.1f}" y="{tp[1] + 4:.1f}" text-anchor="middle" font-family="{MONO}" font-size="{11 if r > 100 else 9}" '
+                       f'fill="{DIM}">{int(vmax * i / 50)}</text>')
+    out.append(f'<text x="{cx}" y="{cy - r * .5:.0f}" text-anchor="middle" font-family="{MONO}" font-size="{11 if r > 100 else 9}" '
+               f'fill="{HI}" letter-spacing="2.5">{esc(label)}</text>')
+    # needle
+    target = ang(val)
+    over = ang(min(vmax, val * 1.1))
+    needle = (f'<g><animateTransform attributeName="transform" type="rotate" values="{a0 + 90} {cx} {cy};{over + 90:.1f} {cx} {cy};'
+              f'{target + 90 - 2:.1f} {cx} {cy};{target + 90:.1f} {cx} {cy}" keyTimes="0;.55;.8;1" dur="1.6s" begin="{t:.2f}s" fill="freeze" '
+              f'calcMode="spline" keySplines=".3 0 .2 1;.4 0 .6 1;.4 0 .6 1"/>'
+              f'<g><animateTransform attributeName="transform" type="rotate" values="0 {cx} {cy};1.6 {cx} {cy};-.8 {cx} {cy};0 {cx} {cy}" '
+              f'dur="{1.7 + r / 400:.2f}s" begin="{t + 1.6:.2f}s" repeatCount="indefinite"/>'
+              f'<path d="M{cx - 3},{cy + 14} L{cx},{cy - r + 12} L{cx + 3},{cy + 14} Z" fill="{HI}"/>'
+              f'<path d="M{cx - 3},{cy + 14} L{cx},{cy - r + 12} L{cx + 3},{cy + 14} Z" fill="{HI}" opacity=".5" filter="url(#{uid}-blur)"/>'
+              f'</g></g>')
+    out.append(needle)
+    out.append(f'<circle cx="{cx}" cy="{cy}" r="{r * .11:.1f}" fill="#1e1b17" stroke="{HI}" stroke-width="1.5"/>')
+    # digital readout in the lower half
+    out.append(_at(t + 1.2, f'<rect x="{cx - r * .42:.0f}" y="{cy + r * .34:.0f}" width="{r * .84:.0f}" height="{r * .3:.0f}" rx="4" fill="#050505" stroke="#2a2620"/>'
+                            f'<text x="{cx}" y="{cy + r * .34 + r * .22:.0f}" text-anchor="middle" font-family="{MONO}" font-size="{r * .2:.0f}" '
+                            f'font-weight="800" fill="{HI}">{val}<tspan font-size="{r * .1:.0f}" fill="{MUTE}" font-weight="400"> {esc(unit)}</tspan></text>'))
+    return "".join(out)
+
+
 def records(m: dict, stats: dict, prof: dict) -> str:
-    """A split-flap board of personal records; every digit rolls like an odometer before it lands."""
-    W, H = 1000, 540
+    """Personal records as a car's instrument cluster: two big gauges, an odometer, ignition warning lights and
+    small bar meters. Needles sweep up with an overshoot and keep twitching."""
+    W, H = 1000, 560
     crt_defs, crt = _crt(W, H, "r")
     best = m["best"]
     best_d = dt.date.fromisoformat(best["date"]) if best["date"] else None
-    rows = [
-        ("CONTRIBUTIONS", m["total"], "THIS YEAR", "every commit, PR, review and issue"),
-        ("BEST DAY", best["count"], "IN ONE DAY", f"{best_d:%d %b %Y}".upper() if best_d else ""),
-        ("PULL REQUESTS", m["pr_count"], "UPSTREAM", "shipped into other people's repos"),
-        ("LONGEST STREAK", m["longest"], "DAYS", "without missing a day"),
-        ("ACTIVE DAYS", m["active"], f"OF {m['span']}", "days with at least one contribution"),
-        ("REPOSITORIES", m["repo_count"], "PUBLIC", f"@{stats['login']}"),
-    ]
-    clip, cmd, t = _typed(28, 72, "records --all --rank", .2, "r1")
+    clip, cmd, t = _typed(28, 72, "records --dashboard", .2, "r1")
     defs = [crt_defs, clip,
-            '<linearGradient id="flap" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1e1c1a"/>'
-            '<stop offset=".5" stop-color="#151413"/><stop offset=".5" stop-color="#0c0b0a"/><stop offset="1" stop-color="#121110"/></linearGradient>']
-    body = []
-    tw, th, tg = 30, 42, 4          # tile width, height, gap
-    digits = 4
-    x_lab, x_tiles = 70, 330
-    y0, rh = 118, 54
-    strip = "0123456789" * 3
-    for k, (label, val, unit, note) in enumerate(rows):
-        y = y0 + k * rh
-        t0 = t + .3 + k * .22
-        rank = f"#{k + 1:02d}"
-        body.append(_at(t0, f'<text x="28" y="{y + 27}" font-family="{MONO}" font-size="11" fill="{MUTE}">{rank}</text>'
-                            f'<text x="{x_lab}" y="{y + 27}" font-family="{MONO}" font-size="14" font-weight="700" '
-                            f'fill="{TEXT}" letter-spacing="3">{label}</text>'
-                            f'<line x1="{x_lab}" y1="{y + rh - 6}" x2="{W - 28}" y2="{y + rh - 6}" stroke="{EDGE}"/>'))
-        txt = str(val).rjust(digits)
-        for i, ch in enumerate(txt):
-            tx = x_tiles + i * (tw + tg)
-            uid = f"od{k}{i}"
-            tile = (f'<rect x="{tx}" y="{y}" width="{tw}" height="{th}" rx="3" fill="url(#flap)" stroke="#2c2a27"/>'
-                    f'<line x1="{tx}" y1="{y + th / 2}" x2="{tx + tw}" y2="{y + th / 2}" stroke="#000" stroke-width="1.2"/>')
-            if ch == " ":
-                body.append(_at(t0, tile))
-                continue
-            d = int(ch)
-            land = 20 + d               # lands on the third copy of the digit, after two full spins
-            defs.append(f'<clipPath id="{uid}"><rect x="{tx}" y="{y}" width="{tw}" height="{th}" rx="3"/></clipPath>')
-            col = "".join(f'<tspan x="{tx + tw / 2}" dy="{th if j else 0}">{c}</tspan>' for j, c in enumerate(strip))
-            spin = 1.1 + i * .18
-            body.append(_at(t0, tile + f'<g clip-path="url(#{uid})"><text x="{tx + tw / 2}" y="{y + th * .72}" '
-                                       f'text-anchor="middle" font-family="{MONO}" font-size="27" font-weight="800" fill="{HI}">'
-                                       f'<animateTransform attributeName="transform" type="translate" from="0 0" to="0 {-land * th}" '
-                                       f'begin="{t0:.2f}s" dur="{spin:.2f}s" calcMode="spline" keySplines=".15 .7 .2 1" fill="freeze"/>'
-                                       f'{col}</text></g>'
-                                       f'<line x1="{tx}" y1="{y + th / 2}" x2="{tx + tw}" y2="{y + th / 2}" stroke="#000" stroke-width="1.2"/>'))
-        done = t0 + 1.1 + digits * .18
-        ux = x_tiles + digits * (tw + tg) + 16
-        body.append(_at(done, f'<text x="{ux}" y="{y + 20}" font-family="{MONO}" font-size="12" font-weight="700" '
-                              f'fill="{HI}" letter-spacing="2">{esc(unit)}</text>'
-                              f'<text x="{ux}" y="{y + 36}" font-family="{MONO}" font-size="11" fill="{MUTE}">{esc(note)}</text>'))
-    end = t + .3 + len(rows) * .22 + 1.1 + digits * .18
-    # arcade header that flickers like a cabinet marquee
-    body.append(f'<text x="{W - 28}" y="78" text-anchor="end" font-family="{MONO}" font-size="24" font-weight="800" '
-                f'fill="{HI}" letter-spacing="7">HIGH SCORES'
-                f'<animate attributeName="opacity" values="1;1;.2;1;.4;1;1" keyTimes="0;.6;.62;.64;.66;.68;1" '
-                f'dur="3.5s" repeatCount="indefinite"/></text>'
-                f'<text x="{W - 28}" y="96" text-anchor="end" font-family="{MONO}" font-size="10.5" fill="{MUTE}" '
-                f'letter-spacing="3">PLAYER 1 · {esc(stats["login"].upper())}</text>')
-    # a selector that walks down the board, like picking a row on a cabinet
-    steps = ";".join(f"{y0 + k * rh - 6}" for k in range(len(rows)))
-    body.append(_at(end, f'<rect x="20" y="{y0 - 6}" width="{W - 40}" height="{rh - 4}" fill="#ffb547" opacity=".055">'
-                         f'<animate attributeName="y" values="{steps}" dur="{len(rows) * .9:.1f}s" calcMode="discrete" '
-                         f'repeatCount="indefinite"/></rect>'
-                         f'<text x="16" y="{y0 + 27}" font-family="{MONO}" font-size="13" fill="{HI}">▶'
-                         f'<animate attributeName="y" values="{";".join(str(y0 + k * rh + 27) for k in range(len(rows)))}" '
-                         f'dur="{len(rows) * .9:.1f}s" calcMode="discrete" repeatCount="indefinite"/></text>'))
-    # ticker tape along the bottom, looping forever
-    ty = y0 + len(rows) * rh + 8
-    tape = "   ✦   ".join(f"{r[0]} {r[1]} {r[2]}" for r in rows) + "   ✦   INSERT COIN TO CONTINUE   ✦   "
-    tw_px = len(tape) * 12 * .602
-    defs.append(f'<clipPath id="tape"><rect x="20" y="{ty}" width="{W - 40}" height="28"/></clipPath>')
-    body.append(_at(end, f'<line x1="20" y1="{ty}" x2="{W - 20}" y2="{ty}" stroke="{EDGE}"/>'
-                         f'<line x1="20" y1="{ty + 28}" x2="{W - 20}" y2="{ty + 28}" stroke="{EDGE}"/>'
-                         f'<g clip-path="url(#tape)"><text y="{ty + 19}" font-family="{MONO}" font-size="12" font-weight="700" '
-                         f'fill="{DIM}" letter-spacing="0" xml:space="preserve">'
-                         f'<animateTransform attributeName="transform" type="translate" values="0 0;{-tw_px:.0f} 0" '
-                         f'dur="{tw_px / 60:.1f}s" repeatCount="indefinite"/>'
-                         f'<tspan x="20">{esc(tape)}</tspan><tspan x="{20 + tw_px:.0f}">{esc(tape)}</tspan></text></g>'))
-    return (_open(W, H, "Personal records: " + ", ".join(f"{r[0].lower()} {r[1]}" for r in rows))
+            '<radialGradient id="r-face" cx=".5" cy=".42" r=".6"><stop offset="0" stop-color="#1d1a15"/><stop offset="1" stop-color="#0d0c0a"/></radialGradient>',
+            '<filter id="r-blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3"/></filter>']
+    title = (f'<text x="{W - 28}" y="76" text-anchor="end" font-family="{MONO}" font-size="22" font-weight="800" fill="{HI}" letter-spacing="6">'
+             f'INSTRUMENT CLUSTER</text><text x="{W - 28}" y="96" text-anchor="end" font-family="{MONO}" font-size="10.5" fill="{MUTE}" '
+             f'letter-spacing="3">DRIVER · {esc(stats["login"].upper())}</text>')
+    body = [_at(t, title)]
+    tc = t + .2
+    # two big gauges
+    body.append(_at(tc, _dial(205, 290, 128, m["total"], _nice_max(m["total"]), "CONTRIBUTIONS", "/yr", tc + .9, "r")))
+    body.append(_at(tc, _dial(795, 290, 128, m["pr_count"], _nice_max(m["pr_count"]), "PULL REQUESTS", "merged", tc + 1.1, "r")))
+    # centre: ignition lights, odometer, trip
+    cx = 500
+    lights = [("CI", True), ("MERGE", True), ("STREAK", m["streak"] > 0), ("LINT", False), ("BUILD", False), ("PUSH", True)]
+    lt = []
+    for i, (name, stays) in enumerate(lights):
+        lx = cx - 120 + (i % 3) * 82
+        ly = 150 + (i // 3) * 34
+        on = (f'<animate attributeName="opacity" values="0;1;1;{1 if stays else .12}" keyTimes="0;.1;.75;1" dur="1.6s" begin="{tc:.2f}s" fill="freeze"/>'
+              + (f'<animate attributeName="opacity" values="1;.55;1" dur="{1.8 + i * .2:.1f}s" begin="{tc + 1.6:.2f}s" repeatCount="indefinite"/>' if stays else ""))
+        lt.append(f'<g opacity="0">{on}<rect x="{lx}" y="{ly}" width="74" height="24" rx="5" fill="{HI}" fill-opacity=".1" stroke="{HI}"/>'
+                  f'<text x="{lx + 37}" y="{ly + 16}" text-anchor="middle" font-family="{MONO}" font-size="10.5" font-weight="800" '
+                  f'fill="{HI}" letter-spacing="1.5">{name}</text></g>')
+        lt.append(f'<rect x="{lx}" y="{ly}" width="74" height="24" rx="5" fill="none" stroke="#24211c"/>')
+    body.append("".join(lt))
+    # odometer: six rolling digit wheels showing total contributions
+    odo = f"{m['total']:06d}"
+    ox, oy, dw, dh = cx - 6 * 15, 260, 28, 38
+    od = [f'<text x="{cx}" y="{oy - 10}" text-anchor="middle" font-family="{MONO}" font-size="10" fill="{MUTE}" letter-spacing="3">ODO · CONTRIBUTIONS</text>',
+          f'<rect x="{ox - 6}" y="{oy - 2}" width="{6 * (dw + 2) + 10}" height="{dh + 4}" rx="4" fill="#050505" stroke="#2a2620"/>']
+    for i, d in enumerate(odo):
+        dx = ox + i * (dw + 2)
+        col = "".join(f'<text x="{dx + dw / 2}" y="{oy + 28 + j * dh}" text-anchor="middle" font-family="{MONO}" font-size="26" font-weight="800" '
+                      f'fill="{HI if i >= 6 - len(str(m["total"])) else "#4a3a1c"}">{j % 10}</text>' for j in range(20))
+        final = -(10 + int(d)) * dh
+        od.append(f'<clipPath id="r-od{i}"><rect x="{dx}" y="{oy}" width="{dw}" height="{dh}"/></clipPath>'
+                  f'<rect x="{dx}" y="{oy}" width="{dw}" height="{dh}" fill="#100f0d"/>'
+                  f'<g clip-path="url(#r-od{i})"><g><animateTransform attributeName="transform" type="translate" from="0 0" to="0 {final}" '
+                  f'begin="{tc + .6 + i * .12:.2f}s" dur="{1.4 + (5 - i) * .15:.2f}s" fill="freeze" calcMode="spline" keyTimes="0;1" keySplines=".3 0 .1 1"/>{col}</g></g>'
+                  f'<line x1="{dx}" y1="{oy + dh / 2}" x2="{dx + dw}" y2="{oy + dh / 2}" stroke="#000" stroke-opacity=".35"/>')
+    body.append("".join(od))
+    body.append(_at(tc + 1.6, f'<text x="{cx}" y="{oy + dh + 26}" text-anchor="middle" font-family="{MONO}" font-size="11" fill="{DIM}">'
+                              f'TRIP · best day <tspan fill="{HI}" font-weight="800">{best["count"]}</tspan>'
+                              f'{f" on {best_d:%d %b}".upper() if best_d else ""}</text>'))
+    # bottom row: bar meters (like fuel / temperature)
+    bars = [("LONGEST STREAK", m["longest"], 30, "days"), ("ACTIVE DAYS", m["active"], m["span"], f"of {m['span']}"),
+            ("CURRENT STREAK", m["streak"], 30, "days"), ("REPOSITORIES", m["repo_count"], _nice_max(m["repo_count"]), "public")]
+    bw = (W - 56 - 3 * 18) / 4
+    for k, (lab, v, vmax, unit) in enumerate(bars):
+        bx = 28 + k * (bw + 18)
+        by = 456
+        segs = 20
+        lit = max(1 if v else 0, round(segs * min(1, v / max(1, vmax))))
+        sw = (bw - 24) / segs
+        cells = "".join(f'<rect x="{bx + 12 + j * sw:.1f}" y="{by + 26}" width="{sw - 2:.1f}" height="12" rx="1.5" fill="#1d1a16"/>' for j in range(segs))
+        litc = "".join(f'<rect x="{bx + 12 + j * sw:.1f}" y="{by + 26}" width="{sw - 2:.1f}" height="12" rx="1.5" fill="{"#ff5a1f" if j >= segs - 3 else HI}" opacity="0">'
+                       f'<set attributeName="opacity" to="1" begin="{tc + 1 + k * .15 + j * .04:.2f}s" fill="freeze"/></rect>' for j in range(lit))
+        body.append(f'<rect x="{bx:.0f}" y="{by}" width="{bw:.0f}" height="52" rx="6" fill="#0a0908" stroke="#24211c"/>'
+                    f'<text x="{bx + 12:.0f}" y="{by + 17}" font-family="{MONO}" font-size="10" fill="{MUTE}" letter-spacing="2">{lab}</text>'
+                    + _at(tc + 1.2, f'<text x="{bx + bw - 12:.0f}" y="{by + 17}" text-anchor="end" font-family="{MONO}" font-size="12" font-weight="800" '
+                                    f'fill="{HI}">{v}<tspan fill="{MUTE}" font-weight="400" font-size="10"> {esc(unit)}</tspan></text>')
+                    + cells + litc)
+    return (_open(W, H, f"Personal records as an instrument cluster: contributions {m['total']}, pull requests {m['pr_count']}, "
+                        f"best day {best['count']}, longest streak {m['longest']} days, active days {m['active']}, repositories {m['repo_count']}")
             + f"<defs>{''.join(defs)}</defs>"
-            + _window(W, H, f"{prof['user']}@{prof['host']}: ~/records — zsh",
-                      "source: GitHub contribution calendar and search", f"updated {now_ist():%Y-%m-%d}")
+            + _window(W, H, f"{prof['user']}@{prof['host']}: ~/records — zsh", "source: GitHub contribution calendar and search",
+                      f"updated {now_ist():%Y-%m-%d}")
             + cmd + "".join(body) + crt + "</svg>")
 
 
