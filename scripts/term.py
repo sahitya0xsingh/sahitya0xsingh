@@ -561,71 +561,97 @@ def project(p: dict) -> str:
             + cmd + "".join(body) + crt + "</svg>")
 
 
-def departures(m: dict, stats: dict, prof: dict) -> str:
-    """Repos I've sent pull requests to, as an airport split-flap departures board. Letters flip into place."""
+def mixer(m: dict, stats: dict, prof: dict) -> str:
+    """Repos I've sent pull requests to, as channel strips on a mixing desk: gain knob, bouncing LED meter,
+    fader and a masking-tape label each, plus a master channel for the total."""
     hide = set(prof.get("hide_repos", []))
     rows = [(r, n) for r, n in stats.get("pr_repos", []) if r not in hide and not r.startswith(stats["login"] + "/")][:7]
-    latest = next((p["repo"] for p in stats.get("prs", []) if p["repo"] in dict(rows)), rows[0][0] if rows else "")
-    cols = [("FLIGHT", 6), ("DESTINATION", 21), ("VIA", 15), ("PRS", 3), ("STATUS", 8)]
-    cw, ch, pitch, gap = 14.6, 25, 33, 1
-    total = sum(n for _, n in cols) + gap * (len(cols) - 1)
-    W = 1000
-    x0 = (W - total * cw) / 2
-    y0 = 146
-    H = int(y0 + pitch * max(1, len(rows)) + 96)
-    crt_defs, crt = _crt(W, H, "d")
-    clip, cmd, t = _typed(28, 72, "gh search prs --author=@me | departures", .2, "d1")
-    rng = random.Random(stats["login"])
-    glyphs = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-
-    def field_x(i: int) -> float:
-        return x0 + (sum(n for _, n in cols[:i]) + gap * i) * cw
-
-    body = []
-    for i, (name, n) in enumerate(cols):
-        body.append(_at(t, f'<text x="{field_x(i) + 1:.1f}" y="{y0 - 14}" text-anchor="start" font-weight="400" font-family="{MONO}" font-size="10.5" fill="{DIM}" '
-                           f'letter-spacing="2">{name}</text>'))
-    for r, (repo, n) in enumerate(rows):
+    total = sum(n for _, n in rows)
+    W, H = 1000, 500
+    crt_defs, crt = _crt(W, H, "x")
+    clip, cmd, t = _typed(28, 72, "gh search prs --author=@me | mixdown", .2, "x1")
+    strips = rows + [("MASTER/master", total)]
+    n_s = len(strips)
+    sw, sg = 106, 8
+    x0 = (W - n_s * sw - (n_s - 1) * sg) / 2
+    top = max((n for _, n in rows), default=1)
+    rng = random.Random(stats["login"] + "mix")
+    SEG, my0, my1 = 16, 176, 336                       # meter segments and their vertical span
+    seg_h = (my1 - my0) / SEG
+    defs = [crt_defs, clip,
+            f'<linearGradient id="x-desk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#16140f"/><stop offset="1" stop-color="#0c0b09"/></linearGradient>',
+            f'<linearGradient id="x-cap" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9d3c7"/><stop offset=".5" stop-color="#8f897d"/><stop offset="1" stop-color="#cfc8bb"/></linearGradient>',
+            f'<radialGradient id="x-knob" cx=".4" cy=".35" r=".7"><stop offset="0" stop-color="#3a3631"/><stop offset="1" stop-color="#111"/></radialGradient>']
+    body = [f'<rect x="{x0 - 14:.0f}" y="96" width="{W - 2 * x0 + 28:.0f}" height="{H - 96 - 46}" rx="10" fill="url(#x-desk)" stroke="{EDGE}"/>']
+    for sx, sy in [(x0 - 6, 104), (W - x0 + 6, 104), (x0 - 6, H - 58), (W - x0 + 6, H - 58)]:
+        body.append(f'<circle cx="{sx:.0f}" cy="{sy}" r="3" fill="#2a2723"/><path d="M{sx - 2:.0f},{sy} h4" stroke="#0a0a0a"/>')
+    for k, (repo, n) in enumerate(strips):
+        master = k == n_s - 1
+        x = x0 + k * (sw + sg)
+        cx = x + sw / 2
+        level = 1 if master else max(.08, (n / top) ** .75)
+        lit = max(1, round(level * SEG))
         owner, name = repo.split("/", 1)
-        code = (owner.replace("-", "")[:2]).upper()
-        status = "BOARDING" if repo == latest else "DEPARTED"
-        values = [f"{code} {n:03d}", name.upper(), owner.upper(), f"{n:>3}", status]
-        y = y0 + r * pitch
-        for i, ((_, width), val) in enumerate(zip(cols, values)):
-            val = (val if len(val) <= width else val[:width - 1] + "…").ljust(width)
-            for k, chr_ in enumerate(val):
-                x = field_x(i) + k * cw
-                cell = (f'<rect x="{x:.1f}" y="{y}" width="{cw - 2:.1f}" height="{ch}" rx="2" fill="#151412"/>'
-                        f'<line x1="{x:.1f}" y1="{y + ch / 2}" x2="{x + cw - 2:.1f}" y2="{y + ch / 2}" stroke="#000" stroke-width="1"/>')
-                colour = HI if i in (0, 3, 4) else TEXT
-                tx, ty = x + (cw - 2) / 2, y + ch / 2 + 5
-                start = t + .25 + r * .12 + rng.uniform(0, .5)
-                frames = [rng.choice(glyphs) for _ in range(2)] + [chr_]
-                if chr_ == " ":
-                    body.append(cell)
-                    continue
-                txt = ""
-                for f, g in enumerate(frames):
-                    a_, b_ = start + f * .09, start + (f + 1) * .09
-                    last = f == len(frames) - 1
-                    hide_ = "" if last else f'<set attributeName="opacity" to="0" begin="{b_:.2f}s" fill="freeze"/>'
-                    blink = ""
-                    if last and status == "BOARDING" and i == 4:
-                        blink = f'<animate attributeName="fill-opacity" values="1;.25;1" dur="1.4s" begin="{b_ + 1:.2f}s" repeatCount="indefinite"/>'
-                    txt += (f'<text x="{tx:.1f}" y="{ty:.1f}" fill="{colour if last else DIM}" opacity="0"><set attributeName="opacity" to="1" begin="{a_:.2f}s" fill="freeze"/>'
-                            f'{hide_}{blink}{esc(g)}</text>')
-                body.append(cell + txt)
-    total_prs = sum(n for _, n in rows)
+        start = t + .3 + k * .12
+        g = [f'<rect x="{x:.1f}" y="108" width="{sw}" height="{H - 168}" rx="6" fill="#0f0e0c" stroke="{"#5a4a2a" if master else "#201e1a"}"/>',
+             f'<text x="{cx:.1f}" y="126" text-anchor="middle" font-family="{MONO}" font-size="9.5" fill="{HI if master else MUTE}" letter-spacing="1.5">'
+             f'{"MASTER" if master else f"CH {k + 1}"}</text>']
+        # gain knob
+        ang = -135 + 270 * level
+        g.append(f'<circle cx="{cx - 18:.1f}" cy="150" r="11" fill="url(#x-knob)" stroke="#2c2924"/>'
+                 f'<line x1="{cx - 18:.1f}" y1="150" x2="{cx - 18:.1f}" y2="141" stroke="{HI}" stroke-width="2" stroke-linecap="round">'
+                 f'<animateTransform attributeName="transform" type="rotate" from="-135 {cx - 18:.1f} 150" to="{ang:.0f} {cx - 18:.1f} 150" '
+                 f'begin="{start:.2f}s" dur=".9s" fill="freeze" calcMode="spline" keyTimes="0;1" keySplines=".2 .8 .2 1"/></line>'
+                 f'<text x="{cx + 2:.1f}" y="153" font-family="{MONO}" font-size="8.5" fill="{MUTE}" letter-spacing="1">GAIN</text>')
+        # LED meter: segments, lit up to the level, bouncing a little
+        mx = x + 18
+        unlit, lit_s = [], []
+        for i in range(SEG):
+            yy = my1 - (i + 1) * seg_h + 1.2
+            col = "#ff5a1f" if i >= SEG - 2 else "#ffc35c" if i >= SEG - 6 else HI
+            unlit.append(f'<rect x="{mx}" y="{yy:.1f}" width="26" height="{seg_h - 2.4:.1f}" rx="1.5" fill="#1d1a16"/>')
+            if i < lit:
+                lit_s.append(f'<rect x="{mx}" y="{yy:.1f}" width="26" height="{seg_h - 2.4:.1f}" rx="1.5" fill="{col}"/>')
+        full = lit * seg_h
+        lows = [full * rng.uniform(.62, .95) for _ in range(5)]
+        vals = ";".join(f"{v:.1f}" for v in [full] + lows + [full])
+        ys = ";".join(f"{my1 - v:.1f}" for v in [full] + lows + [full])
+        g.append("".join(unlit)
+                 + f'<clipPath id="x-m{k}"><rect x="{mx - 2}" y="{my1}" width="30" height="0">'
+                 f'<animate attributeName="height" from="0" to="{full:.1f}" begin="{start:.2f}s" dur=".6s" fill="freeze"/>'
+                 f'<animate attributeName="y" from="{my1}" to="{my1 - full:.1f}" begin="{start:.2f}s" dur=".6s" fill="freeze"/>'
+                 f'<animate attributeName="height" values="{vals}" dur="{rng.uniform(1.1, 1.7):.2f}s" begin="{start + .6:.2f}s" repeatCount="indefinite"/>'
+                 f'<animate attributeName="y" values="{ys}" dur="{rng.uniform(1.1, 1.7):.2f}s" begin="{start + .6:.2f}s" repeatCount="indefinite"/>'
+                 f'</rect></clipPath><g clip-path="url(#x-m{k})">{"".join(lit_s)}</g>'
+                 # peak-hold light
+                 + _at(start + .6, f'<rect x="{mx}" y="{my1 - full + 1.2:.1f}" width="26" height="2" fill="#fff1d0" opacity=".9"/>'))
+        # fader slot and cap
+        fx = x + sw - 30
+        fy = my1 - level * (my1 - my0)
+        g.append(f'<rect x="{fx - 1.5}" y="{my0}" width="3" height="{my1 - my0}" rx="1.5" fill="#000" stroke="#24211c"/>'
+                 + "".join(f'<line x1="{fx + 7}" y1="{my0 + j * (my1 - my0) / 8:.0f}" x2="{fx + 11}" y2="{my0 + j * (my1 - my0) / 8:.0f}" stroke="#2f2b25"/>' for j in range(9))
+                 + f'<g><animateTransform attributeName="transform" type="translate" from="0 {my1 - fy:.1f}" to="0 0" begin="{start:.2f}s" dur="1s" '
+                 f'fill="freeze" calcMode="spline" keyTimes="0;1" keySplines=".2 .8 .2 1"/>'
+                 f'<rect x="{fx - 11}" y="{fy - 8:.1f}" width="22" height="16" rx="2.5" fill="url(#x-cap)" stroke="#000"/>'
+                 f'<line x1="{fx - 9}" y1="{fy:.1f}" x2="{fx + 9}" y2="{fy:.1f}" stroke="{"#c2410c" if master else "#111"}" stroke-width="1.6"/></g>')
+        # readout
+        g.append(f'<rect x="{x + 14}" y="350" width="{sw - 28}" height="22" rx="3" fill="#050505" stroke="#24211c"/>'
+                 + _at(start + .5, f'<text x="{cx:.1f}" y="366" text-anchor="middle" font-family="{MONO}" font-size="13" font-weight="800" '
+                                   f'fill="{HI}">{n}<tspan fill="{MUTE}" font-size="9.5" font-weight="400"> PR{"s" if n != 1 else ""}</tspan></text>'))
+        # masking-tape label
+        rot = rng.uniform(-2.2, 2.2)
+        nm = name if len(name) <= 14 else name[:13] + "…"
+        ow = owner if len(owner) <= 17 else owner[:16] + "…"
+        g.append(f'<g transform="rotate({rot:.1f} {cx:.1f} 400)"><rect x="{x + 6}" y="384" width="{sw - 12}" height="34" fill="{"#f5a524" if master else "#e9dfc6"}" opacity=".92"/>'
+                 f'<text x="{cx:.1f}" y="399" text-anchor="middle" font-family="{MONO}" font-size="10" font-weight="800" fill="#1b1712">'
+                 f'{esc("ALL REPOS" if master else nm)}</text>'
+                 f'<text x="{cx:.1f}" y="412" text-anchor="middle" font-family="{MONO}" font-size="8.5" fill="#5a5144">{esc("total" if master else ow)}</text></g>')
+        body.append("".join(g))
     legend = (f'<text x="{W - 28}" y="72" text-anchor="end" font-family="{MONO}" font-size="12.5" xml:space="preserve">'
-              f'<tspan fill="{HI}" font-weight="700">{len(rows)}</tspan><tspan fill="{DIM}"> destinations   </tspan>'
-              f'<tspan fill="{HI}" font-weight="700">{total_prs}</tspan><tspan fill="{DIM}"> pull requests sent</tspan></text>')
-    clock = (f'<text x="{x0:.0f}" y="{y0 - 44}" font-family="{MONO}" font-size="12" fill="{HI}" font-weight="700" letter-spacing="3">'
-             f'DEPARTURES</text><text x="{x0 + 132:.0f}" y="{y0 - 44}" font-family="{MONO}" font-size="12" fill="{MUTE}" letter-spacing="2">'
-             f'TERMINAL OPEN SOURCE · GATE BLR</text>')
-    return (_open(W, H, "Departures board of pull requests by repository: " + ", ".join(f"{r} {n}" for r, n in rows))
-            + f"<defs>{crt_defs}{clip}</defs>"
-            + _window(W, H, f"{prof['user']}@{prof['host']}: ~/departures — zsh", "one row per repository · BOARDING = my latest pull request",
+              f'<tspan fill="{HI}" font-weight="700">{len(rows)}</tspan><tspan fill="{DIM}"> channels   </tspan>'
+              f'<tspan fill="{HI}" font-weight="700">{total}</tspan><tspan fill="{DIM}"> pull requests on the master bus</tspan></text>')
+    return (_open(W, H, "Mixing desk of pull requests by repository: " + ", ".join(f"{r} {n}" for r, n in rows))
+            + f"<defs>{''.join(defs)}</defs>"
+            + _window(W, H, f"{prof['user']}@{prof['host']}: ~/mixdown — zsh", "one channel per repository · level = pull requests",
                       f"updated {now_ist():%Y-%m-%d}")
-            + cmd + _at(t, clock)
-            + f'<g text-anchor="middle" font-family="{MONO}" font-size="14" font-weight="700">' + "".join(body) + "</g>"
-            + _at(t + 1.6, legend) + crt + "</svg>")
+            + cmd + _at(t, "".join(body)) + _at(t + 1.6, legend) + crt + "</svg>")

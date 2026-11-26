@@ -45,9 +45,9 @@ tools: [Git, Docker, React, Linux]
 
 <img src="assets/divider.svg" width="100%" alt=""/>
 
-### <code>05</code> Departures
+### <code>05</code> Mixdown
 
-<a href="https://github.com/search?q=author%3Asahityasingh08+type%3Apr&type=pullrequests"><img src="assets/departures.svg" width="100%" alt="Departures board: the repositories I have sent pull requests to, with how many each"/></a>
+<a href="https://github.com/search?q=author%3Asahityasingh08+type%3Apr&type=pullrequests"><img src="assets/mixer.svg" width="100%" alt="Mixing desk: one channel strip per repository I have sent pull requests to, with a level meter and fader set by how many"/></a>
 
 <img src="assets/divider.svg" width="100%" alt=""/>
 
