@@ -524,37 +524,115 @@ def divider() -> str:
 
 
 def project(p: dict) -> str:
-    """A wide terminal card for one project: name, pitch, three headline numbers and tags."""
-    W, H = 1000, 300
+    """A project as a real pre-flight check: the checklist ticks itself off, then a plane takes off from the runway.
+    The headline numbers sit underneath as cockpit readouts."""
+    W, H = 1000, 500
     uid = p["slug"]
     crt_defs, crt = _crt(W, H, f"p{uid}")
     clip, cmd, t = _typed(28, 72, p["command"], .2, f"{uid}c")
     body = [_at(t, f'<text x="28" y="112" font-family="{MONO}" font-size="10.5" fill="{HI}" letter-spacing="3">'
                    f'{esc(p["kicker"])}</text>'
-                   f'<text x="28" y="150" font-family="{MONO}" font-size="32" font-weight="800" fill="{TEXT}" '
+                   f'<text x="28" y="148" font-family="{MONO}" font-size="32" font-weight="800" fill="{TEXT}" '
                    f'letter-spacing="-.5">{esc(p["name"])}</text>')]
     for k, line in enumerate(p["desc"]):
-        body.append(_at(t + .15 + k * .1, f'<text x="28" y="{178 + k * 19}" font-family="{MONO}" font-size="13" '
+        body.append(_at(t + .15 + k * .1, f'<text x="28" y="{174 + k * 18}" font-family="{MONO}" font-size="12.5" '
                                           f'fill="{DIM}">{esc(line)}</text>'))
-    # headline numbers, right side
-    sx = 600
-    for k, (v, lab) in enumerate(p["stats"]):
-        y = 112 + k * 44
-        body.append(_at(t + .3 + k * .15, f'<text x="{sx}" y="{y + 18}" font-family="{MONO}" font-size="26" '
-                                          f'font-weight="800" fill="{HI}">{esc(v)}</text>'
-                                          f'<text x="{sx + 120}" y="{y + 14}" font-family="{MONO}" font-size="12" '
-                                          f'fill="{DIM}">{esc(lab)}</text>'
-                                          f'<line x1="{sx}" y1="{y + 28}" x2="{W - 28}" y2="{y + 28}" stroke="{EDGE}"/>'))
-    # tag chips
     x = 28
     chips = []
     for tag in p["tags"]:
-        w = len(tag) * 7.2 + 18
-        chips.append(f'<rect x="{x}" y="{H - 70}" width="{w:.0f}" height="20" rx="10" fill="none" stroke="{HI}" stroke-opacity=".5"/>'
-                     f'<text x="{x + w / 2:.0f}" y="{H - 56}" text-anchor="middle" font-family="{MONO}" font-size="11" '
+        w = len(tag) * 7 + 16
+        chips.append(f'<rect x="{x}" y="206" width="{w:.0f}" height="19" rx="9.5" fill="none" stroke="{HI}" stroke-opacity=".45"/>'
+                     f'<text x="{x + w / 2:.0f}" y="219.5" text-anchor="middle" font-family="{MONO}" font-size="10.5" '
                      f'fill="{TEXT}">{esc(tag)}</text>')
-        x += w + 8
-    body.append(_at(t + .8, "".join(chips)))
+        x += w + 7
+    body.append(_at(t + .3, "".join(chips)))
+
+    # ── the checklist ticks itself off ──
+    checks = p.get("checks", ["read CI from .github/workflows", "build the same Docker image",
+                              "run every job on this machine", "compare with GitHub's own result"])
+    spin = "|/-\\"
+    ct = t + .7
+    for i, item in enumerate(checks):
+        y = 254 + i * 21
+        t0 = ct + i * .75
+        frames = "".join(
+            f'<text x="38" y="{y}" text-anchor="middle" font-family="{MONO}" font-size="13" fill="{DIM}" opacity="0">'
+            f'<set attributeName="opacity" to="1" begin="{t0 + f * .12:.2f}s"/><set attributeName="opacity" to="0" begin="{t0 + (f + 1) * .12:.2f}s"/>{esc(c)}</text>'
+            for f, c in enumerate(spin))
+        done = t0 + len(spin) * .12
+        body.append(_at(t0, f'<text x="28" y="{y}" font-family="{MONO}" font-size="13" fill="{MUTE}">[ ]</text>'
+                            f'<text x="58" y="{y}" font-family="{MONO}" font-size="13" fill="{TEXT}">{esc(item)}</text>'
+                            f'<line x1="{58 + len(item) * 7.83 + 10:.0f}" y1="{y - 4}" x2="476" y2="{y - 4}" stroke="{EDGE}" stroke-dasharray="2 4"/>')
+                    + frames
+                    + _at(done, f'<text x="38" y="{y}" text-anchor="middle" font-family="{MONO}" font-size="13" font-weight="800" fill="{HI}">✓</text>'
+                                f'<text x="500" y="{y}" text-anchor="end" font-family="{MONO}" font-size="12" font-weight="700" fill="{HI}">OK</text>'))
+    t_done = ct + len(checks) * .75 + .2
+    yl = 254 + len(checks) * 21 - 6
+    body.append(_at(t_done, f'<rect x="26" y="{yl}" width="476" height="26" rx="3" fill="{HI}" fill-opacity=".12" stroke="{HI}" stroke-opacity=".6"/>'
+                            f'<text x="38" y="{yl + 17.5}" font-family="{MONO}" font-size="12.5" font-weight="800" fill="{HI}" letter-spacing="1.5">'
+                            f'ALL CHECKS PASSED · CLEARED FOR PUSH<animate attributeName="opacity" values="1;.45;1" dur="1.6s" '
+                            f'begin="{t_done:.2f}s" repeatCount="indefinite"/></text>'))
+
+    # ── the runway: a plane holds, then takes off once everything is green; loops ──
+    px0, py0, pw, ph = 548, 100, W - 28 - 548, 266
+    gy = py0 + ph - 46                                   # ground line
+    rng = random.Random(uid)
+    stars = "".join(f'<circle cx="{px0 + rng.uniform(8, pw - 8):.0f}" cy="{py0 + rng.uniform(26, ph - 110):.0f}" r="{rng.uniform(.6, 1.3):.1f}" '
+                    f'fill="{TEXT}" opacity="{rng.uniform(.15, .5):.2f}"><animate attributeName="opacity" values=".1;.6;.1" '
+                    f'dur="{rng.uniform(2, 5):.1f}s" repeatCount="indefinite"/></circle>' for _ in range(26))
+    dashes = (f'<line x1="{px0}" y1="{gy + 16}" x2="{px0 + pw}" y2="{gy + 16}" stroke="{TEXT}" stroke-opacity=".5" '
+              f'stroke-width="2" stroke-dasharray="18 14"><animate attributeName="stroke-dashoffset" from="0" to="64" dur=".8s" '
+              f'repeatCount="indefinite"/></line>')
+    lights = "".join(f'<circle cx="{px0 + 14 + i * (pw - 28) / 13:.0f}" cy="{gy + 2}" r="2" fill="{HI}" opacity=".25">'
+                     f'<animate attributeName="opacity" values=".25;1;.25" dur="1.4s" begin="{i * .1:.2f}s" repeatCount="indefinite"/></circle>'
+                     f'<circle cx="{px0 + 14 + i * (pw - 28) / 13:.0f}" cy="{gy + 30}" r="2" fill="{HI}" opacity=".25">'
+                     f'<animate attributeName="opacity" values=".25;1;.25" dur="1.4s" begin="{i * .1:.2f}s" repeatCount="indefinite"/></circle>'
+                     for i in range(14))
+    tower = (f'<path d="M{px0 + 30},{gy} v-58 h-8 l4,-16 h28 l4,16 h-8 v58 Z" fill="#141210" stroke="{EDGE}"/>'
+             f'<rect x="{px0 + 28}" y="{gy - 72}" width="24" height="8" fill="{HI}" opacity=".35"/>'
+             f'<circle cx="{px0 + 40}" cy="{gy - 80}" r="2.4" fill="{HI}"><animate attributeName="opacity" values="1;0;1" dur="1.2s" repeatCount="indefinite"/></circle>')
+    plane = (f'<g id="{uid}-plane"><path d="M0,0 L46,0 Q60,0 62,5 Q60,10 46,10 L12,10 L5,20 L0,20 L2,10 Z" fill="{TEXT}"/>'
+             f'<path d="M24,5 L33,5 L21,22 L14,22 Z" fill="#cfc8bb"/>'
+             + "".join(f'<circle cx="{20 + k * 6}" cy="4" r="1.2" fill="{HI}"/>' for k in range(4))
+             + f'<circle cx="62" cy="5" r="1.6" fill="{HI}"><animate attributeName="opacity" values="1;.2;1" dur=".8s" repeatCount="indefinite"/></circle></g>')
+    sx, sy = px0 + 80, gy - 21
+    path = f"M{sx},{sy} L{sx + 150},{sy} Q{sx + 270},{sy - 6} {px0 + pw + 80},{py0 - 30}"
+    cyc = 8
+    kt = "0;.12;.75;1"
+    motion = (f'<g><animateMotion path="{path}" dur="{cyc}s" begin="{t_done:.2f}s" repeatCount="indefinite" '
+              f'keyPoints="0;0;1;1" keyTimes="{kt}" calcMode="spline" keySplines="0 0 1 1;.6 0 .9 .6;0 0 1 1" rotate="auto"/>'
+              f'<use href="#{uid}-plane" xlink:href="#{uid}-plane" transform="translate(0 -10)"/></g>')
+    trail = (f'<path d="{path}" fill="none" stroke="{HI}" stroke-width="2.5" stroke-linecap="round" opacity=".7" '
+             f'pathLength="100" stroke-dasharray="100 100" stroke-dashoffset="100">'
+             f'<animate attributeName="stroke-dashoffset" values="100;100;0;0" keyTimes="{kt}" dur="{cyc}s" begin="{t_done:.2f}s" '
+             f'calcMode="spline" keySplines="0 0 1 1;.6 0 .9 .6;0 0 1 1" repeatCount="indefinite"/>'
+             f'<animate attributeName="opacity" values="0;.7;.7;0" keyTimes="0;.12;.8;1" dur="{cyc}s" begin="{t_done:.2f}s" repeatCount="indefinite"/></path>')
+    holding = f'<g transform="translate({sx} {sy - 10})"><use href="#{uid}-plane" xlink:href="#{uid}-plane"/></g>'
+    status = (f'<text x="{px0 + pw - 14}" y="{py0 + 22}" text-anchor="end" font-family="{MONO}" font-size="10.5" letter-spacing="1.5" fill="{MUTE}">'
+              f'STATUS: HOLDING<set attributeName="opacity" to="0" begin="{t_done:.2f}s" fill="freeze"/></text>'
+              + _at(t_done, f'<text x="{px0 + pw - 14}" y="{py0 + 22}" text-anchor="end" font-family="{MONO}" font-size="10.5" '
+                            f'font-weight="700" letter-spacing="1.5" fill="{HI}">STATUS: CLEARED · TAKEOFF</text>'))
+    scene = (f'<clipPath id="{uid}-sky"><rect x="{px0}" y="{py0}" width="{pw}" height="{ph}" rx="8"/></clipPath>'
+             f'<rect x="{px0}" y="{py0}" width="{pw}" height="{ph}" rx="8" fill="#0c0b0a" stroke="{EDGE}"/>'
+             f'<g clip-path="url(#{uid}-sky)">{stars}'
+             f'<rect x="{px0}" y="{gy}" width="{pw}" height="{ph}" fill="#11100e"/>'
+             f'<line x1="{px0}" y1="{gy}" x2="{px0 + pw}" y2="{gy}" stroke="{EDGE}"/>{dashes}{lights}{tower}'
+             f'<g opacity="1">{holding}<set attributeName="opacity" to="0" begin="{t_done:.2f}s" fill="freeze"/></g>'
+             f'{trail}{motion}</g>'
+             f'<text x="{px0 + 14}" y="{py0 + 22}" font-family="{MONO}" font-size="10.5" letter-spacing="1.5" fill="{MUTE}">RWY 08 · BLR</text>{status}')
+    body.append(f'<defs>{plane}</defs>' + _at(t, scene))
+
+    # ── cockpit readouts ──
+    n = len(p["stats"])
+    bw = (W - 56 - (n - 1) * 14) / n
+    for k, (v, lab) in enumerate(p["stats"]):
+        bx = 28 + k * (bw + 14)
+        body.append(_at(t_done + .2 + k * .15,
+                        f'<rect x="{bx:.0f}" y="384" width="{bw:.0f}" height="56" rx="6" fill="#070706" stroke="{EDGE}"/>'
+                        f'<text x="{bx + 16:.0f}" y="404" font-family="{MONO}" font-size="9.5" fill="{MUTE}" letter-spacing="2">{esc(lab.upper())}</text>'
+                        f'<text x="{bx + 16:.0f}" y="430" font-family="{MONO}" font-size="22" font-weight="800" fill="{HI}">{esc(v)}</text>'
+                        f'<circle cx="{bx + bw - 16:.0f}" cy="400" r="3" fill="{HI}"><animate attributeName="opacity" values="1;.3;1" '
+                        f'dur="{1.6 + k * .3:.1f}s" repeatCount="indefinite"/></circle>'))
     return (_open(W, H, f"{p['name']}: {' '.join(p['desc'])}") + f"<defs>{crt_defs}{clip}</defs>"
             + _window(W, H, f"sahitya@github: ~/projects/{uid} — zsh", p["repo"].replace("https://", ""),
                       p.get("site", "").replace("https://", ""))
