@@ -33,7 +33,7 @@ tools: [Git, Docker, React, Linux]
 
 <img src="assets/divider.svg" width="100%" alt=""/>
 
-### <code>03</code> Records
+### <code>03</code> High Scores
 
 <img src="assets/records.svg" width="100%" alt="Personal records board: contributions this year, best day, pull requests, longest streak, active days and repositories"/>
 
