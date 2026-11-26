@@ -1,4 +1,4 @@
-# Refreshes the live numbers and the pull-request list in README.md. Commits only on change.
+# Redraws the live blueprint cards in assets/ every 6 hours. Commits only on change.
 name: refresh profile
 
 on:
@@ -36,7 +36,7 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add README.md
+          git add README.md assets
           if git diff --cached --quiet; then echo "no changes"; exit 0; fi
           git commit -m "chore: refresh profile telemetry"
           for i in 1 2 3; do git pull --rebase && git push && exit 0; sleep 5; done

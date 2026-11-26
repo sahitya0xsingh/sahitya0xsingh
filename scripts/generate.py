@@ -1,20 +1,18 @@
-"""Refresh the live blocks in README.md (numbers and where my pull requests went).
+"""Redraw the live cards in assets/ (detail cards and the record strip).
 
     python scripts/generate.py          # live data (needs GITHUB_TOKEN)
 """
 from __future__ import annotations
 
+import cards
 import metrics
-import readme_sections
 from common import LOGIN, profile
 
 
 def main() -> None:
     from github_api import fetch_stats
     stats = fetch_stats(LOGIN)
-    m = metrics.compute(stats)
-    did = readme_sections.update(stats, m, profile().get("hide_repos", []))
-    print(f"{'updated' if did else 'same   '}  README.md")
+    cards.write_all(stats, metrics.compute(stats), profile().get("hide_repos", []))
 
 
 if __name__ == "__main__":

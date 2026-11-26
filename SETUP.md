@@ -1,24 +1,23 @@
 # How this profile works
 
-`README.md` is plain text. Two blocks inside it are filled in from public GitHub data:
+The README is drawn as a set of engineering-blueprint sheets. Everything is plain SVG made by the scripts in `scripts/`. There are no third-party widgets.
 
-| Block | Shows |
-|:--|:--|
-| `STATS` | contributions this year, pull requests to other projects, best day, longest streak |
-| `UPSTREAM` | the repos that received the most pull requests from me |
+| File | What it is | Made by | Refreshed |
+|:--|:--|:--|:--|
+| `assets/hero.svg` | Sheet 01: the plotted portrait and title block | `scripts/hero.py` (needs Pillow) | by hand, when the photo or details change |
+| `assets/detail-*.svg` | Detail drawings: PreFlight, checkstyle, openSUSE, where my PRs went | `scripts/cards.py` | every 6 hours |
+| `assets/record.svg` | Sheet 02: contributions per day as a strip chart | `scripts/cards.py` | every 6 hours |
 
-`scripts/generate.py` rewrites those blocks. The `refresh profile` workflow runs it every 6 hours and commits only when a number changed.
+`scripts/theme.py` holds the shared look: colours, grid, glow filters and the pen-drawing animation.
 
-- Edit everything else in `README.md` by hand.
-- Keep a repo out of the pull-request list with `hide_repos` in `data/profile.json`.
+## Updating
 
-## Visuals
+- **Live cards:** the `refresh profile` workflow runs `scripts/generate.py` every 6 hours and commits only when something changed.
+- **Header:** after changing `assets/photo.jpg` or the title block, run this locally and commit `assets/hero.svg`:
 
-| Piece | Source |
-|:--|:--|
-| Wave header and footer | [capsule-render](https://github.com/kyechan99/capsule-render) |
-| Typing line | [readme-typing-svg](https://github.com/DenverCoder1/readme-typing-svg) |
-| 3D contribution graph | [github-profile-3d-contrib](https://github.com/yoshi389111/github-profile-3d-contrib), drawn daily by `profile visuals` |
-| Snake | [Platane/snk](https://github.com/Platane/snk), drawn daily by `profile visuals` |
-| Streak card | [github-readme-streak-stats](https://github.com/DenverCoder1/github-readme-streak-stats) |
-| Activity graph | [github-readme-activity-graph](https://github.com/Ashutosh00710/github-readme-activity-graph) |
+  ```bash
+  pip install pillow && python scripts/hero.py
+  ```
+
+- **Text:** edit the bio in `README.md` by hand.
+- **Hidden repos:** keep a repo out of the pull-request card with `hide_repos` in `data/profile.json`.
