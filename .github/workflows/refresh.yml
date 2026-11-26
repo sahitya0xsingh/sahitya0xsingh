@@ -1,10 +1,10 @@
-# Re-renders the start screen, terminal header, htop monitor, activity heatmap and the
-# projects / upstream tables from live GitHub data. Commits only on change.
+# Redraws the amber terminal cards (hero, records, skyline, mixdown) from live GitHub data every hour.
+# Commits only on change.
 name: refresh profile
 
 on:
   schedule:
-    - cron: "35 0,6,12,18 * * *"   # every 6 hours (06:05 IST first run)
+    - cron: "17 * * * *"   # every hour, so a newly merged PR shows up within the hour
   workflow_dispatch:
   push:
     branches: [main]

@@ -54,6 +54,33 @@ def _post(body: dict) -> dict:
     return out["data"]
 
 
+PAGE = """
+query($q: String!, $after: String) {
+  search(query: $q, type: ISSUE, first: 100, after: $after) {
+    pageInfo { hasNextPage endCursor }
+    nodes { ... on PullRequest { repository { nameWithOwner } } }
+  }
+}
+"""
+
+
+def merged_by_repo(login: str) -> dict[str, int]:
+    """Every merged pull request I opened in someone else's repo, counted per repo (all pages, not just the first 100)."""
+    counts: dict[str, int] = {}
+    after = None
+    for _ in range(10):                         # GitHub search stops at 1,000 results
+        d = _post({"query": PAGE, "variables": {"q": f"is:pr is:merged author:{login} -user:{login}", "after": after}})
+        for n in d["search"]["nodes"]:
+            if n:
+                r = n["repository"]["nameWithOwner"]
+                counts[r] = counts.get(r, 0) + 1
+        info = d["search"]["pageInfo"]
+        if not info["hasNextPage"]:
+            break
+        after = info["endCursor"]
+    return counts
+
+
 def fetch_stats(login: str) -> dict:
     d = _post({"query": QUERY, "variables": {
         "login": login,
@@ -79,9 +106,7 @@ def fetch_stats(login: str) -> dict:
     prs = [{"title": n["title"], "url": n["url"], "merged": n["mergedAt"],
             "repo": n["repository"]["nameWithOwner"]}
            for n in d["search"]["nodes"] if n]
-    pr_repos: dict[str, int] = {}
-    for pr in prs:
-        pr_repos[pr["repo"]] = pr_repos.get(pr["repo"], 0) + 1
+    pr_repos = merged_by_repo(login)
     return {"login": login, "days": days, "total": cal["totalContributions"], "repos": repos,
             "prs": prs[:8], "pr_count": d["search"]["issueCount"],
             "pr_repos": sorted(pr_repos.items(), key=lambda kv: -kv[1]),

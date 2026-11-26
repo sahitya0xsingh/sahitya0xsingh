@@ -19,8 +19,12 @@ def main() -> None:
     else:
         from github_api import fetch_stats
         stats = fetch_stats(LOGIN)
-    m = metrics.compute(stats)
     prof = profile()
+    # one total everywhere: every merged PR to someone else's repo, minus the repos hidden in profile.json
+    hide = set(prof.get("hide_repos", []))
+    if stats.get("pr_repos"):
+        stats["pr_count"] = sum(n for r, n in stats["pr_repos"] if r not in hide and not r.startswith(LOGIN + "/"))
+    m = metrics.compute(stats)
 
     changed = {
         "hero.svg": write_asset("hero.svg", term.hero(m, prof, stats)),

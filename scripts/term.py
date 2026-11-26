@@ -565,8 +565,19 @@ def mixer(m: dict, stats: dict, prof: dict) -> str:
     """Repos I've sent pull requests to, as channel strips on a mixing desk: gain knob, bouncing LED meter,
     fader and a masking-tape label each, plus a master channel for the total."""
     hide = set(prof.get("hide_repos", []))
-    rows = [(r, n) for r, n in stats.get("pr_repos", []) if r not in hide and not r.startswith(stats["login"] + "/")][:7]
-    total = sum(n for _, n in rows)
+    repos = [(r, n) for r, n in stats.get("pr_repos", []) if r not in hide and not r.startswith(stats["login"] + "/")]
+    total = sum(n for _, n in repos)                      # master = every merged PR, not just the channels shown
+    # one channel per organisation, so all of checkstyle's repos add up on one strip
+    by_owner: dict[str, list[tuple[str, int]]] = {}
+    for r, n in repos:
+        by_owner.setdefault(r.split("/")[0], []).append((r, n))
+    groups = sorted(by_owner.items(), key=lambda kv: -sum(n for _, n in kv[1]))[:7]
+    rows = []
+    for owner, items in groups:
+        n = sum(c for _, c in items)
+        rows.append((f"{owner}/{owner}" if len(items) > 1 else items[0][0], n, len(items)))
+    nrepos = {r: k for r, _, k in rows}
+    rows = [(r, n) for r, n, _ in rows]
     W, H = 1000, 500
     crt_defs, crt = _crt(W, H, "x")
     clip, cmd, t = _typed(28, 72, "gh search prs --author=@me | mixdown", .2, "x1")
@@ -645,13 +656,13 @@ def mixer(m: dict, stats: dict, prof: dict) -> str:
         g.append(f'<g transform="rotate({rot:.1f} {cx:.1f} 400)"><rect x="{x + 6}" y="384" width="{sw - 12}" height="34" fill="{"#f5a524" if master else "#e9dfc6"}" opacity=".92"/>'
                  f'<text x="{cx:.1f}" y="399" text-anchor="middle" font-family="{MONO}" font-size="10" font-weight="800" fill="#1b1712">'
                  f'{esc("ALL REPOS" if master else nm)}</text>'
-                 f'<text x="{cx:.1f}" y="412" text-anchor="middle" font-family="{MONO}" font-size="8.5" fill="#5a5144">{esc("total" if master else ow)}</text></g>')
+                 f'<text x="{cx:.1f}" y="412" text-anchor="middle" font-family="{MONO}" font-size="8.5" fill="#5a5144">{esc("total" if master else (f"{nrepos[repo]} repos" if nrepos.get(repo, 1) > 1 else ow))}</text></g>')
         body.append("".join(g))
     legend = (f'<text x="{W - 28}" y="72" text-anchor="end" font-family="{MONO}" font-size="12.5" xml:space="preserve">'
-              f'<tspan fill="{HI}" font-weight="700">{len(rows)}</tspan><tspan fill="{DIM}"> channels   </tspan>'
+              f'<tspan fill="{HI}" font-weight="700">{len(repos)}</tspan><tspan fill="{DIM}"> repos   </tspan>'
               f'<tspan fill="{HI}" font-weight="700">{total}</tspan><tspan fill="{DIM}"> pull requests on the master bus</tspan></text>')
     return (_open(W, H, "Mixing desk of pull requests by repository: " + ", ".join(f"{r} {n}" for r, n in rows))
             + f"<defs>{''.join(defs)}</defs>"
-            + _window(W, H, f"{prof['user']}@{prof['host']}: ~/mixdown — zsh", "one channel per repository · level = pull requests",
+            + _window(W, H, f"{prof['user']}@{prof['host']}: ~/mixdown — zsh", "one channel per organisation · level = merged pull requests · refreshed hourly",
                       f"updated {now_ist():%Y-%m-%d}")
             + cmd + _at(t, "".join(body)) + _at(t + 1.6, legend) + crt + "</svg>")
